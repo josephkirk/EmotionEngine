@@ -30,18 +30,34 @@ public:
     UFUNCTION(BlueprintCallable, Category="EmotionSystem", meta=(Categories="Emotion.Core"))
     float GetIntensity(const FGameplayTag& InTag) const
     {
+        // If it's a core emotion tag, return from CoreEmotionIntensities
+        if (InTag.MatchTags("Emotion.Core") && CoreEmotionIntensities.Contains(InTag))
+        {
+            return CoreEmotionIntensities[InTag];
+        }
+        
+        // Otherwise return from IntensityMap (range and combined tags)
         return IntensityMap.Contains(InTag) ? IntensityMap[InTag] : 0.f;
     }
 
-    // add Core emotion tag start with "Emotion.Core" only , expose to Blueprint Callable
+    // add Core emotion tag start with "Emotion.Core" only, expose to Blueprint Callable
+    // Intensity range is -1.0 to 1.0, with negative values representing opposite emotions
     UFUNCTION(BlueprintCallable, Category="EmotionSystem", meta=(Categories="Emotion.Core"))
     void AddCoreEmotionTag(const FGameplayTag& InTag, float InIntensity)
     {
         if (!InTag.MatchTags("Emotion.Core")) {
             return;
         }
+        // Clamp intensity between -1 and 1
+        const float ClampedIntensity = FMath::Clamp(InIntensity, -1.0f, 1.0f);
+        
         CoreEmotionTags.AddTag(InTag);
-        IntensityMap.Add(InTag, InIntensity);
+        
+        // Store intensity in a separate private map, not in IntensityMap
+        CoreEmotionIntensities.Add(InTag, ClampedIntensity);
+        
+        // Update the range emotion tag with the intensity value
+        UpdateRangeEmotionTag(InTag, ClampedIntensity);
         UpdateCombinedEmotionTag(InTag);
     }
 
@@ -53,19 +69,29 @@ public:
             return;
         }
         CoreEmotionTags.RemoveTag(InTag);
-        IntensityMap.Remove(InTag);
+        CoreEmotionIntensities.Remove(InTag);
+        
+        // Remove the corresponding range tags
+        UpdateRangeEmotionTag(InTag, 0.0f); // Passing 0 intensity will clear the tags
         UpdateCombinedEmotionTag(InTag);
     }
 
-    // Set intensity for a emotiontag
+    // Set intensity for a emotiontag. For core emotions, intensity range is -1.0 to 1.0
     UFUNCTION(BlueprintCallable, Category="EmotionSystem", meta=(Categories="Emotion.Core"))
     void SetIntensity(const FGameplayTag& InTag, float InIntensity)
     {
-        if (!InTag.MatchTags("Emotion.Core") && CoreEmotionTags.HasTag(InTag)) {
+        // Only allow setting intensity for tags that exist in CoreEmotionTags
+        if (!InTag.MatchTags("Emotion.Core") || !CoreEmotionTags.HasTag(InTag)) {
             return;
         }
-        IntensityMap.Emplace(InTag, InIntensity);
-        UpdateRangeEmotionTag(InTag, InIntensity);
+        // Clamp intensity between -1 and 1 for core emotions
+        const float ClampedIntensity = FMath::Clamp(InIntensity, -1.0f, 1.0f);
+        
+        // Store core emotion intensity in separate map
+        CoreEmotionIntensities.Emplace(InTag, ClampedIntensity);
+        
+        UpdateRangeEmotionTag(InTag, ClampedIntensity);
+        UpdateCombinedEmotionTag(InTag);
     }
 
 private:
@@ -75,7 +101,12 @@ private:
     UPROPERTY()
     TMap<FGameplayTag, float> IntensityMap;
     
+    // Separate map to store core emotion intensities that can be -1 to 1
+    UPROPERTY()
+    TMap<FGameplayTag, float> CoreEmotionIntensities;
+    
     // add/remove range emotion tag to add to EmotionTags on a core emotion tags intensity change
+    // Uses sign of intensity (-/+) to determine which range tag to add (high/low)
     void UpdateRangeEmotionTag(const FGameplayTag& InCoreEmotionTag, float InCoreEmotionIntensity)
     {
         // Check if the tag is a core emotion tag
@@ -84,10 +115,9 @@ private:
             return;
         }
 
-        // Define intensity thresholds for high and low emotions
-        const float HighIntensityThreshold = 0.7f;
-        const float LowIntensityThreshold = 0.3f;
-
+        // Get the absolute intensity value
+        const float AbsoluteIntensity = FMath::Abs(InCoreEmotionIntensity);
+        
         // Extract the specific emotion type from the core tag
         FString CoreTagString = InCoreEmotionTag.ToString();
         FString EmotionType;
@@ -152,20 +182,33 @@ private:
         FGameplayTag HighRangeTag = FGameplayTag::RequestGameplayTag(FName(*HighRangeTagString));
         FGameplayTag LowRangeTag = FGameplayTag::RequestGameplayTag(FName(*LowRangeTagString));
         
-        // Remove existing range tags for this emotion
+        // Remove existing range tags for this emotion from EmotionTags
         EmotionTags.RemoveTag(HighRangeTag);
         EmotionTags.RemoveTag(LowRangeTag);
         
-        // Add the appropriate range tag based on intensity
-        if (InCoreEmotionIntensity >= HighIntensityThreshold)
+        // Clear the intensity map entries for these tags
+        IntensityMap.Remove(HighRangeTag);
+        IntensityMap.Remove(LowRangeTag);
+        
+        // Only add range tags if the intensity is non-zero
+        if (AbsoluteIntensity > 0.0f)
         {
-            EmotionTags.AddTag(HighRangeTag);
+            // Determine which range tag to add based on sign of the intensity (positive/negative)
+            if (InCoreEmotionIntensity > 0.0f)
+            {
+                // Positive intensity = high range tag
+                EmotionTags.AddTag(HighRangeTag);
+                IntensityMap.Emplace(HighRangeTag, AbsoluteIntensity);
+            }
+            else // Intensity < 0.0f
+            {
+                // Negative intensity = low range tag
+                EmotionTags.AddTag(LowRangeTag);
+                IntensityMap.Emplace(LowRangeTag, AbsoluteIntensity);
+            }
         }
-        else if (InCoreEmotionIntensity <= LowIntensityThreshold && InCoreEmotionIntensity > 0.0f)
-        {
-            EmotionTags.AddTag(LowRangeTag);
-        }
-        // If intensity is between low and high thresholds, no range tag is added
+        
+        // Core emotion tag itself is not added to EmotionTags, only stored in CoreEmotionTags
     }
 
     void UpdateCombinedEmotionTag(const FGameplayTag& InCoreEmotionTag)
@@ -181,55 +224,127 @@ private:
         // Optimism = Anticipation + Joy
         
         // First, remove all combined emotion tags to recalculate
-        EmotionTags.RemoveTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("Emotion.Combined")));
-        
-        // Now check for each combination
-        if (CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Joy")) &&
-            CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Trust")))
+        // Also remove them from the IntensityMap
+        FGameplayTagContainer CombinedTags = FGameplayTagContainer(FGameplayTag::RequestGameplayTag("Emotion.Combined"));
+        for (const FGameplayTag& Tag : CombinedTags)
         {
-            EmotionTags.AddTag(FGameplayTag::RequestGameplayTag("Emotion.Combined.Love"));
+            IntensityMap.Remove(Tag);
+        }
+        EmotionTags.RemoveTags(CombinedTags);
+        
+        // Define all core emotion tags
+        FGameplayTag JoyTag = FGameplayTag::RequestGameplayTag("Emotion.Core.Joy");
+        FGameplayTag TrustTag = FGameplayTag::RequestGameplayTag("Emotion.Core.Trust");
+        FGameplayTag FearTag = FGameplayTag::RequestGameplayTag("Emotion.Core.Fear");
+        FGameplayTag SurpriseTag = FGameplayTag::RequestGameplayTag("Emotion.Core.Surprise");
+        FGameplayTag SadnessTag = FGameplayTag::RequestGameplayTag("Emotion.Core.Sadness");
+        FGameplayTag DisgustTag = FGameplayTag::RequestGameplayTag("Emotion.Core.Disgust");
+        FGameplayTag AngerTag = FGameplayTag::RequestGameplayTag("Emotion.Core.Anger");
+        FGameplayTag AnticipationTag = FGameplayTag::RequestGameplayTag("Emotion.Core.Anticipation");
+        
+        // Helper function to calculate combined intensity
+        auto CalculateCombinedIntensity = [this](const FGameplayTag& Tag1, const FGameplayTag& Tag2) -> float {
+            float Intensity1 = CoreEmotionIntensities.Contains(Tag1) ? CoreEmotionIntensities[Tag1] : 0.0f;
+            float Intensity2 = CoreEmotionIntensities.Contains(Tag2) ? CoreEmotionIntensities[Tag2] : 0.0f;
+            return FMath::Abs((Intensity1 + Intensity2) / 2.0f); // Average of the two intensities
+        };
+        
+        // Check for each combination with positive values in both emotions
+        if (CoreEmotionIntensities.Contains(JoyTag) && CoreEmotionIntensities.Contains(TrustTag) && 
+            FMath::Abs(CoreEmotionIntensities[JoyTag]) > 0.0f && FMath::Abs(CoreEmotionIntensities[TrustTag]) > 0.0f)
+        {
+            float CombinedIntensity = CalculateCombinedIntensity(JoyTag, TrustTag);
+            if (CombinedIntensity > 0.0f)
+            {
+                FGameplayTag LoveTag = FGameplayTag::RequestGameplayTag("Emotion.Combined.Love");
+                EmotionTags.AddTag(LoveTag);
+                // Store combined intensity
+                IntensityMap.Emplace(LoveTag, CombinedIntensity);
+            }
         }
         
-        if (CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Trust")) &&
-            CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Fear")))
+        if (CoreEmotionIntensities.Contains(TrustTag) && CoreEmotionIntensities.Contains(FearTag) && 
+            FMath::Abs(CoreEmotionIntensities[TrustTag]) > 0.0f && FMath::Abs(CoreEmotionIntensities[FearTag]) > 0.0f)
         {
-            EmotionTags.AddTag(FGameplayTag::RequestGameplayTag("Emotion.Combined.Submission"));
+            float CombinedIntensity = CalculateCombinedIntensity(TrustTag, FearTag);
+            if (CombinedIntensity > 0.0f)
+            {
+                FGameplayTag SubmissionTag = FGameplayTag::RequestGameplayTag("Emotion.Combined.Submission");
+                EmotionTags.AddTag(SubmissionTag);
+                IntensityMap.Emplace(SubmissionTag, CombinedIntensity);
+            }
         }
         
-        if (CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Fear")) &&
-            CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Surprise")))
+        if (CoreEmotionIntensities.Contains(FearTag) && CoreEmotionIntensities.Contains(SurpriseTag) && 
+            FMath::Abs(CoreEmotionIntensities[FearTag]) > 0.0f && FMath::Abs(CoreEmotionIntensities[SurpriseTag]) > 0.0f)
         {
-            EmotionTags.AddTag(FGameplayTag::RequestGameplayTag("Emotion.Combined.Awe"));
+            float CombinedIntensity = CalculateCombinedIntensity(FearTag, SurpriseTag);
+            if (CombinedIntensity > 0.0f)
+            {
+                FGameplayTag AweTag = FGameplayTag::RequestGameplayTag("Emotion.Combined.Awe");
+                EmotionTags.AddTag(AweTag);
+                IntensityMap.Emplace(AweTag, CombinedIntensity);
+            }
         }
         
-        if (CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Surprise")) &&
-            CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Sadness")))
+        if (CoreEmotionIntensities.Contains(SurpriseTag) && CoreEmotionIntensities.Contains(SadnessTag) && 
+            FMath::Abs(CoreEmotionIntensities[SurpriseTag]) > 0.0f && FMath::Abs(CoreEmotionIntensities[SadnessTag]) > 0.0f)
         {
-            EmotionTags.AddTag(FGameplayTag::RequestGameplayTag("Emotion.Combined.Disapproval"));
+            float CombinedIntensity = CalculateCombinedIntensity(SurpriseTag, SadnessTag);
+            if (CombinedIntensity > 0.0f)
+            {
+                FGameplayTag DisapprovalTag = FGameplayTag::RequestGameplayTag("Emotion.Combined.Disapproval");
+                EmotionTags.AddTag(DisapprovalTag);
+                IntensityMap.Emplace(DisapprovalTag, CombinedIntensity);
+            }
         }
         
-        if (CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Sadness")) &&
-            CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Disgust")))
+        if (CoreEmotionIntensities.Contains(SadnessTag) && CoreEmotionIntensities.Contains(DisgustTag) && 
+            FMath::Abs(CoreEmotionIntensities[SadnessTag]) > 0.0f && FMath::Abs(CoreEmotionIntensities[DisgustTag]) > 0.0f)
         {
-            EmotionTags.AddTag(FGameplayTag::RequestGameplayTag("Emotion.Combined.Remorse"));
+            float CombinedIntensity = CalculateCombinedIntensity(SadnessTag, DisgustTag);
+            if (CombinedIntensity > 0.0f)
+            {
+                FGameplayTag RemorseTag = FGameplayTag::RequestGameplayTag("Emotion.Combined.Remorse");
+                EmotionTags.AddTag(RemorseTag);
+                IntensityMap.Emplace(RemorseTag, CombinedIntensity);
+            }
         }
         
-        if (CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Disgust")) &&
-            CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Anger")))
+        if (CoreEmotionIntensities.Contains(DisgustTag) && CoreEmotionIntensities.Contains(AngerTag) && 
+            FMath::Abs(CoreEmotionIntensities[DisgustTag]) > 0.0f && FMath::Abs(CoreEmotionIntensities[AngerTag]) > 0.0f)
         {
-            EmotionTags.AddTag(FGameplayTag::RequestGameplayTag("Emotion.Combined.Contempt"));
+            float CombinedIntensity = CalculateCombinedIntensity(DisgustTag, AngerTag);
+            if (CombinedIntensity > 0.0f)
+            {
+                FGameplayTag ContemptTag = FGameplayTag::RequestGameplayTag("Emotion.Combined.Contempt");
+                EmotionTags.AddTag(ContemptTag);
+                IntensityMap.Emplace(ContemptTag, CombinedIntensity);
+            }
         }
         
-        if (CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Anger")) &&
-            CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Anticipation")))
+        if (CoreEmotionIntensities.Contains(AngerTag) && CoreEmotionIntensities.Contains(AnticipationTag) && 
+            FMath::Abs(CoreEmotionIntensities[AngerTag]) > 0.0f && FMath::Abs(CoreEmotionIntensities[AnticipationTag]) > 0.0f)
         {
-            EmotionTags.AddTag(FGameplayTag::RequestGameplayTag("Emotion.Combined.Aggressiveness"));
+            float CombinedIntensity = CalculateCombinedIntensity(AngerTag, AnticipationTag);
+            if (CombinedIntensity > 0.0f)
+            {
+                FGameplayTag AggressivenessTag = FGameplayTag::RequestGameplayTag("Emotion.Combined.Aggressiveness");
+                EmotionTags.AddTag(AggressivenessTag);
+                IntensityMap.Emplace(AggressivenessTag, CombinedIntensity);
+            }
         }
         
-        if (CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Anticipation")) &&
-            CoreEmotionTags.HasTag(FGameplayTag::RequestGameplayTag("Emotion.Core.Joy")))
+        if (CoreEmotionIntensities.Contains(AnticipationTag) && CoreEmotionIntensities.Contains(JoyTag) && 
+            FMath::Abs(CoreEmotionIntensities[AnticipationTag]) > 0.0f && FMath::Abs(CoreEmotionIntensities[JoyTag]) > 0.0f)
         {
-            EmotionTags.AddTag(FGameplayTag::RequestGameplayTag("Emotion.Combined.Optimism"));
+            float CombinedIntensity = CalculateCombinedIntensity(AnticipationTag, JoyTag);
+            if (CombinedIntensity > 0.0f)
+            {
+                FGameplayTag OptimismTag = FGameplayTag::RequestGameplayTag("Emotion.Combined.Optimism");
+                EmotionTags.AddTag(OptimismTag);
+                IntensityMap.Emplace(OptimismTag, CombinedIntensity);
+            }
         }
     }
 };
