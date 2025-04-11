@@ -4,7 +4,7 @@ An Unreal Engine plugin that provides a robust emotion system based on Plutchik'
 
 ## Overview
 
-The Emotion Engine plugin implements a complete emotion system based on the psychological model of Plutchik's Wheel of Emotions. This plugin provides a framework for creating emotionally nuanced AI characters, NPCs, or any gameplay elements that can benefit from emotional states.
+The Emotion Engine plugin implements a complete emotion system based on the psychological model of Plutchik's Wheel of Emotions. This plugin provides a framework for creating emotionally nuanced AI characters, NPCs, or any gameplay elements that can benefit from emotional states. The system includes components for managing individual entity emotions and a subsystem for tracking and querying emotional entities throughout the game world.
 
 ## Features
 
@@ -13,6 +13,10 @@ The Emotion Engine plugin implements a complete emotion system based on the psyc
 - Intensity variations for each emotion (high and low intensity states)
 - Combined emotions representing adjacent pairs on Plutchik's wheel
 - Emotion state management system
+- EmotionComponent for attaching emotions to any actor
+- EmotionSubsystem for tracking and querying emotional entities
+- Spatial queries for finding entities with specific emotions
+- Event-based notification system for emotion changes
 - Blueprint-friendly API
 - Easy integration with AI behavior trees and other systems
 
@@ -71,7 +75,77 @@ void MyFunction()
 }
 ```
 
-### Managing Emotion States
+### Using the EmotionComponent
+
+```cpp
+// Include the necessary headers
+#include "EmotionComponent.h"
+#include "EmotionTags.h"
+
+// In your actor class
+UEmotionComponent* EmotionComponent;
+
+// In your actor's constructor
+EmotionComponent = CreateDefaultSubobject<UEmotionComponent>(TEXT("EmotionComponent"));
+
+// Add emotions to your actor
+EmotionComponent->AddCoreEmotion(EmotionGameplayTags::Emotion_Joy, 0.7f);
+EmotionComponent->AddCoreEmotion(EmotionGameplayTags::Emotion_Fear, 0.3f);
+
+// Get the intensity of an emotion
+float joyIntensity = EmotionComponent->GetEmotionIntensity(EmotionGameplayTags::Emotion_Joy);
+
+// Change the intensity of an existing emotion
+EmotionComponent->SetEmotionIntensity(EmotionGameplayTags::Emotion_Joy, 0.9f);
+
+// Remove an emotion
+EmotionComponent->RemoveCoreEmotion(EmotionGameplayTags::Emotion_Fear);
+
+// Get the dominant emotion
+FGameplayTag dominantEmotion;
+float dominantIntensity;
+EmotionComponent->GetDominantEmotion(dominantEmotion, dominantIntensity);
+
+// Listen for emotion changes
+EmotionComponent->OnEmotionChanged.AddDynamic(this, &YourClass::OnEmotionChanged);
+
+// Emotion change callback
+void YourClass::OnEmotionChanged(const FGameplayTag& EmotionTag, float Intensity)
+{
+    // React to emotion changes
+}
+```
+
+### Using the EmotionSubsystem
+
+```cpp
+// Include the necessary headers
+#include "EmotionSubsystem.h"
+#include "EmotionTags.h"
+
+// Get the subsystem from the world
+UWorld* World = GetWorld();
+UEmotionSubsystem* EmotionSubsystem = World->GetSubsystem<UEmotionSubsystem>();
+
+// Find all actors with a specific emotion
+TArray<UEmotionComponent*> AngryActors = 
+    EmotionSubsystem->FindComponentsWithEmotionTag(EmotionGameplayTags::Emotion_Anger);
+
+// Find the closest actor with a specific emotion
+FVector MyLocation = GetActorLocation();
+UEmotionComponent* ClosestAngryActor = 
+    EmotionSubsystem->FindClosestComponentWithEmotionTag(EmotionGameplayTags::Emotion_Anger, MyLocation);
+
+// Find all actors with a specific emotion within a radius
+TArray<UEmotionComponent*> NearbyHappyActors = 
+    EmotionSubsystem->FindComponentsWithEmotionTagInRadius(EmotionGameplayTags::Emotion_Joy, MyLocation, 1000.0f);
+
+// Get actors sorted by emotion intensity (highest first)
+TArray<UEmotionComponent*> SortedByFear = 
+    EmotionSubsystem->GetComponentsSortedByEmotionIntensity(EmotionGameplayTags::Emotion_Fear);
+```
+
+### Managing Emotion States Directly
 
 ```cpp
 // Include the necessary header
@@ -96,12 +170,30 @@ myCharacterEmotionState.RemoveCoreEmotionTag(EmotionGameplayTags::Emotion_Fear);
 
 ## Blueprint Usage
 
-The plugin provides Blueprint-friendly functions to work with emotion states:
+The plugin provides Blueprint-friendly components and functions:
 
-1. Create an Emotion State variable in your character or AI controller
-2. Use the AddCoreEmotionTag, SetIntensity, and RemoveCoreEmotionTag functions to manage emotions
-3. Get emotion intensities with GetIntensity
-4. Use emotion tags to drive behavior in AI behavior trees or animation blueprints
+### Using EmotionComponent in Blueprints
+
+1. Add the EmotionComponent to any actor through the Components panel
+2. Use the AddCoreEmotion, SetEmotionIntensity, and RemoveCoreEmotion functions to manage emotions
+3. Get emotion intensities with GetEmotionIntensity
+4. Bind to the OnEmotionChanged event to react to emotion changes
+5. Use the GetDominantEmotion function to find the strongest emotion
+
+### Using EmotionSubsystem in Blueprints
+
+1. Get the EmotionSubsystem from the current world
+2. Use FindComponentsWithEmotionTag to find actors with specific emotions
+3. Use FindClosestComponentWithEmotionTag for proximity-based emotion queries
+4. Use FindComponentsWithEmotionTagInRadius for area-based emotion queries
+5. Use GetComponentsSortedByEmotionIntensity to sort actors by emotion strength
+
+### Emotion-Driven AI
+
+1. Use emotion tags and intensities to drive behavior in AI behavior trees
+2. Create emotion-based conditions for AI decision making
+3. Trigger animations based on emotional states
+4. Implement emotional contagion between NPCs using the subsystem
 
 ## License
 
