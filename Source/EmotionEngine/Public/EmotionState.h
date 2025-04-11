@@ -9,13 +9,11 @@ struct FEmotionState
 {
     GENERATED_BODY()
 
-    // The gameplay tag representing the emotion (e.g., Emotion.Joy)
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Emotion", meta=(Categories="Emotion.Core"))
-    FGameplayTag EmotionTag;
 
-    // Intensity in the range [0.0, 1.0]
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Emotion")
-    float Intensity;
+public:
+    // The gameplay tags representing all emotion in the state , include range and combined emotions
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="EmotionSystem")
+    FGameplayTagContainer EmotionTags;
 
     FEmotionState()
         : Intensity(0.f)
@@ -28,17 +26,63 @@ struct FEmotionState
     {
     }
 
-    // Getters and setters
-    UFUNCTION(BlueprintCallable, Category="Emotion")
-    FGameplayTag GetEmotionTag() const { return EmotionTag; }
+    // Get an emotion tag intensity
+    UFUNCTION(BlueprintCallable, Category="EmotionSystem", meta=(Categories="Emotion.Core"))
+    float GetIntensity(const FGameplayTag& InTag) const
+    {
+        return IntensityMap.Contains(InTag) ? IntensityMap[InTag] : 0.f;
+    }
 
-    UFUNCTION(BlueprintCallable, Category="Emotion")
-    void SetEmotionTag(const FGameplayTag& InTag) { EmotionTag = InTag; }
+    // add Core emotion tag start with "Emotion.Core" only , expose to Blueprint Callable
+    UFUNCTION(BlueprintCallable, Category="EmotionSystem", meta=(Categories="Emotion.Core"))
+    void AddCoreEmotionTag(const FGameplayTag& InTag, float InIntensity)
+    {
+        if (!InTag.MatchTags("Emotion.Core")) {
+            return;
+        }
+        CoreEmotionTags.AddTag(InTag);
+        IntensityMap.Add(InTag, InIntensity);
+        UpdateCombinedEmotionTag(InTag);
+    }
 
-    // Intensity management
-    UFUNCTION(BlueprintCallable, Category="Emotion")
-    float GetIntensity() const { return Intensity; }
+    // remove Core emotion tag start with "Emotion.Core" only , expose to Blueprint Callable
+    UFUNCTION(BlueprintCallable, Category="EmotionSystem", meta=(Categories="Emotion.Core"))
+    void RemoveCoreEmotionTag(const FGameplayTag& InTag)
+    {
+        if (!InTag.MatchTags("Emotion.Core")) {
+            return;
+        }
+        CoreEmotionTags.RemoveTag(InTag);
+        IntensityMap.Remove(InTag);
+        UpdateCombinedEmotionTag(InTag);
+    }
 
-    UFUNCTION(BlueprintCallable, Category="Emotion")
-    void SetIntensity(float InIntensity) { Intensity = FMath::Clamp(InIntensity, 0.f, 1.f); }
+    // Set intensity for a emotiontag
+    UFUNCTION(BlueprintCallable, Category="EmotionSystem", meta=(Categories="Emotion.Core"))
+    void SetIntensity(const FGameplayTag& InTag, float InIntensity)
+    {
+        if (!InTag.MatchTags("Emotion.Core") && CoreEmotionTags.HasTag(InTag)) {
+            return;
+        }
+        IntensityMap.Emplace(InTag, InIntensity);
+        UpdateRangeEmotionTag(InTag, InIntensity);
+    }
+
+private:
+    UPROPERTY()
+    FGameplayTagContainer CoreEmotionTags;
+
+    UPROPERTY()
+    TMap<FGameplayTag, float> IntensityMap;
+    
+    // add/remove range emotion tag to add to EmotionTags on a core emotion tags intensity change
+    void UpdateRangeEmotionTag(const FGameplayTag& InCoreEmotionTag, float InCoreEmotionIntensity)
+    {
+        return;
+    }
+
+    void UpdateCombinedEmotionTag(const FGameplayTag& InCoreEmotionTag)
+    {
+        return;
+    }
 };
