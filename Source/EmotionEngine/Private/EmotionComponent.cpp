@@ -6,6 +6,9 @@ UEmotionComponent::UEmotionComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame
 	PrimaryComponentTick.bCanEverTick = false;
+	
+	// Default values
+	EmotionalSusceptibility = 1.0f;
 }
 
 // Called when the game starts
@@ -139,4 +142,87 @@ void UEmotionComponent::BroadcastEmotionChanged(const FGameplayTag& EmotionTag, 
 			EmotionSubsystem->NotifyEmotionChanged(this, EmotionTag, Intensity);
 		}
 	}
+}
+
+void UEmotionComponent::BroadcastEmotionalInfluence(AActor* Influencer, const FGameplayTag& EmotionTag, float Intensity)
+{
+	// Broadcast the emotional influence event
+	OnEmotionalInfluence.Broadcast(Influencer, EmotionTag, Intensity);
+}
+
+bool UEmotionComponent::ReceiveEmotionalInfluence(AActor* Influencer, const FGameplayTag& EmotionTag, float Intensity, bool bAdditive)
+{
+	// Validate parameters
+	if (!Influencer || !EmotionTag.IsValid())
+	{
+		return false;
+	}
+	
+	// Check if this component can be influenced by the given actor
+	if (!CanReceiveInfluenceFrom(Influencer))
+	{
+		return false;
+	}
+	
+	// Check if this component is immune to the given emotion
+	if (ImmuneEmotions.HasTag(EmotionTag))
+	{
+		return false;
+	}
+	
+	// Apply susceptibility modifier
+	float ModifiedIntensity = Intensity * EmotionalSusceptibility;
+	
+	// Apply the emotion
+	if (bAdditive)
+	{
+		// Get current intensity and add to it
+		float CurrentIntensity = GetEmotionIntensity(EmotionTag);
+		SetEmotionIntensity(EmotionTag, CurrentIntensity + ModifiedIntensity);
+	}
+	else
+	{
+		// Set directly if not additive
+		SetEmotionIntensity(EmotionTag, ModifiedIntensity);
+	}
+	
+	// Broadcast that this component received an influence
+	BroadcastEmotionalInfluence(Influencer, EmotionTag, ModifiedIntensity);
+	
+	return true;
+}
+
+bool UEmotionComponent::CanReceiveInfluenceFrom(AActor* Influencer) const
+{
+	if (!Influencer)
+	{
+		return false;
+	}
+	
+	// Check if the influencer is in the blocked list
+	for (TSubclassOf<AActor> BlockedClass : BlockedInfluencers)
+	{
+		if (BlockedClass && Influencer->IsA(BlockedClass))
+		{
+			return false;
+		}
+	}
+	
+	// If allowed list is empty, all non-blocked actors are allowed
+	if (AllowedInfluencers.Num() == 0)
+	{
+		return true;
+	}
+	
+	// Check if the influencer is in the allowed list
+	for (TSubclassOf<AActor> AllowedClass : AllowedInfluencers)
+	{
+		if (AllowedClass && Influencer->IsA(AllowedClass))
+		{
+			return true;
+		}
+	}
+	
+	// Not in allowed list
+	return false;
 }

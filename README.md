@@ -15,8 +15,12 @@ The Emotion Engine plugin implements a complete emotion system based on the psyc
 - Emotion state management system
 - EmotionComponent for attaching emotions to any actor
 - EmotionSubsystem for tracking and querying emotional entities
+- EmotionInteractionInterface for objects to affect emotions of other actors
+- EmotionInfluencer base class for creating emotion-affecting objects
 - Spatial queries for finding entities with specific emotions
 - Event-based notification system for emotion changes
+- Support for emotional influence with distance-based falloff
+- Configurable emotional susceptibility and immunity
 - Blueprint-friendly API
 - Easy integration with AI behavior trees and other systems
 
@@ -145,6 +149,80 @@ TArray<UEmotionComponent*> SortedByFear =
     EmotionSubsystem->GetComponentsSortedByEmotionIntensity(EmotionGameplayTags::Emotion_Fear);
 ```
 
+### Using the Emotion Interaction Interface
+
+```cpp
+// Include the necessary headers
+#include "EmotionInteractionInterface.h"
+#include "EmotionComponent.h"
+
+// Implement the interface in your class
+class MYGAME_API AEmotionalObject : public AActor, public IEmotionInteractionInterface
+{
+    GENERATED_BODY()
+    
+    // Implement the interface methods
+    virtual bool ApplyEmotionToTarget_Implementation(AActor* TargetActor, 
+        const FGameplayTag& EmotionTag, float Intensity, bool bAdditive) override;
+    virtual int32 ApplyEmotionInRadius_Implementation(const FVector& Origin, float Radius, 
+        const FGameplayTag& EmotionTag, float Intensity, bool bAdditive, bool bRequiresLineOfSight) override;
+    virtual float GetEmotionalInfluenceStrength_Implementation() const override;
+    virtual FGameplayTagContainer GetAvailableEmotions_Implementation() const override;
+};
+
+// Example implementation
+bool AEmotionalObject::ApplyEmotionToTarget_Implementation(AActor* TargetActor, 
+    const FGameplayTag& EmotionTag, float Intensity, bool bAdditive)
+{
+    // Find the emotion component on the target
+    UEmotionComponent* EmotionComp = TargetActor->FindComponentByClass<UEmotionComponent>();
+    if (EmotionComp)
+    {
+        // Apply the emotion influence
+        return EmotionComp->ReceiveEmotionalInfluence(this, EmotionTag, Intensity, bAdditive);
+    }
+    return false;
+}
+```
+
+### Using the EmotionInfluencer Base Class
+
+```cpp
+// Include the necessary header
+#include "EmotionInfluencer.h"
+
+// Create a derived class
+class MYGAME_API AMyEmotionalObject : public AEmotionInfluencer
+{
+    GENERATED_BODY()
+    
+    AMyEmotionalObject()
+    {
+        // Set up available emotions
+        AvailableEmotions.AddTag(EmotionGameplayTags::Emotion_Joy);
+        AvailableEmotions.AddTag(EmotionGameplayTags::Emotion_Fear);
+        
+        // Set influence strength
+        EmotionalInfluenceStrength = 1.5f;
+    }
+    
+    // Trigger an emotional effect
+    void TriggerEmotionalEffect()
+    {
+        // Apply to a specific target
+        AActor* Target = GetSomeTargetActor();
+        ApplyEmotionToTarget(Target, EmotionGameplayTags::Emotion_Joy, 0.8f, true);
+        
+        // Apply to all actors in radius
+        ApplyEmotionInRadius(GetActorLocation(), 500.0f, 
+            EmotionGameplayTags::Emotion_Fear, 0.6f, true, true);
+            
+        // Apply with distance-based falloff
+        ApplyEmotionWithFalloff(Target, EmotionGameplayTags::Emotion_Joy, 1.0f, 1000.0f);
+    }
+};
+```
+
 ### Managing Emotion States Directly
 
 ```cpp
@@ -179,6 +257,8 @@ The plugin provides Blueprint-friendly components and functions:
 3. Get emotion intensities with GetEmotionIntensity
 4. Bind to the OnEmotionChanged event to react to emotion changes
 5. Use the GetDominantEmotion function to find the strongest emotion
+6. Configure EmotionalSusceptibility to control how strongly the actor is affected by influences
+7. Set up ImmuneEmotions to make the actor immune to specific emotion types
 
 ### Using EmotionSubsystem in Blueprints
 
@@ -187,6 +267,15 @@ The plugin provides Blueprint-friendly components and functions:
 3. Use FindClosestComponentWithEmotionTag for proximity-based emotion queries
 4. Use FindComponentsWithEmotionTagInRadius for area-based emotion queries
 5. Use GetComponentsSortedByEmotionIntensity to sort actors by emotion strength
+
+### Creating Emotion Influencers in Blueprints
+
+1. Create a new Blueprint based on the EmotionInfluencer class
+2. Configure the AvailableEmotions and EmotionalInfluenceStrength properties
+3. Call ApplyEmotionToTarget to affect a specific actor's emotions
+4. Call ApplyEmotionInRadius to affect all actors within a radius
+5. Use ApplyEmotionWithFalloff for distance-based emotional effects
+6. Implement custom logic to trigger emotional effects based on game events
 
 ### Emotion-Driven AI
 

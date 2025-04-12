@@ -7,6 +7,7 @@
 #include "EmotionComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnEmotionChanged, const FGameplayTag&, EmotionTag, float, Intensity);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnEmotionalInfluence, AActor*, Influencer, const FGameplayTag&, EmotionTag, float, Intensity);
 
 /**
  * Component that manages an actor's emotional state using the EmotionEngine system
@@ -62,6 +63,22 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "EmotionSystem")
 	FOnEmotionChanged OnEmotionChanged;
 
+	// Event triggered when an external actor influences this component's emotions
+	UPROPERTY(BlueprintAssignable, Category = "EmotionSystem")
+	FOnEmotionalInfluence OnEmotionalInfluence;
+
+	// Receive an emotional influence from another actor
+	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+	bool ReceiveEmotionalInfluence(AActor* Influencer, const FGameplayTag& EmotionTag, float Intensity, bool bAdditive = true);
+
+	// Check if this component can be influenced by the given actor
+	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+	bool CanReceiveInfluenceFrom(AActor* Influencer) const;
+
+	// Get the emotional susceptibility to influences (multiplier for incoming influences)
+	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+	float GetEmotionalSusceptibility() const { return EmotionalSusceptibility; }
+
 	// Get the owner's display name for debugging
 	FString GetOwnerName() const;
 
@@ -70,6 +87,25 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
 	FEmotionState EmotionState;
 
+	// How susceptible this actor is to emotional influences (multiplier for incoming influences)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (ClampMin = "0.0", UIMin = "0.0"))
+	float EmotionalSusceptibility;
+
+	// Tags for emotions this actor is immune to (will not be affected by these)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
+	FGameplayTagContainer ImmuneEmotions;
+
+	// Actors that are allowed to influence this component's emotions (empty = all allowed)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
+	TArray<TSubclassOf<AActor>> AllowedInfluencers;
+
+	// Actors that are blocked from influencing this component's emotions
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
+	TArray<TSubclassOf<AActor>> BlockedInfluencers;
+
 	// Notify listeners that an emotion has changed
 	void BroadcastEmotionChanged(const FGameplayTag& EmotionTag, float Intensity);
+
+	// Notify listeners that an emotional influence was received
+	void BroadcastEmotionalInfluence(AActor* Influencer, const FGameplayTag& EmotionTag, float Intensity);
 };
