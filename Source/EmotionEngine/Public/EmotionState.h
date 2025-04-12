@@ -8,12 +8,27 @@ USTRUCT(BlueprintType)
 struct FEmotion
 {
     GENERATED_BODY()
-
+public:
+    // The gameplay tag that identifies this emotion
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
     FGameplayTag Tag;
 
-    UPROPERTY()
+    // Current intensity of this emotion (typically 0.0 to 1.0)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
     float Intensity;
+
+    // The opposite emotion tag (e.g., Joy vs Sadness)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
+    FGameplayTag OppositeEmotionTag;
+
+    // Adjacent emotions on Plutchik's wheel
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
+    FGameplayTagContainer AdjacentEmotionTags;
+
+    // Map of result of this emotion combined with another emotion
+    // Key: Another emotion tag, Value: The resulting combined emotion tag
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
+    TMap<FGameplayTag, FGameplayTag> CombinedEmotionTag;
 };
 
 UCLASS(BlueprintType)

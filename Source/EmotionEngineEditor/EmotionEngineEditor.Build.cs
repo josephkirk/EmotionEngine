@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class EmotionEngine : ModuleRules
+public class EmotionEngineEditor : ModuleRules
 {
-	public EmotionEngine(ReadOnlyTargetRules Target) : base(Target)
+	public EmotionEngineEditor(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
@@ -27,7 +27,8 @@ public class EmotionEngine : ModuleRules
 			{
 				"Core",
 				"GameplayTags",
-                "Engine"
+                "Engine",
+				"UnrealEd"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -40,6 +41,7 @@ public class EmotionEngine : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"EmotionEngine"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

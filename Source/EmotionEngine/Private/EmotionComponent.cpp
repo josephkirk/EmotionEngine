@@ -1,12 +1,15 @@
 #include "EmotionComponent.h"
 #include "EmotionSubsystem.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(EmotionComponent)
+
 // Sets default values for this component's properties
-UEmotionComponent::UEmotionComponent()
+UEmotionComponent::UEmotionComponent(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame
 	PrimaryComponentTick.bCanEverTick = false;
-	EmotionState = NewObject<UEmotionState>(this);
+	EmotionState = CreateDefaultSubobject<UEmotionState>(TEXT("EmotionState"));
 	// Default values
 	EmotionalSusceptibility = 1.0f;
 }

@@ -19,7 +19,7 @@ class EMOTIONENGINE_API UEmotionComponent : public UActorComponent
 
 public:	
 	// Sets default values for this component's properties
-	UEmotionComponent();
+	UEmotionComponent(const FObjectInitializer& ObjectInitializer);
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -80,8 +80,8 @@ public:
 
 protected:
 	// The current emotion state of the actor
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
-	TObjectPtr<UEmotionState> EmotionState;
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
+	UEmotionState* EmotionState;*/
 
 	// How susceptible this actor is to emotional influences (multiplier for incoming influences)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (ClampMin = "0.0", UIMin = "0.0"))
@@ -104,4 +104,8 @@ protected:
 
 	// Notify listeners that an emotional influence was received
 	void BroadcastEmotionalInfluence(AActor* Influencer, const FGameplayTag& EmotionTag, float Intensity);
+
+private:
+	UPROPERTY()
+	TObjectPtr<UEmotionState> EmotionState;
 };

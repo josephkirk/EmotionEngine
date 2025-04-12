@@ -3,6 +3,8 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(EmotionSubsystem)
+
 void UEmotionSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
