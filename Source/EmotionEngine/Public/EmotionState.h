@@ -4,6 +4,23 @@
 #include "GameplayTagContainer.h"
 #include "EmotionState.generated.h"
 
+//TODO: Maybe this should be more generic
+USTRUCT(BlueprintType)
+struct EMOTIONENGINE_API FAdjacentEmotionRelationship
+{
+    GENERATED_BODY()
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
+    FGameplayTag AdjacentEmotion;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
+    float Threshold;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
+    FGameplayTag ResultEmotion;
+};
+
+//TODO: Need to rework Component Implementation
 USTRUCT(BlueprintType)
 struct EMOTIONENGINE_API FEmotion
 {
@@ -17,7 +34,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
     float Intensity;
 
-    // The opposite emotion tag (e.g., Joy vs Sadness)
+    // The opposite emotion tag (e.g., Joy vs Sadness), intensity add to current emotion will deduct the opposite emotion and viceversa
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
     FGameplayTag OppositeEmotionTag;
 
@@ -26,9 +43,19 @@ public:
     FGameplayTagContainer AdjacentEmotionTags;
 
     // Map of result of this emotion combined with another emotion
-    // Key: Another emotion tag, Value: The resulting combined emotion tag
+    // Key: A Core emotion tag, Value: The resulting combined emotion tag
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
     TMap<FGameplayTag, FGameplayTag> CombinedEmotionTag;
+
+    // Map of result of intensity elevate this emotion to another emotion
+    // Key: value from 0 to 1, Value: The resulting Range emotion tag
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion.Range"))
+    TMap<uint8, FGameplayTag> RangeEmotionTags;
+
+    // Map of result of intensity change this emotion to more nuance emotion base on how it lean toward adjacent emotions
+    // Key: value from 0 to 1, Value: The resulting variation emotion tag
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion.Variation"))
+    TArray<FAdjacentEmotionRelationship> VariationEmotions;
 };
 
 UCLASS(BlueprintType)
