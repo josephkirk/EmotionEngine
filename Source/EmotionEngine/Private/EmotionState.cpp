@@ -1,7 +1,7 @@
 #include "EmotionState.h"
 
 
-float FEmotionState::GetIntensity(const FGameplayTag& InTag) const
+float UEmotionState::GetIntensity(const FGameplayTag& InTag) const
 {
     // If it's a core emotion tag, return from CoreEmotionIntensities
     if (InTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core")) && CoreEmotionIntensities.Contains(InTag))
@@ -13,7 +13,7 @@ float FEmotionState::GetIntensity(const FGameplayTag& InTag) const
     return IntensityMap.Contains(InTag) ? IntensityMap[InTag] : 0.f;
 }
 
-void FEmotionState::AddCoreEmotionTag(const FGameplayTag& InTag, float InIntensity)
+void UEmotionState::AddCoreEmotionTag(const FGameplayTag& InTag, float InIntensity)
 {
     if (!InTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core"))) {
         return;
@@ -31,7 +31,7 @@ void FEmotionState::AddCoreEmotionTag(const FGameplayTag& InTag, float InIntensi
     UpdateCombinedEmotionTag(InTag);
 }
 
-void FEmotionState::RemoveCoreEmotionTag(const FGameplayTag& InTag)
+void UEmotionState::RemoveCoreEmotionTag(const FGameplayTag& InTag)
 {
     if (!InTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core"))) {
         return;
@@ -44,7 +44,7 @@ void FEmotionState::RemoveCoreEmotionTag(const FGameplayTag& InTag)
     UpdateCombinedEmotionTag(InTag);
 }
 
-void FEmotionState::SetIntensity(const FGameplayTag& InTag, float InIntensity)
+void UEmotionState::SetIntensity(const FGameplayTag& InTag, float InIntensity)
 {
     // Only allow setting intensity for tags that exist in CoreEmotionTags
     if (!InTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core")) || !CoreEmotionTags.HasTag(InTag)) {
@@ -60,7 +60,7 @@ void FEmotionState::SetIntensity(const FGameplayTag& InTag, float InIntensity)
     UpdateCombinedEmotionTag(InTag);
 }
 
-void FEmotionState::UpdateRangeEmotionTag(const FGameplayTag& InCoreEmotionTag, float InCoreEmotionIntensity)
+void UEmotionState::UpdateRangeEmotionTag(const FGameplayTag& InCoreEmotionTag, float InCoreEmotionIntensity)
 {
     // Check if the tag is a core emotion tag
     if (!InCoreEmotionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core")))
@@ -164,7 +164,7 @@ void FEmotionState::UpdateRangeEmotionTag(const FGameplayTag& InCoreEmotionTag, 
     // Core emotion tag itself is not added to EmotionTags, only stored in CoreEmotionTags
 }
 
-void FEmotionState::UpdateCombinedEmotionTag(const FGameplayTag& InCoreEmotionTag)
+void UEmotionState::UpdateCombinedEmotionTag(const FGameplayTag& InCoreEmotionTag)
 {
     // Combined emotions according to Plutchik's wheel:
     // Love = Joy + Trust

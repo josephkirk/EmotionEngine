@@ -6,7 +6,7 @@ UEmotionComponent::UEmotionComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame
 	PrimaryComponentTick.bCanEverTick = false;
-	
+	EmotionState = NewObject<UEmotionState>(this);
 	// Default values
 	EmotionalSusceptibility = 1.0f;
 }
@@ -43,10 +43,10 @@ void UEmotionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void UEmotionComponent::AddCoreEmotion(const FGameplayTag& EmotionTag, float Intensity)
 {
 	// Store previous intensity for change detection
-	float PreviousIntensity = EmotionState.GetIntensity(EmotionTag);
+	float PreviousIntensity = EmotionState->GetIntensity(EmotionTag);
 	
 	// Add the emotion to the state
-	EmotionState.AddCoreEmotionTag(EmotionTag, Intensity);
+	EmotionState->AddCoreEmotionTag(EmotionTag, Intensity);
 	
 	// Notify listeners if intensity changed
 	if (!FMath::IsNearlyEqual(PreviousIntensity, Intensity))
@@ -58,13 +58,13 @@ void UEmotionComponent::AddCoreEmotion(const FGameplayTag& EmotionTag, float Int
 void UEmotionComponent::RemoveCoreEmotion(const FGameplayTag& EmotionTag)
 {
 	// Store previous intensity for change detection
-	float PreviousIntensity = EmotionState.GetIntensity(EmotionTag);
+	float PreviousIntensity = EmotionState->GetIntensity(EmotionTag);
 	
 	// Only broadcast if the emotion actually existed
 	bool bShouldBroadcast = (PreviousIntensity != 0.0f);
 	
 	// Remove the emotion from the state
-	EmotionState.RemoveCoreEmotionTag(EmotionTag);
+	EmotionState->RemoveCoreEmotionTag(EmotionTag);
 	
 	// Notify listeners if the emotion was removed
 	if (bShouldBroadcast)
@@ -76,10 +76,10 @@ void UEmotionComponent::RemoveCoreEmotion(const FGameplayTag& EmotionTag)
 void UEmotionComponent::SetEmotionIntensity(const FGameplayTag& EmotionTag, float Intensity)
 {
 	// Store previous intensity for change detection
-	float PreviousIntensity = EmotionState.GetIntensity(EmotionTag);
+	float PreviousIntensity = EmotionState->GetIntensity(EmotionTag);
 	
 	// Set the intensity in the emotion state
-	EmotionState.SetIntensity(EmotionTag, Intensity);
+	EmotionState->SetIntensity(EmotionTag, Intensity);
 	
 	// Notify listeners if intensity changed
 	if (!FMath::IsNearlyEqual(PreviousIntensity, Intensity))
@@ -90,17 +90,17 @@ void UEmotionComponent::SetEmotionIntensity(const FGameplayTag& EmotionTag, floa
 
 float UEmotionComponent::GetEmotionIntensity(const FGameplayTag& EmotionTag) const
 {
-	return EmotionState.GetIntensity(EmotionTag);
+	return EmotionState->GetIntensity(EmotionTag);
 }
 
 bool UEmotionComponent::HasEmotionTag(const FGameplayTag& EmotionTag) const
 {
-	return EmotionState.EmotionTags.HasTag(EmotionTag);
+	return EmotionState->EmotionTags.HasTag(EmotionTag);
 }
 
 FGameplayTagContainer UEmotionComponent::GetAllEmotionTags() const
 {
-	return EmotionState.EmotionTags;
+	return EmotionState->EmotionTags;
 }
 
 void UEmotionComponent::GetDominantEmotion(FGameplayTag& OutEmotionTag, float& OutIntensity) const
@@ -109,9 +109,9 @@ void UEmotionComponent::GetDominantEmotion(FGameplayTag& OutEmotionTag, float& O
 	OutIntensity = 0.0f;
 	
 	// Iterate through all emotion tags to find the one with highest intensity
-	for (const FGameplayTag& Tag : EmotionState.EmotionTags)
+	for (const FGameplayTag& Tag : EmotionState->EmotionTags)
 	{
-		float TagIntensity = EmotionState.GetIntensity(Tag);
+		float TagIntensity = EmotionState->GetIntensity(Tag);
 		if (TagIntensity > OutIntensity)
 		{
 			OutEmotionTag = Tag;

@@ -27,10 +27,6 @@ public:
 	// Called when the component is destroyed
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	// Get the current emotion state
-	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
-	const FEmotionState& GetEmotionState() const { return EmotionState; }
-
 	// Add a core emotion tag with intensity
 	UFUNCTION(BlueprintCallable, Category = "EmotionSystem", meta = (Categories = "Emotion.Core"))
 	void AddCoreEmotion(const FGameplayTag& EmotionTag, float Intensity);
@@ -85,7 +81,7 @@ public:
 protected:
 	// The current emotion state of the actor
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
-	FEmotionState EmotionState;
+	TObjectPtr<UEmotionState> EmotionState;
 
 	// How susceptible this actor is to emotional influences (multiplier for incoming influences)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (ClampMin = "0.0", UIMin = "0.0"))
