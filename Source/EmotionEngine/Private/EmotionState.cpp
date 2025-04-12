@@ -4,7 +4,7 @@
 float FEmotionState::GetIntensity(const FGameplayTag& InTag) const
 {
     // If it's a core emotion tag, return from CoreEmotionIntensities
-    if (InTag.MatchTags("Emotion.Core") && CoreEmotionIntensities.Contains(InTag))
+    if (InTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core")) && CoreEmotionIntensities.Contains(InTag))
     {
         return CoreEmotionIntensities[InTag];
     }
@@ -15,7 +15,7 @@ float FEmotionState::GetIntensity(const FGameplayTag& InTag) const
 
 void FEmotionState::AddCoreEmotionTag(const FGameplayTag& InTag, float InIntensity)
 {
-    if (!InTag.MatchTags("Emotion.Core")) {
+    if (!InTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core"))) {
         return;
     }
     // Clamp intensity between -1 and 1
@@ -33,7 +33,7 @@ void FEmotionState::AddCoreEmotionTag(const FGameplayTag& InTag, float InIntensi
 
 void FEmotionState::RemoveCoreEmotionTag(const FGameplayTag& InTag)
 {
-    if (!InTag.MatchTags("Emotion.Core")) {
+    if (!InTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core"))) {
         return;
     }
     CoreEmotionTags.RemoveTag(InTag);
@@ -47,7 +47,7 @@ void FEmotionState::RemoveCoreEmotionTag(const FGameplayTag& InTag)
 void FEmotionState::SetIntensity(const FGameplayTag& InTag, float InIntensity)
 {
     // Only allow setting intensity for tags that exist in CoreEmotionTags
-    if (!InTag.MatchTags("Emotion.Core") || !CoreEmotionTags.HasTag(InTag)) {
+    if (!InTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core")) || !CoreEmotionTags.HasTag(InTag)) {
         return;
     }
     // Clamp intensity between -1 and 1 for core emotions

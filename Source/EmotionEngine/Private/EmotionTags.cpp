@@ -85,7 +85,7 @@ namespace EmotionGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Perplexed, "Emotion.Surprise.Perplexed");
 
 	// Surprise variations (Tertiary)
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Awe, "Emotion.Surprise.Amazed.Awe");
+	//UE_DEFINE_GAMEPLAY_TAG(Emotion_Awe, "Emotion.Surprise.Amazed.Awe");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Excited, "Emotion.Surprise.Amazed.Excited");
 
 	// Fear variations (Secondary)
@@ -127,14 +127,14 @@ namespace EmotionGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Threatened, "Emotion.Anger.Provoked.Threatened");
 
 	// Disgust variations (Secondary)
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Disapproval, "Emotion.Disgust.Disapproval");
+	//UE_DEFINE_GAMEPLAY_TAG(Emotion_Disapproval, "Emotion.Disgust.Disapproval");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Disappointed, "Emotion.Disgust.Disappointed");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Awful, "Emotion.Disgust.Awful");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Avoidance, "Emotion.Disgust.Avoidance");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Hesitant, "Emotion.Disgust.Hesitant");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Judgmental, "Emotion.Disgust.Judgmental");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Revolted, "Emotion.Disgust.Revolted");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Loathing, "Emotion.Disgust.Loathing");
+	//UE_DEFINE_GAMEPLAY_TAG(Emotion_Loathing, "Emotion.Disgust.Loathing");
 
 	// Disgust variations (Tertiary)
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Skeptical, "Emotion.Disgust.Judgmental.Skeptical");

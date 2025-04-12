@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NativeGameplayTags.h"
 #include "GameplayTagContainer.h"
 
 /**
@@ -89,7 +90,7 @@ namespace EmotionGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Perplexed);    // Surprise variation
 
 	// Surprise variations (Tertiary)
-	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Awe);          // Surprise.Amazed variation
+	//UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Awe);          // Surprise.Amazed variation
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Excited);      // Surprise.Amazed variation
 
 	// Fear variations (Secondary)
@@ -131,14 +132,14 @@ namespace EmotionGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Threatened);   // Anger.Provoked variation
 
 	// Disgust variations (Secondary)
-	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Disapproval);  // Disgust variation
+	//UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Disapproval);  // Disgust variation
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Disappointed); // Disgust variation
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Awful);        // Disgust variation
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Avoidance);    // Disgust variation
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Hesitant);     // Disgust variation
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Judgmental);   // Disgust variation
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Revolted);     // Disgust variation
-	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Loathing);     // Disgust variation
+	//UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Loathing);     // Disgust variation
 
 	// Disgust variations (Tertiary)
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Skeptical);    // Disgust.Judgmental variation

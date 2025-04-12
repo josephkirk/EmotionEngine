@@ -15,32 +15,17 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="EmotionSystem")
     FGameplayTagContainer EmotionTags;
 
-    FEmotionState()
-        : Intensity(0.f)
-    {
-    }
-
-    FEmotionState(const FGameplayTag& InTag, float InIntensity)
-        : EmotionTag(InTag)
-        , Intensity(InIntensity)
-    {
-    }
-
     // Get an emotion tag intensity
-    UFUNCTION(BlueprintCallable, Category="EmotionSystem", meta=(Categories="Emotion.Core"))
     float GetIntensity(const FGameplayTag& InTag) const;
 
     // add Core emotion tag start with "Emotion.Core" only, expose to Blueprint Callable
     // Intensity range is -1.0 to 1.0, with negative values representing opposite emotions
-    UFUNCTION(BlueprintCallable, Category="EmotionSystem", meta=(Categories="Emotion.Core"))
     void AddCoreEmotionTag(const FGameplayTag& InTag, float InIntensity);
 
     // remove Core emotion tag start with "Emotion.Core" only , expose to Blueprint Callable
-    UFUNCTION(BlueprintCallable, Category="EmotionSystem", meta=(Categories="Emotion.Core"))
     void RemoveCoreEmotionTag(const FGameplayTag& InTag);
 
     // Set intensity for a emotiontag. For core emotions, intensity range is -1.0 to 1.0
-    UFUNCTION(BlueprintCallable, Category="EmotionSystem", meta=(Categories="Emotion.Core"))
     void SetIntensity(const FGameplayTag& InTag, float InIntensity);
 
 private:
