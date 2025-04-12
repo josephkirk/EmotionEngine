@@ -28,7 +28,10 @@ public class EmotionEngineEditor : ModuleRules
 				"Core",
 				"GameplayTags",
                 "Engine",
-				"UnrealEd"
+				"UnrealEd",
+                "AssetTools",
+				"EngineAssetDefinitions",
+                "EmotionEngine"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -37,11 +40,11 @@ public class EmotionEngineEditor : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"CoreUObject",
+                "AssetDefinition",
+                "CoreUObject",
 				"Engine",
 				"Slate",
-				"SlateCore",
-				"EmotionEngine"
+				"SlateCore"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

@@ -1,4 +1,5 @@
 #include "EmotionDataFactory.h"
+#include "EmotionEngineEditor.h"
 
 // Emotion Data Factory
 UEmotionData_Factory::UEmotionData_Factory(const class FObjectInitializer& OBJ) : Super(OBJ)
@@ -10,7 +11,7 @@ UEmotionData_Factory::UEmotionData_Factory(const class FObjectInitializer& OBJ) 
 
 UObject* UEmotionData_Factory::FactoryCreateNew(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn)
 {
-    UEmotionData* NewEmotionData = NewObject<UEmotionData>(InParent, InClass, InName, Flags);
+    UEmotionData* NewEmotionData = NewObject<UEmotionData>(InParent, UEmotionData::StaticClass(), InName, Flags | RF_Transactional, Context);
     return NewEmotionData;
 }
 
@@ -34,7 +35,7 @@ UEmotionLibrary_Factory::UEmotionLibrary_Factory(const class FObjectInitializer&
 
 UObject* UEmotionLibrary_Factory::FactoryCreateNew(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn)
 {
-    UEmotionLibrary* NewEmotionLibrary = NewObject<UEmotionLibrary>(InParent, InClass, InName, Flags);
+    UEmotionLibrary* NewEmotionLibrary = NewObject<UEmotionLibrary>(InParent, UEmotionLibrary::StaticClass(), InName, Flags | RF_Transactional, Context);
     return NewEmotionLibrary;
 }
 

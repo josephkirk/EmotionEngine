@@ -5,7 +5,7 @@
 #include "EmotionState.generated.h"
 
 USTRUCT(BlueprintType)
-struct FEmotion
+struct EMOTIONENGINE_API FEmotion
 {
     GENERATED_BODY()
 public:

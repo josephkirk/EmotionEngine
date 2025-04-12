@@ -41,3 +41,4 @@ public:
     virtual bool ShouldShowInNewMenu() const override;
     virtual uint32 GetMenuCategories() const override;
 };
+

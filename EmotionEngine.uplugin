@@ -18,7 +18,7 @@
 		{
 			"Name": "EmotionEngine",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "PreDefault"
 		},
 		{
 			"Name": "EmotionEngineEditor",
@@ -28,7 +28,7 @@
 	],
 	"Plugins": [
 		{
-			"Name": "Chooser",
+			"Name": "EngineAssetDefinitions",
 			"Enabled": true
 		}
 	]
