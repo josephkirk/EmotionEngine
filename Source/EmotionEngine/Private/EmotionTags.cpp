@@ -74,89 +74,99 @@ namespace EmotionGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Ecstatic, "Emotion.Joy.Joyful.Ecstatic");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Liberated, "Emotion.Joy.Joyful.Liberated");
 
-	// Surprise variations
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Awe, "Emotion.Surprise.Awe");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Astonished, "Emotion.Surprise.Astonished");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Perplexed, "Emotion.Surprise.Perplexed");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Disillusioned, "Emotion.Surprise.Disillusioned");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Dismayed, "Emotion.Surprise.Dismayed");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Shocked, "Emotion.Surprise.Shocked");
+	// Surprise variations (Secondary)
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Startled, "Emotion.Surprise.Startled");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Confused, "Emotion.Surprise.Confused");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Amazed, "Emotion.Surprise.Amazed");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Excited, "Emotion.Surprise.Excited");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Startled, "Emotion.Surprise.Startled");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Astonished, "Emotion.Surprise.Astonished");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Shocked, "Emotion.Surprise.Shocked");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Dismayed, "Emotion.Surprise.Dismayed");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Disillusioned, "Emotion.Surprise.Disillusioned");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Perplexed, "Emotion.Surprise.Perplexed");
 
-	// Fear variations
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Terrified, "Emotion.Fear.Terrified");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Frightened, "Emotion.Fear.Frightened");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Overwhelmed, "Emotion.Fear.Overwhelmed");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Worried, "Emotion.Fear.Worried");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Inadequate, "Emotion.Fear.Inadequate");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Inferior, "Emotion.Fear.Inferior");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Worthless, "Emotion.Fear.Worthless");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Insignificant, "Emotion.Fear.Insignificant");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Alienated, "Emotion.Fear.Alienated");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Rejected, "Emotion.Fear.Rejected");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Submissive, "Emotion.Fear.Submissive");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Insecure, "Emotion.Fear.Insecure");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Anxious, "Emotion.Fear.Anxious");
+	// Surprise variations (Tertiary)
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Awe, "Emotion.Surprise.Amazed.Awe");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Excited, "Emotion.Surprise.Amazed.Excited");
+
+	// Fear variations (Secondary)
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Scared, "Emotion.Fear.Scared");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Humiliated, "Emotion.Fear.Humiliated");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Wounded, "Emotion.Fear.Wounded");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Embarrassed, "Emotion.Fear.Embarrassed");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Ridiculed, "Emotion.Fear.Ridiculed");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Disrespected, "Emotion.Fear.Disrespected");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Anxious, "Emotion.Fear.Anxious");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Insecure, "Emotion.Fear.Insecure");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Submissive, "Emotion.Fear.Submissive");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Rejected, "Emotion.Fear.Rejected");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Inadequate, "Emotion.Fear.Inadequate");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Worried, "Emotion.Fear.Worried");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Frightened, "Emotion.Fear.Frightened");
 
-	// Anger variations
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Enraged, "Emotion.Anger.Enraged");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Provoked, "Emotion.Anger.Provoked");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Hostile, "Emotion.Anger.Hostile");
+	// Fear variations (Tertiary)
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Terrified, "Emotion.Fear.Frightened.Terrified");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Overwhelmed, "Emotion.Fear.Worried.Overwhelmed");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Inferior, "Emotion.Fear.Inadequate.Inferior");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Worthless, "Emotion.Fear.Inadequate.Worthless");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Insignificant, "Emotion.Fear.Inadequate.Insignificant");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Alienated, "Emotion.Fear.Rejected.Alienated");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Humiliated, "Emotion.Fear.Rejected.Humiliated");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Wounded, "Emotion.Fear.Rejected.Wounded");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Embarrassed, "Emotion.Fear.Insecure.Embarrassed");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Ridiculed, "Emotion.Fear.Insecure.Ridiculed");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Disrespected, "Emotion.Fear.Insecure.Disrespected");
+
+	// Anger variations (Secondary)
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Mad, "Emotion.Anger.Mad");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Irritated, "Emotion.Anger.Irritated");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Frustrated, "Emotion.Anger.Frustrated");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Aggressive, "Emotion.Anger.Aggressive");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Mad, "Emotion.Anger.Mad");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Hateful, "Emotion.Anger.Hateful");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Threatened, "Emotion.Anger.Threatened");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Distant, "Emotion.Anger.Distant");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Critical, "Emotion.Anger.Critical");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Hostile, "Emotion.Anger.Hostile");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Aggressive, "Emotion.Anger.Aggressive");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Provoked, "Emotion.Anger.Provoked");
 
-	// Disgust variations
+	// Anger variations (Tertiary)
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Enraged, "Emotion.Anger.Mad.Enraged");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Hateful, "Emotion.Anger.Hostile.Hateful");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Threatened, "Emotion.Anger.Provoked.Threatened");
+
+	// Disgust variations (Secondary)
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Disapproval, "Emotion.Disgust.Disapproval");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Disappointed, "Emotion.Disgust.Disappointed");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Awful, "Emotion.Disgust.Awful");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Avoidance, "Emotion.Disgust.Avoidance");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Aversion, "Emotion.Disgust.Aversion");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Hesitant, "Emotion.Disgust.Hesitant");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Revolted, "Emotion.Disgust.Revolted");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Repugnant, "Emotion.Disgust.Repugnant");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Loathing, "Emotion.Disgust.Loathing");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Judgmental, "Emotion.Disgust.Judgmental");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Skeptical, "Emotion.Disgust.Skeptical");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Suspicious, "Emotion.Disgust.Suspicious");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Withdrawn, "Emotion.Disgust.Withdrawn");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Repelled, "Emotion.Disgust.Repelled");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Detestable, "Emotion.Disgust.Detestable");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Revulsion, "Emotion.Disgust.Revulsion");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Revolted, "Emotion.Disgust.Revolted");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Loathing, "Emotion.Disgust.Loathing");
 
-	// Sad variations
+	// Disgust variations (Tertiary)
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Skeptical, "Emotion.Disgust.Judgmental.Skeptical");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Suspicious, "Emotion.Disgust.Judgmental.Suspicious");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Withdrawn, "Emotion.Disgust.Avoidance.Withdrawn");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Aversion, "Emotion.Disgust.Avoidance.Aversion");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Repelled, "Emotion.Disgust.Revolted.Repelled");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Repugnant, "Emotion.Disgust.Revolted.Repugnant");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Detestable, "Emotion.Disgust.Loathing.Detestable");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Revulsion, "Emotion.Disgust.Loathing.Revulsion");
+
+	// Sad variations (Secondary)
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Lonely, "Emotion.Sad.Lonely");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Vulnerable, "Emotion.Sad.Vulnerable");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Despair, "Emotion.Sad.Despair");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Guilty, "Emotion.Sad.Guilty");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Depressed, "Emotion.Sad.Depressed");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Hurt, "Emotion.Sad.Hurt");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Guilty, "Emotion.Sad.Guilty");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Despair, "Emotion.Sad.Despair");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Bored, "Emotion.Sad.Bored");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Apathetic, "Emotion.Sad.Apathetic");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Indifferent, "Emotion.Sad.Indifferent");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Diminished, "Emotion.Sad.Diminished");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Empty, "Emotion.Sad.Empty");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Abandoned, "Emotion.Sad.Abandoned");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Isolated, "Emotion.Sad.Isolated");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Powerless, "Emotion.Sad.Powerless");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Victimized, "Emotion.Sad.Victimized");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Ignored, "Emotion.Sad.Ignored");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Ashamed, "Emotion.Sad.Ashamed");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Remorseful, "Emotion.Sad.Remorseful");
+
+	// Sad variations (Tertiary)
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Isolated, "Emotion.Sad.Lonely.Isolated");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Abandoned, "Emotion.Sad.Lonely.Abandoned");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Powerless, "Emotion.Sad.Vulnerable.Powerless");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Victimized, "Emotion.Sad.Vulnerable.Victimized");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Ashamed, "Emotion.Sad.Guilty.Ashamed");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Remorseful, "Emotion.Sad.Guilty.Remorseful");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Ignored, "Emotion.Sad.Hurt.Ignored");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Diminished, "Emotion.Sad.Hurt.Diminished");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Apathetic, "Emotion.Sad.Bored.Apathetic");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Indifferent, "Emotion.Sad.Bored.Indifferent");
 	void RegisterEmotionTags()
 	{
 		// The tags are already registered through the UE_DEFINE_GAMEPLAY_TAG macro
