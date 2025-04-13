@@ -6,18 +6,23 @@
 
 //TODO: Maybe this should be more generic
 USTRUCT(BlueprintType)
-struct EMOTIONENGINE_API FAdjacentEmotionRelationship
+struct EMOTIONENGINE_API FEmotionLink
 {
-    GENERATED_BODY()
+GENERATED_BODY()
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
-    FGameplayTag AdjacentEmotion;
 
+    // The emotion tag that this link is associated with
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
+    FGameplayTag LinkEmotion;
+
+    // The threshold for this emotion Link
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
     float Threshold;
 
+    // Map of result of this emotion variation with another emotion base on Link Threshold
+    // Key: 0 -1 value, Value: The resulting variation emotion tag
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    FGameplayTag ResultEmotion;
+    TMap<uint8, FGameplayTag> VariationEmotionTags;
 };
 
 //TODO: Need to rework Component Implementation
@@ -43,9 +48,9 @@ public:
     FGameplayTagContainer AdjacentEmotionTags;
 
     // Map of result of this emotion combined with another emotion
-    // Key: A Core emotion tag, Value: The resulting combined emotion tag
+    // Key: A Core emotion tag, Value: The resulting combined emotion
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
-    TMap<FGameplayTag, FGameplayTag> CombinedEmotionTag;
+    TMap<FGameplayTag, FEmotion> CombinedEmotions;
 
     // Map of result of intensity elevate this emotion to another emotion
     // Key: value from 0 to 1, Value: The resulting Range emotion tag
@@ -55,7 +60,7 @@ public:
     // Map of result of intensity change this emotion to more nuance emotion base on how it lean toward adjacent emotions
     // Key: value from 0 to 1, Value: The resulting variation emotion tag
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion.Variation"))
-    TArray<FAdjacentEmotionRelationship> VariationEmotions;
+    TArray<FEmotionLink> LinkEmotions;
 };
 
 UCLASS(BlueprintType)
