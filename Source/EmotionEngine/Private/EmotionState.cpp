@@ -3,6 +3,7 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(EmotionState)
 
+
 float UEmotionState::GetIntensity(const FGameplayTag& InTag) const
 {
     // If it's a core emotion tag, return from CoreEmotionIntensities

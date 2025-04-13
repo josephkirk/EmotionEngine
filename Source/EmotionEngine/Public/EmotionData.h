@@ -61,7 +61,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
     TArray<UEmotionData*> GetOppositeEmotions(const FGameplayTag& EmotionTag) const;
     
-    // Get all emotions that are adjacent to the given emotion
+    // DEPRECATED Get all emotions that are adjacent to the given emotion
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
     TArray<UEmotionData*> GetAdjacentEmotions(const FGameplayTag& EmotionTag) const;
     

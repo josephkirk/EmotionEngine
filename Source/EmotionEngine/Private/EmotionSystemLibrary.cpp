@@ -122,20 +122,20 @@ bool UEmotionSystemLibrary::AreEmotionsAdjacent(const FGameplayTag& EmotionTag1,
         EmotionLibrary = GetDefaultEmotionLibrary();
     }
     
-    if (EmotionLibrary && EmotionTag1.IsValid() && EmotionTag2.IsValid())
-    {
-        UEmotionData* Emotion1 = EmotionLibrary->GetEmotionByTag(EmotionTag1);
-        if (Emotion1 && Emotion1->Emotion.AdjacentEmotionTags.HasTag(EmotionTag2))
-        {
-            return true;
-        }
+    // if (EmotionLibrary && EmotionTag1.IsValid() && EmotionTag2.IsValid())
+    // {
+    //     UEmotionData* Emotion1 = EmotionLibrary->GetEmotionByTag(EmotionTag1);
+    //     if (Emotion1 && Emotion1->Emotion.AdjacentEmotionTags.HasTag(EmotionTag2))
+    //     {
+    //         return true;
+    //     }
         
-        UEmotionData* Emotion2 = EmotionLibrary->GetEmotionByTag(EmotionTag2);
-        if (Emotion2 && Emotion2->Emotion.AdjacentEmotionTags.HasTag(EmotionTag1))
-        {
-            return true;
-        }
-    }
+    //     UEmotionData* Emotion2 = EmotionLibrary->GetEmotionByTag(EmotionTag2);
+    //     if (Emotion2 && Emotion2->Emotion.AdjacentEmotionTags.HasTag(EmotionTag1))
+    //     {
+    //         return true;
+    //     }
+    // }
     
     return false;
 }

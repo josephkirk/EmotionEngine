@@ -38,18 +38,18 @@ TArray<UEmotionData*> UEmotionLibrary::GetAdjacentEmotions(const FGameplayTag& E
     TArray<UEmotionData*> Result;
     UEmotionData* SourceEmotion = GetEmotionByTag(EmotionTag);
     
-    if (SourceEmotion)
-    {
-        // Get all adjacent emotions
-        for (const FGameplayTag& AdjacentTag : SourceEmotion->Emotion.AdjacentEmotionTags)
-        {
-            UEmotionData* AdjacentEmotion = GetEmotionByTag(AdjacentTag);
-            if (AdjacentEmotion)
-            {
-                Result.Add(AdjacentEmotion);
-            }
-        }
-    }
+    // if (SourceEmotion)
+    // {
+    //     // Get all adjacent emotions
+    //     for (const FGameplayTag& AdjacentTag : SourceEmotion->Emotion.AdjacentEmotionTags)
+    //     {
+    //         UEmotionData* AdjacentEmotion = GetEmotionByTag(AdjacentTag);
+    //         if (AdjacentEmotion)
+    //         {
+    //             Result.Add(AdjacentEmotion);
+    //         }
+    //     }
+    // }
     
     return Result;
 }
@@ -58,26 +58,26 @@ UEmotionData* UEmotionLibrary::GetCombinedEmotion(const FGameplayTag& EmotionTag
 {
     UEmotionData* Emotion1 = GetEmotionByTag(EmotionTag1);
     
-    if (Emotion1)
-    {
-        // Check if this emotion has a defined combination with the second emotion
-        const FGameplayTag* CombinedTag = Emotion1->Emotion.CombinedEmotionTag.Find(EmotionTag2);
-        if (CombinedTag && CombinedTag->IsValid())
-        {
-            return GetEmotionByTag(*CombinedTag);
-        }
-    }
-    
-    // Also check the reverse combination (Emotion2 + Emotion1)
-    UEmotionData* Emotion2 = GetEmotionByTag(EmotionTag2);
-    if (Emotion2)
-    {
-        const FGameplayTag* CombinedTag = Emotion2->Emotion.CombinedEmotionTag.Find(EmotionTag1);
-        if (CombinedTag && CombinedTag->IsValid())
-        {
-            return GetEmotionByTag(*CombinedTag);
-        }
-    }
+    //if (Emotion1)
+    //{
+    //    // Check if this emotion has a defined combination with the second emotion
+    //    const FGameplayTag* CombinedTag = Emotion1->Emotion.CombinedEmotionTag.Find(EmotionTag2);
+    //    if (CombinedTag && CombinedTag->IsValid())
+    //    {
+    //        return GetEmotionByTag(*CombinedTag);
+    //    }
+    //}
+    //
+    //// Also check the reverse combination (Emotion2 + Emotion1)
+    //UEmotionData* Emotion2 = GetEmotionByTag(EmotionTag2);
+    //if (Emotion2)
+    //{
+    //    const FGameplayTag* CombinedTag = Emotion2->Emotion.CombinedEmotionTag.Find(EmotionTag1);
+    //    if (CombinedTag && CombinedTag->IsValid())
+    //    {
+    //        return GetEmotionByTag(*CombinedTag);
+    //    }
+    //}
     
     return nullptr;
 }
