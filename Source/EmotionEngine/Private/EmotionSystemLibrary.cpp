@@ -17,7 +17,7 @@ UEmotionLibrary* UEmotionSystemLibrary::GetDefaultEmotionLibrary()
         TArray<FAssetData> AssetData;
         
         FARFilter Filter;
-        Filter.ClassNames.Add(UEmotionLibrary::StaticClass()->GetFName());
+        Filter.ClassPaths.Add(FTopLevelAssetPath(UEmotionLibrary::StaticClass()->GetClassPathName().ToString()));
         Filter.bRecursiveClasses = true;
         
         AssetManager.GetAssetRegistry().GetAssets(Filter, AssetData);

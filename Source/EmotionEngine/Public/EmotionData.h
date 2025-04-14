@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "GameplayTagContainer.h"
-#include "EmotionState.h"
+#include "Emotion.h"
 #include "EmotionData.generated.h"
 
 /**
