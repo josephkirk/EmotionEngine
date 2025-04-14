@@ -15,17 +15,17 @@ public:
     FGameplayTag EmotionTagTriggered;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    float Start;
+    uint8 Start;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    float End;
+    uint8 End;
 
-    FORCEINLINE bool IsInRange(float Value) const
+    FORCEINLINE bool IsInRange(int Value) const
     {
         return Value >= Start && Value <= End;
     }
 
-    FORCEINLINE FGameplayTag GetEmotionTagTriggered(float Value) const
+    FORCEINLINE FGameplayTag GetEmotionTagTriggered(int Value) const
     {
         return IsInRange(Value) ? EmotionTagTriggered : FGameplayTag();
     }
@@ -44,7 +44,7 @@ public:
 
     // The threshold for this emotion Link
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    float Threshold;
+    uint8 Threshold;
 
     // Array of Variatian Emotion that triggered by this emotion link
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
@@ -75,9 +75,11 @@ public:
 
     // Current intensity of this emotion (typically 0.0 to 1.0)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    float Intensity;
+    uint8 Intensity;
 
-    // The opposite emotion tag (e.g., Joy vs Sadness), intensity add to current emotion will deduct the opposite emotion and viceversa
+    // The opposite emotion tag (e.g., Joy vs Sadness), 
+    // intensity add to current emotion will deduct the opposite emotion and viceversa
+    // Opposite emotion can't be linked
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
     FGameplayTag OppositeEmotionTag;
 
