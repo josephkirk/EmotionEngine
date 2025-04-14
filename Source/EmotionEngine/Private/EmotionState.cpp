@@ -1,196 +1,375 @@
 #include "EmotionState.h"
 #include "EmotionData.h" // Include for UEmotionLibrary and UEmotionData
 #include "GameplayTagsManager.h" // Include for tag manipulation
+#include "Kismet/GameplayStatics.h" // For GetTimeSeconds
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(EmotionState)
+
+UEmotionState::UEmotionState()
+    : VACoordinate(FVector2D::ZeroVector)
+    , InfluenceRadius(0.3f)
+{}
 
 void UEmotionState::Initialize(UEmotionLibrary* InEmotionLibrary)
 {
     EmotionLibraryInstance = InEmotionLibrary;
+    EmotionTags.Reset();
+    ActiveEmotions.Empty();
+    VACoordinate = FVector2D::ZeroVector;
+}
+
+void UEmotionState::Tick(float DeltaTime)
+{
+    // Apply decay to all active emotions
+    ApplyDecay(DeltaTime);
+    
+    // Update VA coordinate based on active emotions
+    UpdateVACoordinate(DeltaTime);
+    
+    // Process any potential emotion combinations
+    ProcessEmotionCombinations();
+    
+    // Update emotion tags based on active emotions
+    UpdateEmotionTags();
 }
 
 float UEmotionState::GetIntensity(const FGameplayTag& InTag) const
 {
-    // If it's a core emotion tag, return from CoreEmotionIntensities
-    if (InTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core")) && CoreEmotionIntensities.Contains(InTag))
+    // Check if the tag is in active emotions
+    if (ActiveEmotions.Contains(InTag))
     {
-        return CoreEmotionIntensities[InTag];
+        return ActiveEmotions[InTag].Intensity;
     }
     
-    // Otherwise return from IntensityMap (range and combined tags)
-    return IntensityMap.Contains(InTag) ? IntensityMap[InTag] : 0.f;
+    return 0.0f;
 }
 
-void UEmotionState::AddCoreEmotionTag(const FGameplayTag& InTag, float InIntensity)
+void UEmotionState::AddEmotion(const FGameplayTag& InTag, float InIntensity)
 {
-    if (!InTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core"))) {
-        return;
-    }
     if (!EmotionLibraryInstance)
     {
-        UE_LOG(LogTemp, Warning, TEXT("UEmotionState::AddCoreEmotionTag - EmotionLibraryInstance is not set!"));
+        UE_LOG(LogTemp, Warning, TEXT("UEmotionState::AddEmotion - EmotionLibraryInstance is not set!"));
         return;
     }
 
-    // Clamp intensity between -1 and 1
-    const float ClampedIntensity = FMath::Clamp(InIntensity, -1.0f, 1.0f);
+    // Get the emotion data for this tag
+    UEmotionData* EmotionData = EmotionLibraryInstance->GetEmotionByTag(InTag);
+    if (!EmotionData)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UEmotionState::AddEmotion - Could not find emotion data for tag %s"), *InTag.ToString());
+        return;
+    }
+
+    // Clamp intensity between 0 and 100
+    const float ClampedIntensity = FMath::Clamp(InIntensity, 0.0f, 100.0f);
     
-    CoreEmotionTags.AddTag(InTag);
+    // Handle opposite emotions (adding to one reduces the other) : DISABLED
+    // HandleOppositeEmotions(InTag, ClampedIntensity);
     
-    // Store intensity in a separate private map, not in IntensityMap
-    CoreEmotionIntensities.Add(InTag, ClampedIntensity);
+    // Check if emotion already exists
+    if (ActiveEmotions.Contains(InTag))
+    {
+        // Add to existing emotion intensity
+        FActiveEmotion& Emotion = ActiveEmotions[InTag];
+        Emotion.Intensity = FMath::Clamp(Emotion.Intensity + ClampedIntensity, 0.0f, 100.0f);
+        Emotion.LastUpdateTime = UGameplayStatics::GetTimeSeconds(this);
+    }
+    else
+    {
+        // Create new active emotion
+        FActiveEmotion NewEmotion(EmotionData, ClampedIntensity, UGameplayStatics::GetTimeSeconds(this));
+        ActiveEmotions.Add(InTag, NewEmotion);
+    }
     
-    // Update the range and linked emotion tags with the intensity value
-    UpdateRangeEmotionTag(InTag, ClampedIntensity);
-    UpdateLinkedEmotionTag(InTag, ClampedIntensity); // Changed from UpdateCombinedEmotionTag
+    // Update emotion tags
+    UpdateEmotionTags();
 }
 
-void UEmotionState::RemoveCoreEmotionTag(const FGameplayTag& InTag)
+void UEmotionState::RemoveEmotion(const FGameplayTag& InTag)
 {
-    if (!InTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core"))) {
-        return;
-    }
-    if (!EmotionLibraryInstance)
+    if (ActiveEmotions.Contains(InTag))
     {
-        UE_LOG(LogTemp, Warning, TEXT("UEmotionState::RemoveCoreEmotionTag - EmotionLibraryInstance is not set!"));
-        return;
+        ActiveEmotions.Remove(InTag);
+        
+        // Update emotion tags
+        UpdateEmotionTags();
     }
-
-    CoreEmotionTags.RemoveTag(InTag);
-    CoreEmotionIntensities.Remove(InTag);
-    
-    // Remove the corresponding range and linked tags
-    UpdateRangeEmotionTag(InTag, 0.0f); // Passing 0 intensity will clear the tags
-    UpdateLinkedEmotionTag(InTag, 0.0f); // Clear linked tags too
 }
 
 void UEmotionState::SetIntensity(const FGameplayTag& InTag, float InIntensity)
 {
-    // Only allow setting intensity for tags that exist in CoreEmotionTags
-    if (!InTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core")) || !CoreEmotionTags.HasTag(InTag)) {
-        return;
-    }
     if (!EmotionLibraryInstance)
     {
         UE_LOG(LogTemp, Warning, TEXT("UEmotionState::SetIntensity - EmotionLibraryInstance is not set!"));
         return;
     }
 
-    // Clamp intensity between -1 and 1 for core emotions
-    const float ClampedIntensity = FMath::Clamp(InIntensity, -1.0f, 1.0f);
-    
-    // Store core emotion intensity in separate map
-    CoreEmotionIntensities.Emplace(InTag, ClampedIntensity);
-    
-    UpdateRangeEmotionTag(InTag, ClampedIntensity);
-    UpdateLinkedEmotionTag(InTag, ClampedIntensity); // Changed from UpdateCombinedEmotionTag
-}
-
-void UEmotionState::UpdateRangeEmotionTag(const FGameplayTag& InCoreEmotionTag, float InCoreEmotionIntensity)
-{
-    // Check if the tag is a core emotion tag
-    if (!InCoreEmotionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core")) || !EmotionLibraryInstance)
-    {
-        return;
-    }
-
-    UEmotionData* EmotionData = EmotionLibraryInstance->GetEmotionByTag(InCoreEmotionTag);
+    // Get the emotion data for this tag
+    UEmotionData* EmotionData = EmotionLibraryInstance->GetEmotionByTag(InTag);
     if (!EmotionData)
     {
+        UE_LOG(LogTemp, Warning, TEXT("UEmotionState::SetIntensity - Could not find emotion data for tag %s"), *InTag.ToString());
         return;
     }
 
-    // First, remove all existing range tags derived *from this specific core emotion*
-    for (const FEmotionTriggerRange& RangeInfo : EmotionData->Emotion.RangeEmotionTags)
+    // Clamp intensity between 0 and 100
+    const float ClampedIntensity = FMath::Clamp(InIntensity, 0.0f, 100.0f);
+    
+    // Handle opposite emotions (setting one affects the other) : DISABLED 
+    // HandleOppositeEmotions(InTag, ClampedIntensity);
+    
+    // Check if emotion already exists
+    if (ActiveEmotions.Contains(InTag))
     {
-        if (RangeInfo.EmotionTagTriggered.IsValid())
-        {
-            EmotionTags.RemoveTag(RangeInfo.EmotionTagTriggered);
-            IntensityMap.Remove(RangeInfo.EmotionTagTriggered);
-        }
+        // Update existing emotion intensity
+        FActiveEmotion& Emotion = ActiveEmotions[InTag];
+        Emotion.Intensity = ClampedIntensity;
+        Emotion.LastUpdateTime = UGameplayStatics::GetTimeSeconds(this);
     }
-
-    // Get the absolute intensity value
-    const float AbsoluteIntensity = FMath::Abs(InCoreEmotionIntensity);
-
-    // If intensity is effectively zero, we just cleared the tags, so we're done.
-    if (FMath::IsNearlyZero(AbsoluteIntensity))
+    else if (ClampedIntensity > 0.0f)
     {
-        return;
+        // Create new active emotion if intensity > 0
+        FActiveEmotion NewEmotion(EmotionData, ClampedIntensity, UGameplayStatics::GetTimeSeconds(this));
+        ActiveEmotions.Add(InTag, NewEmotion);
     }
+    
+    // Update emotion tags
+    UpdateEmotionTags();
+}
 
-    // Find the matching range tag based on the current intensity
-    for (const FEmotionTriggerRange& RangeInfo : EmotionData->Emotion.RangeEmotionTags)
+TArray<FActiveEmotion> UEmotionState::GetActiveEmotions() const
+{
+    TArray<FActiveEmotion> Result;
+    ActiveEmotions.GenerateValueArray(Result);
+    return Result;
+}
+
+void UEmotionState::GetDominantEmotion(FGameplayTag& OutEmotionTag, float& OutIntensity) const
+{
+    OutEmotionTag = FGameplayTag::EmptyTag;
+    OutIntensity = 0.0f;
+    
+    // Find the emotion with the highest intensity
+    for (const auto& Pair : ActiveEmotions)
     {
-        // Use the signed intensity for range check, as ranges might be defined for negative values too
-        if (RangeInfo.IsInRange(InCoreEmotionIntensity) && RangeInfo.EmotionTagTriggered.IsValid())
+        if (Pair.Value.Intensity > OutIntensity)
         {
-            EmotionTags.AddTag(RangeInfo.EmotionTagTriggered);
-            // Store the absolute intensity for the range tag
-            IntensityMap.Emplace(RangeInfo.EmotionTagTriggered, AbsoluteIntensity);
-            break; // Assume only one range tag can be active at a time for a given core emotion
+            OutEmotionTag = Pair.Key;
+            OutIntensity = Pair.Value.Intensity;
         }
     }
 }
 
-void UEmotionState::UpdateLinkedEmotionTag(const FGameplayTag& InCoreEmotionTag, float InCoreEmotionIntensity)
+TArray<UEmotionData*> UEmotionState::FindEmotionsInRadius(float Radius) const
 {
-    if (!InCoreEmotionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Emotion.Core")) || !EmotionLibraryInstance)
+    if (!EmotionLibraryInstance)
     {
-        return;
+        return TArray<UEmotionData*>();
     }
+    
+    return EmotionLibraryInstance->FindEmotionsInRadius(VACoordinate, Radius);
+}
 
-    UEmotionData* EmotionData = EmotionLibraryInstance->GetEmotionByTag(InCoreEmotionTag);
-    if (!EmotionData)
+void UEmotionState::UpdateVACoordinate(float DeltaTime)
+{
+    if (ActiveEmotions.Num() == 0)
     {
-        return;
-    }
-
-    // First, remove all existing linked/variation tags derived *from this specific core emotion's links*
-    for (const FEmotionLink& LinkInfo : EmotionData->Emotion.LinkEmotions)
-    {
-        // Remove the direct link tag if it exists (though it seems unused in FEmotionLink's GetEmotionTagTriggered)
-        if(LinkInfo.LinkEmotion.IsValid())
+        // If no active emotions, gradually return to neutral (0,0)
+        if (!VACoordinate.IsNearlyZero())
         {
-            EmotionTags.RemoveTag(LinkInfo.LinkEmotion);
-            IntensityMap.Remove(LinkInfo.LinkEmotion);
+            // Simple linear interpolation toward zero
+            VACoordinate = FMath::Vector2DInterpTo(VACoordinate, FVector2D::ZeroVector, DeltaTime, 0.5f);
         }
-        // Remove all potential variation tags defined within this link
-        for (const FEmotionTriggerRange& VariationInfo : LinkInfo.VariationEmotionTags)
+        return;
+    }
+    
+    // Calculate the target VA coordinate based on active emotions
+    FVector2D TargetVA = FVector2D::ZeroVector;
+    float TotalIntensity = 0.0f;
+    
+    // Each emotion pulls the VA coordinate toward its own VA coordinate
+    // with force proportional to its intensity
+    for (const auto& Pair : ActiveEmotions)
+    {
+        if (Pair.Value.EmotionData)
         {
-            if (VariationInfo.EmotionTagTriggered.IsValid())
+            const FVector2D& EmotionVA = Pair.Value.EmotionData->Emotion.VACoordinate;
+            const float Intensity = Pair.Value.Intensity;
+            
+            // Add weighted contribution
+            TargetVA += EmotionVA * Intensity;
+            TotalIntensity += Intensity;
+        }
+    }
+    
+    // Normalize the target VA coordinate
+    if (TotalIntensity > 0.0f)
+    {
+        TargetVA /= TotalIntensity;
+        
+        // Clamp to valid VA space (-1,1) for both axes
+        TargetVA.X = FMath::Clamp(TargetVA.X, -1.0f, 1.0f);
+        TargetVA.Y = FMath::Clamp(TargetVA.Y, -1.0f, 1.0f);
+        
+        // Apply spring model - smoothly interpolate toward target
+        // The higher the total intensity, the faster the movement
+        float InterpSpeed = FMath::Clamp(TotalIntensity / 100.0f, 0.1f, 1.0f) * 2.0f;
+        VACoordinate = FMath::Vector2DInterpTo(VACoordinate, TargetVA, DeltaTime, InterpSpeed);
+    }
+}
+
+void UEmotionState::ApplyDecay(float DeltaTime)
+{
+    // Get current time
+    float CurrentTime = UGameplayStatics::GetTimeSeconds(this);
+    
+    // Create a list of emotions to remove (can't remove while iterating)
+    TArray<FGameplayTag> EmotionsToRemove;
+    
+    // Apply decay to all active emotions
+    for (auto& Pair : ActiveEmotions)
+    {
+        FActiveEmotion& Emotion = Pair.Value;
+        if (Emotion.EmotionData)
+        {
+            // Calculate time since last update
+            float TimeSinceUpdate = CurrentTime - Emotion.LastUpdateTime;
+            
+            // Apply decay based on the emotion's decay rate
+            float DecayAmount = Emotion.EmotionData->Emotion.DecayRate * TimeSinceUpdate;
+            Emotion.Intensity = FMath::Max(0.0f, Emotion.Intensity - DecayAmount);
+            
+            // Update the last update time
+            Emotion.LastUpdateTime = CurrentTime;
+            
+            // If intensity has decayed to zero, mark for removal
+            if (FMath::IsNearlyZero(Emotion.Intensity))
             {
-                EmotionTags.RemoveTag(VariationInfo.EmotionTagTriggered);
-                IntensityMap.Remove(VariationInfo.EmotionTagTriggered);
+                EmotionsToRemove.Add(Pair.Key);
             }
         }
     }
-
-    // If intensity is effectively zero, we just cleared the tags, so we're done.
-    if (FMath::IsNearlyZero(InCoreEmotionIntensity))
+    
+    // Remove emotions that have decayed to zero
+    for (const FGameplayTag& TagToRemove : EmotionsToRemove)
     {
-         return;
+        ActiveEmotions.Remove(TagToRemove);
     }
+}
 
-    // Find any triggered linked/variation tags based on the current core intensity
-    for (const FEmotionLink& LinkInfo : EmotionData->Emotion.LinkEmotions)
+void UEmotionState::UpdateEmotionTags()
+{
+    // Clear existing emotion tags
+    EmotionTags.Reset();
+    
+    // Add tags for all active emotions
+    for (const auto& Pair : ActiveEmotions)
     {
-        // NOTE: FEmotionLink::GetEmotionTagTriggered uses LinkInfo.Threshold internally for its checks.
-        // This might need refinement if the core intensity should be used instead.
-        // Following current FEmotionLink implementation:
-        FGameplayTag TriggeredVariationTag = LinkInfo.GetEmotionTagTriggered(); 
-        
-        if (TriggeredVariationTag.IsValid())
+        if (Pair.Value.EmotionData)
         {
-            // Check if the core emotion's intensity meets the link's threshold requirement
-            // We assume positive intensity is required to activate a link threshold
-            if(InCoreEmotionIntensity >= LinkInfo.Threshold)
+            // Add the main emotion tag
+            EmotionTags.AddTag(Pair.Key);
+            
+            // Add all related tags (range and variation tags)
+            FGameplayTagContainer RelatedTags = Pair.Value.EmotionData->GetAllEmotionTags();
+            EmotionTags.AppendTags(RelatedTags);
+        }
+    }
+}
+
+void UEmotionState::HandleOppositeEmotions(const FGameplayTag& InTag, float InIntensity)
+{
+    if (!EmotionLibraryInstance)
+    {
+        return;
+    }
+    
+    // Get the emotion data for this tag
+    UEmotionData* EmotionData = EmotionLibraryInstance->GetEmotionByTag(InTag);
+    if (!EmotionData || !EmotionData->Emotion.OppositeEmotionTag.IsValid())
+    {
+        return;
+    }
+    
+    // Get the opposite emotion tag
+    FGameplayTag OppositeTag = EmotionData->Emotion.OppositeEmotionTag;
+    
+    // Check if the opposite emotion is active
+    if (ActiveEmotions.Contains(OppositeTag))
+    {
+        FActiveEmotion& OppositeEmotion = ActiveEmotions[OppositeTag];
+        
+        // Reduce the opposite emotion's intensity
+        // The reduction is proportional to the intensity being added
+        float ReductionAmount = InIntensity * 0.5f; // Adjust this factor as needed
+        OppositeEmotion.Intensity = FMath::Max(0.0f, OppositeEmotion.Intensity - ReductionAmount);
+        OppositeEmotion.LastUpdateTime = UGameplayStatics::GetTimeSeconds(this);
+        
+        // If the opposite emotion's intensity is reduced to zero, remove it
+        if (FMath::IsNearlyZero(OppositeEmotion.Intensity))
+        {
+            ActiveEmotions.Remove(OppositeTag);
+        }
+    }
+}
+
+void UEmotionState::ProcessEmotionCombinations()
+{
+    if (!EmotionLibraryInstance || !EmotionLibraryInstance->CombineEmotions.Num())
+    {
+        return;
+    }
+    
+    // Get all active emotion tags
+    FGameplayTagContainer ActiveTags;
+    for (const auto& Pair : ActiveEmotions)
+    {
+        ActiveTags.AddTag(Pair.Key);
+    }
+    
+    // Check each combination mapping
+    for (UCombinedEmotionMapping* CombineMapping : EmotionLibraryInstance->CombineEmotions)
+    {
+        if (!CombineMapping)
+        {
+            continue;
+        }
+        
+        for (const FCombineEmotionMapping& Mapping : CombineMapping->CombinedEmotions)
+        {
+            // Check if all trigger emotions are present
+            bool bAllTriggersPresent = true;
+            float MinIntensity = FLT_MAX;
+            
+            for (const FGameplayTag& TriggerTag : Mapping.TriggerEmotions)
             {
-                EmotionTags.AddTag(TriggeredVariationTag);
-                // Use the absolute core intensity for the derived variation tag intensity
-                IntensityMap.Emplace(TriggeredVariationTag, FMath::Abs(InCoreEmotionIntensity));
-                // Assuming only one Link/Variation can be triggered per core emotion for now
-                break; 
+                if (!ActiveTags.HasTag(TriggerTag))
+                {
+                    bAllTriggersPresent = false;
+                    break;
+                }
+                
+                // Track the minimum intensity among trigger emotions
+                float TagIntensity = GetIntensity(TriggerTag);
+                MinIntensity = FMath::Min(MinIntensity, TagIntensity);
+            }
+            
+            // If all triggers are present and we have a valid result emotion
+            if (bAllTriggersPresent && Mapping.ResultEmotion)
+            {
+                // Add the combined emotion with intensity based on the minimum intensity of triggers
+                FGameplayTag ResultTag = Mapping.ResultEmotion->Emotion.Tag;
+                if (ResultTag.IsValid())
+                {
+                    // Only add if not already present with higher intensity
+                    float CurrentIntensity = GetIntensity(ResultTag);
+                    if (MinIntensity > CurrentIntensity)
+                    {
+                        // Create or update the combined emotion
+                        FActiveEmotion CombinedEmotion(Mapping.ResultEmotion, MinIntensity, UGameplayStatics::GetTimeSeconds(this));
+                        ActiveEmotions.Add(ResultTag, CombinedEmotion);
+                    }
+                }
             }
         }
     }

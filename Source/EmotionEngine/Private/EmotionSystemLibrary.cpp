@@ -43,7 +43,7 @@ void UEmotionSystemLibrary::ApplyEmotion(UEmotionState* EmotionState, const FGam
         // Check if it's a core emotion tag
         if (EmotionTag.ToString().StartsWith(TEXT("Emotion.Core")))
         {
-            EmotionState->AddCoreEmotionTag(EmotionTag, Intensity);
+            EmotionState->AddEmotion(EmotionTag, Intensity);
         }
         else
         {

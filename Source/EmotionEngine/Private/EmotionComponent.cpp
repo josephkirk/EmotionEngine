@@ -1,5 +1,6 @@
 #include "EmotionComponent.h"
 #include "EmotionSubsystem.h"
+#include "Kismet/GameplayStatics.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(EmotionComponent)
 
@@ -8,10 +9,13 @@ UEmotionComponent::UEmotionComponent(const FObjectInitializer& ObjectInitializer
 	: Super(ObjectInitializer)
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 	EmotionState = CreateDefaultSubobject<UEmotionState>(TEXT("EmotionState"));
+	
 	// Default values
 	EmotionalSusceptibility = 1.0f;
+	SpringStiffness = 2.0f;
+	DampingFactor = 0.5f;
 }
 
 // Called when the game starts
@@ -19,12 +23,36 @@ void UEmotionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Initialize the emotion state
+	InitializeEmotionState();
+	
 	// Register with the EmotionSubsystem
 	if (UWorld* World = GetWorld())
 	{
 		if (UEmotionSubsystem* EmotionSubsystem = World->GetSubsystem<UEmotionSubsystem>())
 		{
 			EmotionSubsystem->RegisterEmotionComponent(this);
+		}
+	}
+}
+
+// Called every frame
+void UEmotionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
+	// Update the emotion state
+	if (EmotionState)
+	{
+		EmotionState->Tick(DeltaTime);
+		
+		// Get the previous VA coordinate for change detection
+		FVector2D PreviousVA = EmotionState->VACoordinate;
+		
+		// If VA coordinate changed significantly, broadcast the change
+		if (!PreviousVA.Equals(EmotionState->VACoordinate, 0.01f))
+		{
+			BroadcastVACoordinateChanged(EmotionState->VACoordinate);
 		}
 	}
 }
@@ -43,31 +71,37 @@ void UEmotionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void UEmotionComponent::AddCoreEmotion(const FGameplayTag& EmotionTag, float Intensity)
+void UEmotionComponent::AddEmotion(const FGameplayTag& EmotionTag, float Intensity)
 {
+	// Ensure the emotion state is initialized
+	InitializeEmotionState();
+	
 	// Store previous intensity for change detection
 	float PreviousIntensity = EmotionState->GetIntensity(EmotionTag);
 	
 	// Add the emotion to the state
-	EmotionState->AddCoreEmotionTag(EmotionTag, Intensity);
+	EmotionState->AddEmotion(EmotionTag, Intensity);
 	
 	// Notify listeners if intensity changed
-	if (!FMath::IsNearlyEqual(PreviousIntensity, Intensity))
+	if (!FMath::IsNearlyEqual(PreviousIntensity, EmotionState->GetIntensity(EmotionTag)))
 	{
-		BroadcastEmotionChanged(EmotionTag, Intensity);
+		BroadcastEmotionChanged(EmotionTag, EmotionState->GetIntensity(EmotionTag));
 	}
 }
 
-void UEmotionComponent::RemoveCoreEmotion(const FGameplayTag& EmotionTag)
+void UEmotionComponent::RemoveEmotion(const FGameplayTag& EmotionTag)
 {
+	// Ensure the emotion state is initialized
+	InitializeEmotionState();
+	
 	// Store previous intensity for change detection
 	float PreviousIntensity = EmotionState->GetIntensity(EmotionTag);
 	
 	// Only broadcast if the emotion actually existed
-	bool bShouldBroadcast = (PreviousIntensity != 0.0f);
+	bool bShouldBroadcast = (PreviousIntensity > 0.0f);
 	
 	// Remove the emotion from the state
-	EmotionState->RemoveCoreEmotionTag(EmotionTag);
+	EmotionState->RemoveEmotion(EmotionTag);
 	
 	// Notify listeners if the emotion was removed
 	if (bShouldBroadcast)
@@ -78,6 +112,9 @@ void UEmotionComponent::RemoveCoreEmotion(const FGameplayTag& EmotionTag)
 
 void UEmotionComponent::SetEmotionIntensity(const FGameplayTag& EmotionTag, float Intensity)
 {
+	// Ensure the emotion state is initialized
+	InitializeEmotionState();
+	
 	// Store previous intensity for change detection
 	float PreviousIntensity = EmotionState->GetIntensity(EmotionTag);
 	
@@ -85,42 +122,112 @@ void UEmotionComponent::SetEmotionIntensity(const FGameplayTag& EmotionTag, floa
 	EmotionState->SetIntensity(EmotionTag, Intensity);
 	
 	// Notify listeners if intensity changed
-	if (!FMath::IsNearlyEqual(PreviousIntensity, Intensity))
+	if (!FMath::IsNearlyEqual(PreviousIntensity, EmotionState->GetIntensity(EmotionTag)))
 	{
-		BroadcastEmotionChanged(EmotionTag, Intensity);
+		BroadcastEmotionChanged(EmotionTag, EmotionState->GetIntensity(EmotionTag));
 	}
 }
 
 float UEmotionComponent::GetEmotionIntensity(const FGameplayTag& EmotionTag) const
 {
+	if (!EmotionState)
+	{
+		return 0.0f;
+	}
 	return EmotionState->GetIntensity(EmotionTag);
 }
 
 bool UEmotionComponent::HasEmotionTag(const FGameplayTag& EmotionTag) const
 {
+	if (!EmotionState)
+	{
+		return false;
+	}
 	return EmotionState->EmotionTags.HasTag(EmotionTag);
 }
 
 FGameplayTagContainer UEmotionComponent::GetAllEmotionTags() const
 {
+	if (!EmotionState)
+	{
+		return FGameplayTagContainer();
+	}
 	return EmotionState->EmotionTags;
+}
+
+TArray<FActiveEmotion> UEmotionComponent::GetActiveEmotions() const
+{
+	if (!EmotionState)
+	{
+		return TArray<FActiveEmotion>();
+	}
+	return EmotionState->GetActiveEmotions();
 }
 
 void UEmotionComponent::GetDominantEmotion(FGameplayTag& OutEmotionTag, float& OutIntensity) const
 {
-	OutEmotionTag = FGameplayTag::EmptyTag;
-	OutIntensity = 0.0f;
-	
-	// Iterate through all emotion tags to find the one with highest intensity
-	for (const FGameplayTag& Tag : EmotionState->EmotionTags)
+	if (!EmotionState)
 	{
-		float TagIntensity = EmotionState->GetIntensity(Tag);
-		if (TagIntensity > OutIntensity)
-		{
-			OutEmotionTag = Tag;
-			OutIntensity = TagIntensity;
-		}
+		OutEmotionTag = FGameplayTag::EmptyTag;
+		OutIntensity = 0.0f;
+		return;
 	}
+	
+	EmotionState->GetDominantEmotion(OutEmotionTag, OutIntensity);
+}
+
+FVector2D UEmotionComponent::GetVACoordinate() const
+{
+	if (!EmotionState)
+	{
+		return FVector2D::ZeroVector;
+	}
+	return EmotionState->VACoordinate;
+}
+
+void UEmotionComponent::SetVACoordinate(const FVector2D& NewVACoordinate)
+{
+	// Ensure the emotion state is initialized
+	InitializeEmotionState();
+	
+	// Store previous coordinate for change detection
+	FVector2D PreviousVA = EmotionState->VACoordinate;
+	
+	// Set the new coordinate
+	EmotionState->VACoordinate = NewVACoordinate;
+	
+	// Notify listeners if coordinate changed
+	if (!PreviousVA.Equals(NewVACoordinate, 0.01f))
+	{
+		BroadcastVACoordinateChanged(NewVACoordinate);
+	}
+}
+
+float UEmotionComponent::GetInfluenceRadius() const
+{
+	if (!EmotionState)
+	{
+		return 0.0f;
+	}
+	return EmotionState->InfluenceRadius;
+}
+
+void UEmotionComponent::SetInfluenceRadius(float NewRadius)
+{
+	// Ensure the emotion state is initialized
+	InitializeEmotionState();
+	
+	// Set the new radius
+	EmotionState->InfluenceRadius = FMath::Max(0.0f, NewRadius);
+}
+
+TArray<UEmotionData*> UEmotionComponent::FindEmotionsInRadius(float Radius) const
+{
+	if (!EmotionState)
+	{
+		return TArray<UEmotionData*>();
+	}
+	return EmotionState->FindEmotionsInRadius(Radius);
 }
 
 FString UEmotionComponent::GetOwnerName() const
@@ -145,6 +252,12 @@ void UEmotionComponent::BroadcastEmotionChanged(const FGameplayTag& EmotionTag, 
 			EmotionSubsystem->NotifyEmotionChanged(this, EmotionTag, Intensity);
 		}
 	}
+}
+
+void UEmotionComponent::BroadcastVACoordinateChanged(const FVector2D& NewVACoordinate)
+{
+	// Broadcast the VA coordinate change event
+	OnVACoordinateChanged.Broadcast(NewVACoordinate);
 }
 
 void UEmotionComponent::BroadcastEmotionalInfluence(AActor* Influencer, const FGameplayTag& EmotionTag, float Intensity)
@@ -195,6 +308,20 @@ bool UEmotionComponent::ReceiveEmotionalInfluence(AActor* Influencer, const FGam
 	return true;
 }
 
+void UEmotionComponent::ApplyEmotionalStimulus(const FGameplayTag& EmotionTag, float Intensity)
+{
+	// Ensure the emotion state is initialized
+	InitializeEmotionState();
+	
+	// Apply the emotion directly without influence checks
+	AddEmotion(EmotionTag, Intensity);
+}
+
+void UEmotionComponent::SetEmotionalSusceptibility(float NewSusceptibility)
+{
+	EmotionalSusceptibility = FMath::Max(0.0f, NewSusceptibility);
+}
+
 bool UEmotionComponent::CanReceiveInfluenceFrom(AActor* Influencer) const
 {
 	if (!Influencer)
@@ -228,4 +355,34 @@ bool UEmotionComponent::CanReceiveInfluenceFrom(AActor* Influencer) const
 	
 	// Not in allowed list
 	return false;
+}
+
+void UEmotionComponent::InitializeEmotionState()
+{
+	if (!EmotionState)
+	{
+		EmotionState = NewObject<UEmotionState>(this, TEXT("EmotionState"));
+	}
+	
+	if (EmotionState && EmotionLibrary)
+	{
+		EmotionState->Initialize(EmotionLibrary);
+	}
+	else if (EmotionState)
+	{
+		// Try to find a default emotion library from the game instance or other global source
+		if (UWorld* World = GetWorld())
+		{
+			if (UEmotionSubsystem* EmotionSubsystem = World->GetSubsystem<UEmotionSubsystem>())
+			{
+				// Assuming the subsystem has a method to get a default emotion library
+				// This would need to be implemented in the EmotionSubsystem class
+				// UEmotionLibrary* DefaultLibrary = EmotionSubsystem->GetDefaultEmotionLibrary();
+				// if (DefaultLibrary)
+				// {
+				//     EmotionState->Initialize(DefaultLibrary);
+				// }
+			}
+		}
+	}
 }
