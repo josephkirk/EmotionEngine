@@ -9,30 +9,33 @@
 class UEmotionData;
 class UEmotionLibrary;
 
-
+/**
+ * Struct for mapping emotion combinations to result emotions
+ */
 USTRUCT(BlueprintType)
 struct EMOTIONENGINE_API FCombineEmotionMapping
 {
     GENERATED_USTRUCT_BODY()
 public:
-    PROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
-    FGameplayTagContainer TriggedEmotions;
+    // The emotions that trigger this combination when present together
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
+    FGameplayTagContainer TriggerEmotions;
 
     // Emotion Result from the combination, we only accept Combined Emotion Type here.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
     UEmotionData* ResultEmotion;
-}
+};
 
 /** 
- * Emotion Tendency is mapping of cofficiencies to input emotions intensity
- * This is used mainly to expess how personality affect certain emotions more than the others
+ * Emotion Tendency is mapping of coefficients to input emotions intensity
+ * This is used mainly to express how personality affects certain emotions more than others
  */
-USTRUCT(BlueprintType)
+UCLASS(BlueprintType)
 class EMOTIONENGINE_API UEmotionalTendency : public UDataAsset
 {
-    GENERATE_BODY()
+    GENERATED_BODY()
 public:
-    // Emotion tag map to a float value ( default 1.0) 
+    // Emotion tag map to a float value (default 1.0) 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem", meta = (Categories = "Emotion"))
     TMap<FGameplayTag, float> EmotionTendencies;
 
@@ -43,20 +46,20 @@ public:
     // Description of this emotion tendencies
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem", meta = (MultiLine = true))
     FText Description;
-}
+};
 
 /** 
- * Combine Emotion Mapping is mapping of how 2 or more emotion combination create a new emotion
+ * Combine Emotion Mapping is mapping of how 2 or more emotion combinations create a new emotion
  */
-USTRUCT(BlueprintType)
+UCLASS(BlueprintType)
 class EMOTIONENGINE_API UCombinedEmotionMapping : public UDataAsset
 {
-    GENERATE_BODY()
+    GENERATED_BODY()
 public:
-    // Emotion tag map to a float value ( default 1.0) 
+    // Array of emotion combinations and their results
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem", meta = (Categories = "Emotion"))
     TArray<FCombineEmotionMapping> CombinedEmotions;
-}
+};
 
 /**
  * Data asset containing information about a single emotion
@@ -67,6 +70,8 @@ class EMOTIONENGINE_API UEmotionData : public UDataAsset
     GENERATED_BODY()
 
 public:
+    UEmotionData();
+    
     // The emotion this data asset represents
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
     FEmotion Emotion;
@@ -86,6 +91,22 @@ public:
     // Optional icon for this emotion
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
     UTexture2D* Icon;
+    
+    // Get all emotion tags associated with this emotion (main tag + triggered range and variation tags)
+    UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+    FGameplayTagContainer GetAllEmotionTags() const;
+    
+    // Update emotion intensity and return any newly triggered emotion tags
+    UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+    FGameplayTagContainer UpdateIntensity(float DeltaIntensity);
+    
+    // Apply decay to emotion intensity based on time passed
+    UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+    void ApplyDecay(float DeltaTime);
+    
+    // Check if this emotion is opposite to the given emotion tag
+    UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+    bool IsOppositeEmotion(const FGameplayTag& EmotionTag) const;
 };
 
 /**
@@ -105,12 +126,13 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
     TArray<UEmotionData*> CoreEmotions;
 
+    // Emotion combinations mappings
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
     TArray<UCombinedEmotionMapping*> CombineEmotions;
     
     // Emotional Tendencies (or coefficient) affect input intensity of emotions in this library
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
-    EmotionalTendency* EmotionalTendency;
+    UEmotionalTendency* EmotionalTendency;
 
     // Get an emotion data by its tag
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
@@ -120,11 +142,15 @@ public:
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
     TArray<UEmotionData*> GetOppositeEmotions(const FGameplayTag& EmotionTag) const;
     
-    // Get all emotions that are adjacent to the given emotion ( closest in VACoordinate)
+    // Get all emotions that are adjacent to the given emotion (closest in VACoordinate)
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
-    TArray<UEmotionData*> GetAdjacentEmotions(const FGameplayTag& EmotionTag) const;
+    TArray<UEmotionData*> GetAdjacentEmotions(const FGameplayTag& EmotionTag, float MaxDistance = 0.3f) const;
     
     // Get the result of combining two emotions
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
     UEmotionData* GetCombinedEmotion(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2) const;
+    
+    // Find emotions within a certain radius in the VA space
+    UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+    TArray<UEmotionData*> FindEmotionsInRadius(const FVector2D& VACoordinate, float Radius) const;
 };
