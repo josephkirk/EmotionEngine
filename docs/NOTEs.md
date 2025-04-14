@@ -1,12 +1,12 @@
 # AI emotion system that is data driven.
 
 ## Design
-- An emotion have intensity from 1 to 100 , a intensity reaching a certain threshold range trigger variation of that emotion.
-
-- Emotion can link to another emotion with link strength from 1-100, a link strength reaching a threshold range will trigger variation of emotion related to source emotion.
-
-- An emotion link to another emotion reach more than 50 of strengrh create a different emotion combine of the 2 emption ( reference pluchik's wheel of emotion) .
-
+- An EmotionComponent with current Valence-Arousal 2D coordinate (VACoordinate) and a radius. An array holding active emotions.
+- An Emotion have intensity from 1 to 100, a decay rate, an influence radius and a VACoordinate. Intensity degrade over time with decay rate.
+- An external stimulus ( dialogue , event, object ...) can trigger an emotion with intensity and add it to EmotionComponent.
+- An active emotion with intensity not zero pull the EmotionComponent's VaCoordinate toward it with pull strength that stronger the further away the target V-A using linear spring model.
+- Emotion can link to another emotion with link strength from 1-100, a link strength reaching a threshold range will trigger emotion variant related to source emotion.
+- An emotion can combine with another emotion to create a different emotion combine of the 2 emotion ( reference pluchik's wheel of emotion). t
 - An emotion have opposite emotion. Adding intensity to one will substract another. Emotions that is opposite can't be linked
 
 ## Task:
