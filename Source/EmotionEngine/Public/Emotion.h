@@ -77,6 +77,17 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
     uint8 Intensity;
 
+    /* Valence Arousal Coordinate 
+    * Vector 2D represent Valence as X Axis and Arousal as Y Axis
+    * High Arousal, Positive Valence (Top-Right): Ecstasy (V: +0.9, A: 0.9), Excitement (V: +0.7, A: 0.8), Happy (V: +0.8, A: 0.7)
+    * Low Arousal, Positive Valence (Bottom-Right): Content (V: +0.6, A: 0.3), Calm (V: +0.3, A: 0.1), Relaxed (V: +0.4, A: 0.2)
+    * Low Arousal, Negative Valence (Bottom-Left): Sad (V: -0.6, A: 0.2), Bored (V: -0.3, A: 0.1), Depressed (V: -0.7, A: 0.1)
+    * High Arousal, Negative Valence (Top-Left): Afraid (V: -0.8, A: 0.9), Angry (V: -0.7, A: 0.8), Stressed (V: -0.5, A: 0.7), Tense (V: -0.4, A: 0.8)
+    * TODO: Adapt this coordinate to the rest of the system
+    */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
+    FVector2D VACoordinate;
+
     // The opposite emotion tag (e.g., Joy vs Sadness), 
     // intensity add to current emotion will deduct the opposite emotion and viceversa
     // Opposite emotion can't be linked
