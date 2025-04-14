@@ -61,7 +61,7 @@ The model also accounts for variations in intensity. This plugin leverages this 
 
 # How it might work with other system
 
-![How it might work with other system](docs/CoreSystem_intergration.png)
+![Core System Intergration](docs/CoreSystem_Intergration.png)
 
 ## Usage
 
