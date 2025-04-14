@@ -59,6 +59,10 @@ The model also accounts for variations in intensity. This plugin leverages this 
 ![Emotion Relationship Diagram](docs/emotion_relationship_diagram.png)
 ![Emotion Change Sequence Diagram](docs/EmotionChange_SequenceDiagram.png)
 
+# How it might work with other system
+
+![How it might work with other system](docs/CoreSystem_intergration.png)
+
 ## Usage
 
 ### Defining Emotions (`UEmotionData` / `UEmotionLibrary`)
