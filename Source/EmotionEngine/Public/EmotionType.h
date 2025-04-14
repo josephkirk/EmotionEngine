@@ -4,16 +4,13 @@
 #include "EmotionType.generated.h"
 
 UENUM(BlueprintType)
-namespace EEmotionType
+enum class EEmotionType: uint8
 {
-	enum Type : int
-	{
-		Core UMETA(Hidden, DisplayName = "Core Emotion"),
+	Core UMETA(Hidden, DisplayName = "Core Emotion"),
 
-		Combined UMETA(DisplayName = "Combined Emotion")
+	Combined UMETA(DisplayName = "Combined Emotion"),
 
-        Ranged UMETA(DisplayName = "Range Emotion")
+    Ranged UMETA(DisplayName = "Range Emotion"),
 
-        Variant UMETA(DisplayName = "Variation Emotion")
-	};
-}
+    Variant UMETA(DisplayName = "Variation Emotion")
+};

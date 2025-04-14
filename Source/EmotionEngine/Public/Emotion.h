@@ -82,10 +82,10 @@ public:
 
     // Type of emotion
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    EEmotionType::Type Type;
+    EEmotionType Type;
 
     // Current intensity of this emotion (0.0 to 100.0)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (ClampMin = "0.0"))
     float Intensity;
 
     /* Valence Arousal Coordinate 
@@ -99,6 +99,14 @@ public:
     */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
     FVector2D VACoordinate;
+
+	/** The rate at which the intensity of this emotion decays over time (units per second). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (ClampMin = "0.0"))
+	float DecayRate = 1.0f;
+
+	/** The radius within the V-A space that this emotion influences. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (ClampMin = "0.0"))
+	float InfluenceRadius = 0.1f;
 
     // The opposite emotion tag (e.g., Joy vs Sadness), 
     // intensity add to current emotion will deduct the opposite emotion and viceversa
