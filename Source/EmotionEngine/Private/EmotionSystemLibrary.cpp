@@ -1,5 +1,6 @@
 #include "EmotionSystemLibrary.h"
 #include "Engine/AssetManager.h"
+#include "Kismet/GameplayStatics.h"
 
 UEmotionLibrary* UEmotionSystemLibrary::GetDefaultEmotionLibrary()
 {
@@ -31,48 +32,41 @@ UEmotionLibrary* UEmotionSystemLibrary::GetDefaultEmotionLibrary()
     return DefaultLibrary;
 }
 
-UEmotionState* UEmotionSystemLibrary::CreateEmotionState()
+UEmotionState* UEmotionSystemLibrary::CreateEmotionState(UEmotionLibrary* EmotionLibrary)
 {
-    return NewObject<UEmotionState>();
+    UEmotionState* NewState = NewObject<UEmotionState>();
+    
+    if (!EmotionLibrary)
+    {
+        EmotionLibrary = GetDefaultEmotionLibrary();
+    }
+    
+    if (NewState && EmotionLibrary)
+    {
+        NewState->Initialize(EmotionLibrary);
+    }
+    
+    return NewState;
 }
 
 void UEmotionSystemLibrary::ApplyEmotion(UEmotionState* EmotionState, const FGameplayTag& EmotionTag, float Intensity)
 {
     if (EmotionState && EmotionTag.IsValid())
     {
-        // Check if it's a core emotion tag
-        if (EmotionTag.ToString().StartsWith(TEXT("Emotion.Core")))
-        {
-            EmotionState->AddEmotion(EmotionTag, Intensity);
-        }
-        else
-        {
-            EmotionState->SetIntensity(EmotionTag, Intensity);
-        }
+        // Add the emotion to the state
+        EmotionState->AddEmotion(EmotionTag, Intensity);
     }
 }
 
-FGameplayTag UEmotionSystemLibrary::GetDominantEmotion(UEmotionState* EmotionState)
+void UEmotionSystemLibrary::GetDominantEmotion(UEmotionState* EmotionState, FGameplayTag& OutEmotionTag, float& OutIntensity)
 {
-    if (!EmotionState)
+    OutEmotionTag = FGameplayTag::EmptyTag;
+    OutIntensity = 0.0f;
+    
+    if (EmotionState)
     {
-        return FGameplayTag::EmptyTag;
+        EmotionState->GetDominantEmotion(OutEmotionTag, OutIntensity);
     }
-    
-    FGameplayTag DominantTag = FGameplayTag::EmptyTag;
-    float HighestIntensity = 0.0f;
-    
-    for (const FGameplayTag& Tag : EmotionState->EmotionTags)
-    {
-        float Intensity = EmotionState->GetIntensity(Tag);
-        if (Intensity > HighestIntensity)
-        {
-            HighestIntensity = Intensity;
-            DominantTag = Tag;
-        }
-    }
-    
-    return DominantTag;
 }
 
 UEmotionData* UEmotionSystemLibrary::GetEmotionData(const FGameplayTag& EmotionTag, UEmotionLibrary* EmotionLibrary)
@@ -115,27 +109,30 @@ bool UEmotionSystemLibrary::AreEmotionsOpposite(const FGameplayTag& EmotionTag1,
     return false;
 }
 
-bool UEmotionSystemLibrary::AreEmotionsAdjacent(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2, UEmotionLibrary* EmotionLibrary)
+bool UEmotionSystemLibrary::AreEmotionsAdjacent(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2, float MaxDistance, UEmotionLibrary* EmotionLibrary)
 {
     if (!EmotionLibrary)
     {
         EmotionLibrary = GetDefaultEmotionLibrary();
     }
     
-    // if (EmotionLibrary && EmotionTag1.IsValid() && EmotionTag2.IsValid())
-    // {
-    //     UEmotionData* Emotion1 = EmotionLibrary->GetEmotionByTag(EmotionTag1);
-    //     if (Emotion1 && Emotion1->Emotion.AdjacentEmotionTags.HasTag(EmotionTag2))
-    //     {
-    //         return true;
-    //     }
+    if (EmotionLibrary && EmotionTag1.IsValid() && EmotionTag2.IsValid())
+    {
+        UEmotionData* Emotion1 = EmotionLibrary->GetEmotionByTag(EmotionTag1);
+        UEmotionData* Emotion2 = EmotionLibrary->GetEmotionByTag(EmotionTag2);
         
-    //     UEmotionData* Emotion2 = EmotionLibrary->GetEmotionByTag(EmotionTag2);
-    //     if (Emotion2 && Emotion2->Emotion.AdjacentEmotionTags.HasTag(EmotionTag1))
-    //     {
-    //         return true;
-    //     }
-    // }
+        if (Emotion1 && Emotion2)
+        {
+            // Calculate distance between emotions in VA space
+            FVector2D VA1 = Emotion1->Emotion.VACoordinate;
+            FVector2D VA2 = Emotion2->Emotion.VACoordinate;
+            
+            float Distance = FVector2D::Distance(VA1, VA2);
+            
+            // If distance is less than MaxDistance, consider them adjacent
+            return Distance <= MaxDistance;
+        }
+    }
     
     return false;
 }
@@ -157,4 +154,132 @@ FGameplayTag UEmotionSystemLibrary::GetCombinedEmotion(const FGameplayTag& Emoti
     }
     
     return FGameplayTag::EmptyTag;
+}
+
+FVector2D UEmotionSystemLibrary::GetEmotionVACoordinate(const FGameplayTag& EmotionTag, UEmotionLibrary* EmotionLibrary)
+{
+    if (!EmotionLibrary)
+    {
+        EmotionLibrary = GetDefaultEmotionLibrary();
+    }
+    
+    if (EmotionLibrary && EmotionTag.IsValid())
+    {
+        UEmotionData* EmotionData = EmotionLibrary->GetEmotionByTag(EmotionTag);
+        if (EmotionData)
+        {
+            return EmotionData->Emotion.VACoordinate;
+        }
+    }
+    
+    return FVector2D::ZeroVector;
+}
+
+TArray<UEmotionData*> UEmotionSystemLibrary::GetEmotionsInRadius(const FVector2D& VACoordinate, float Radius, UEmotionLibrary* EmotionLibrary)
+{
+    if (!EmotionLibrary)
+    {
+        EmotionLibrary = GetDefaultEmotionLibrary();
+    }
+    
+    if (EmotionLibrary)
+    {
+        return EmotionLibrary->FindEmotionsInRadius(VACoordinate, Radius);
+    }
+    
+    return TArray<UEmotionData*>();
+}
+
+float UEmotionSystemLibrary::GetEmotionDistance(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2, UEmotionLibrary* EmotionLibrary)
+{
+    if (!EmotionLibrary)
+    {
+        EmotionLibrary = GetDefaultEmotionLibrary();
+    }
+    
+    if (EmotionLibrary && EmotionTag1.IsValid() && EmotionTag2.IsValid())
+    {
+        UEmotionData* Emotion1 = EmotionLibrary->GetEmotionByTag(EmotionTag1);
+        UEmotionData* Emotion2 = EmotionLibrary->GetEmotionByTag(EmotionTag2);
+        
+        if (Emotion1 && Emotion2)
+        {
+            // Calculate distance between emotions in VA space
+            FVector2D VA1 = Emotion1->Emotion.VACoordinate;
+            FVector2D VA2 = Emotion2->Emotion.VACoordinate;
+            
+            return FVector2D::Distance(VA1, VA2);
+        }
+    }
+    
+    return -1.0f; // Invalid distance
+}
+
+void UEmotionSystemLibrary::ApplyEmotionalStimulus(UEmotionComponent* EmotionComponent, const FGameplayTag& EmotionTag, float Intensity)
+{
+    if (EmotionComponent && EmotionTag.IsValid())
+    {
+        EmotionComponent->ApplyEmotionalStimulus(EmotionTag, Intensity);
+    }
+}
+
+TArray<FActiveEmotion> UEmotionSystemLibrary::GetActiveEmotions(UEmotionState* EmotionState)
+{
+    if (EmotionState)
+    {
+        return EmotionState->GetActiveEmotions();
+    }
+    
+    return TArray<FActiveEmotion>();
+}
+
+FVector2D UEmotionSystemLibrary::GetStateVACoordinate(UEmotionState* EmotionState)
+{
+    if (EmotionState)
+    {
+        return EmotionState->VACoordinate;
+    }
+    
+    return FVector2D::ZeroVector;
+}
+
+void UEmotionSystemLibrary::SetStateVACoordinate(UEmotionState* EmotionState, const FVector2D& NewVACoordinate)
+{
+    if (EmotionState)
+    {
+        EmotionState->VACoordinate = NewVACoordinate;
+    }
+}
+
+UEmotionData* UEmotionSystemLibrary::FindClosestEmotion(const FVector2D& VACoordinate, UEmotionLibrary* EmotionLibrary)
+{
+    if (!EmotionLibrary)
+    {
+        EmotionLibrary = GetDefaultEmotionLibrary();
+    }
+    
+    if (EmotionLibrary)
+    {
+        UEmotionData* ClosestEmotion = nullptr;
+        float ClosestDistance = MAX_FLT;
+        
+        // Check all emotions in the library
+        for (UEmotionData* EmotionData : EmotionLibrary->Emotions)
+        {
+            if (EmotionData)
+            {
+                float Distance = FVector2D::Distance(EmotionData->Emotion.VACoordinate, VACoordinate);
+                
+                if (Distance < ClosestDistance)
+                {
+                    ClosestDistance = Distance;
+                    ClosestEmotion = EmotionData;
+                }
+            }
+        }
+        
+        return ClosestEmotion;
+    }
+    
+    return nullptr;
 }
