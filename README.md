@@ -53,6 +53,12 @@ Robert Plutchik's psychoevolutionary theory of emotion proposes eight primary em
 
 The model also accounts for variations in intensity. This plugin leverages this concept by allowing the definition of different emotion tags triggered at various intensity levels for each core emotion, configured within `UEmotionData`.
 
+## Diagram
+
+![Emotion Class Diagram](docs/Emotion_Class_Diagram.png)
+![Emotion Relationship Diagram](docs/emotion_relationship_diagram.png)
+![Emotion Change Sequence Diagram](docs/EmotionChange_SequenceDiagram.png)
+
 ## Usage
 
 ### Defining Emotions (`UEmotionData` / `UEmotionLibrary`)
