@@ -15,18 +15,22 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
     FGameplayTag EmotionTagTriggered;
     
+    // The start of the intensity range (0.0 - 100.0) for triggering the emotion.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    uint8 Start;
+    float Start;
     
+    // The end of the intensity range (0.0 - 100.0) for triggering the emotion.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    uint8 End;
+    float End;
 
-    FORCEINLINE bool IsInRange(int Value) const
+    FORCEINLINE bool IsInRange(float Value) const
     {
+        // Check if Value is within the [Start, End] range, inclusive.
+        // Use small tolerance for float comparison if necessary, but direct comparison often sufficient for game logic thresholds.
         return Value >= Start && Value <= End;
     }
 
-    FORCEINLINE FGameplayTag GetEmotionTagTriggered(int Value) const
+    FORCEINLINE FGameplayTag GetEmotionTagTriggered(float Value) const
     {
         return IsInRange(Value) ? EmotionTagTriggered : FGameplayTag();
     }
@@ -43,18 +47,20 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
     FGameplayTag LinkEmotion;
 
-    // The threshold for this emotion Link
+    // The intensity threshold (0.0 - 100.0) the source emotion needs to reach to potentially trigger variation emotions from this link.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    uint8 Threshold;
+    float Threshold;
 
-    // Array of Variatian Emotion that triggered by this emotion link
+    // Array of Variatian Emotion that triggered by this emotion link. The Range check inside FEmotionTriggerRange uses the Link's Threshold value.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
     TArray<FEmotionTriggerRange> VariationEmotionTags;
 
+    // Gets the triggered variation tag based on the Link's Threshold value fitting within one of the VariationEmotionTags ranges.
     FORCEINLINE FGameplayTag GetEmotionTagTriggered() const
     {
         for (const FEmotionTriggerRange& TriggerRange : VariationEmotionTags)
         {
+            // Check if the Link's Threshold falls within the range defined in VariationEmotionTags
             if (TriggerRange.IsInRange(Threshold))
             {
                 return TriggerRange.EmotionTagTriggered;
@@ -78,9 +84,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
     EEmotionType::Type Type;
 
-    // Current intensity of this emotion (typically 0.0 to 1.0)
+    // Current intensity of this emotion (0.0 to 100.0)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    uint8 Intensity;
+    float Intensity;
 
     /* Valence Arousal Coordinate 
     * Vector 2D represent Valence as X Axis and Arousal as Y Axis
@@ -124,6 +130,7 @@ public:
         // Add all range emotion tags triggered
         for (const FEmotionTriggerRange& RangeEmotion : RangeEmotionTags)
         {
+            // Check if current Intensity falls within the range
             if (RangeEmotion.IsInRange(Intensity))
             {
                 AllTags.AddTag(RangeEmotion.EmotionTagTriggered);
@@ -133,12 +140,15 @@ public:
         // Add all linked emotion tags triggered
         for (const FEmotionLink& Link : LinkEmotions)
         {
-            
-            // Add variation emotion tags from links
-            FGameplayTag EmotionLinkTriggered = Link.GetEmotionTagTriggered();
-            if (EmotionLinkTriggered.IsValid())
+            // Check if current Intensity meets the link's threshold requirement
+            if (Intensity >= Link.Threshold)
             {
-                AllTags.AddTag(EmotionLinkTriggered);
+                // Get the variation tag determined by the link's threshold fitting into a variation range
+                FGameplayTag EmotionLinkTriggered = Link.GetEmotionTagTriggered();
+                if (EmotionLinkTriggered.IsValid())
+                {
+                    AllTags.AddTag(EmotionLinkTriggered);
+                }
             }
         }
         
