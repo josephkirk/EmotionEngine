@@ -2,6 +2,12 @@
 #include "Engine/AssetManager.h"
 #include "Kismet/GameplayStatics.h"
 
+// Private helper method to get library or default
+UEmotionLibrary* UEmotionSystemLibrary::GetLibraryOrDefault(UEmotionLibrary* ProvidedLibrary)
+{
+    return ProvidedLibrary ? ProvidedLibrary : GetDefaultEmotionLibrary();
+}
+
 UEmotionLibrary* UEmotionSystemLibrary::GetDefaultEmotionLibrary()
 {
     // Try to find a default emotion library asset
@@ -71,10 +77,7 @@ void UEmotionSystemLibrary::GetDominantEmotion(UEmotionState* EmotionState, FGam
 
 UEmotionData* UEmotionSystemLibrary::GetEmotionData(const FGameplayTag& EmotionTag, UEmotionLibrary* EmotionLibrary)
 {
-    if (!EmotionLibrary)
-    {
-        EmotionLibrary = GetDefaultEmotionLibrary();
-    }
+    EmotionLibrary = GetLibraryOrDefault(EmotionLibrary);
     
     if (EmotionLibrary && EmotionTag.IsValid())
     {
@@ -86,10 +89,7 @@ UEmotionData* UEmotionSystemLibrary::GetEmotionData(const FGameplayTag& EmotionT
 
 bool UEmotionSystemLibrary::AreEmotionsOpposite(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2, UEmotionLibrary* EmotionLibrary)
 {
-    if (!EmotionLibrary)
-    {
-        EmotionLibrary = GetDefaultEmotionLibrary();
-    }
+    EmotionLibrary = GetLibraryOrDefault(EmotionLibrary);
     
     if (EmotionLibrary && EmotionTag1.IsValid() && EmotionTag2.IsValid())
     {
@@ -111,38 +111,16 @@ bool UEmotionSystemLibrary::AreEmotionsOpposite(const FGameplayTag& EmotionTag1,
 
 bool UEmotionSystemLibrary::AreEmotionsAdjacent(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2, float MaxDistance, UEmotionLibrary* EmotionLibrary)
 {
-    if (!EmotionLibrary)
-    {
-        EmotionLibrary = GetDefaultEmotionLibrary();
-    }
+    // Use GetEmotionDistance to avoid code duplication
+    float Distance = GetEmotionDistance(EmotionTag1, EmotionTag2, EmotionLibrary);
     
-    if (EmotionLibrary && EmotionTag1.IsValid() && EmotionTag2.IsValid())
-    {
-        UEmotionData* Emotion1 = EmotionLibrary->GetEmotionByTag(EmotionTag1);
-        UEmotionData* Emotion2 = EmotionLibrary->GetEmotionByTag(EmotionTag2);
-        
-        if (Emotion1 && Emotion2)
-        {
-            // Calculate distance between emotions in VA space
-            FVector2D VA1 = Emotion1->Emotion.VACoordinate;
-            FVector2D VA2 = Emotion2->Emotion.VACoordinate;
-            
-            float Distance = FVector2D::Distance(VA1, VA2);
-            
-            // If distance is less than MaxDistance, consider them adjacent
-            return Distance <= MaxDistance;
-        }
-    }
-    
-    return false;
+    // If distance is valid and less than MaxDistance, consider them adjacent
+    return (Distance >= 0.0f) && (Distance <= MaxDistance);
 }
 
 FGameplayTag UEmotionSystemLibrary::GetCombinedEmotion(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2, UEmotionLibrary* EmotionLibrary)
 {
-    if (!EmotionLibrary)
-    {
-        EmotionLibrary = GetDefaultEmotionLibrary();
-    }
+    EmotionLibrary = GetLibraryOrDefault(EmotionLibrary);
     
     if (EmotionLibrary && EmotionTag1.IsValid() && EmotionTag2.IsValid())
     {
@@ -158,10 +136,7 @@ FGameplayTag UEmotionSystemLibrary::GetCombinedEmotion(const FGameplayTag& Emoti
 
 FVector2D UEmotionSystemLibrary::GetEmotionVACoordinate(const FGameplayTag& EmotionTag, UEmotionLibrary* EmotionLibrary)
 {
-    if (!EmotionLibrary)
-    {
-        EmotionLibrary = GetDefaultEmotionLibrary();
-    }
+    EmotionLibrary = GetLibraryOrDefault(EmotionLibrary);
     
     if (EmotionLibrary && EmotionTag.IsValid())
     {
@@ -177,10 +152,7 @@ FVector2D UEmotionSystemLibrary::GetEmotionVACoordinate(const FGameplayTag& Emot
 
 TArray<UEmotionData*> UEmotionSystemLibrary::GetEmotionsInRadius(const FVector2D& VACoordinate, float Radius, UEmotionLibrary* EmotionLibrary)
 {
-    if (!EmotionLibrary)
-    {
-        EmotionLibrary = GetDefaultEmotionLibrary();
-    }
+    EmotionLibrary = GetLibraryOrDefault(EmotionLibrary);
     
     if (EmotionLibrary)
     {
@@ -192,10 +164,7 @@ TArray<UEmotionData*> UEmotionSystemLibrary::GetEmotionsInRadius(const FVector2D
 
 float UEmotionSystemLibrary::GetEmotionDistance(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2, UEmotionLibrary* EmotionLibrary)
 {
-    if (!EmotionLibrary)
-    {
-        EmotionLibrary = GetDefaultEmotionLibrary();
-    }
+    EmotionLibrary = GetLibraryOrDefault(EmotionLibrary);
     
     if (EmotionLibrary && EmotionTag1.IsValid() && EmotionTag2.IsValid())
     {
@@ -253,10 +222,7 @@ void UEmotionSystemLibrary::SetStateVACoordinate(UEmotionState* EmotionState, co
 
 UEmotionData* UEmotionSystemLibrary::FindClosestEmotion(const FVector2D& VACoordinate, UEmotionLibrary* EmotionLibrary)
 {
-    if (!EmotionLibrary)
-    {
-        EmotionLibrary = GetDefaultEmotionLibrary();
-    }
+    EmotionLibrary = GetLibraryOrDefault(EmotionLibrary);
     
     if (EmotionLibrary)
     {

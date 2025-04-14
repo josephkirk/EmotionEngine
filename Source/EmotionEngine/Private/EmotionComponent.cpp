@@ -1,5 +1,6 @@
 #include "EmotionComponent.h"
 #include "EmotionSubsystem.h"
+#include "EmotionSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(EmotionComponent)
@@ -130,59 +131,40 @@ void UEmotionComponent::SetEmotionIntensity(const FGameplayTag& EmotionTag, floa
 
 float UEmotionComponent::GetEmotionIntensity(const FGameplayTag& EmotionTag) const
 {
-	if (!EmotionState)
-	{
-		return 0.0f;
-	}
-	return EmotionState->GetIntensity(EmotionTag);
+	return EmotionState ? EmotionState->GetIntensity(EmotionTag) : 0.0f;
 }
 
 bool UEmotionComponent::HasEmotionTag(const FGameplayTag& EmotionTag) const
 {
-	if (!EmotionState)
-	{
-		return false;
-	}
-	return EmotionState->EmotionTags.HasTag(EmotionTag);
+	return EmotionState ? EmotionState->EmotionTags.HasTag(EmotionTag) : false;
 }
 
 FGameplayTagContainer UEmotionComponent::GetAllEmotionTags() const
 {
-	if (!EmotionState)
-	{
-		return FGameplayTagContainer();
-	}
-	return EmotionState->EmotionTags;
+	return EmotionState ? EmotionState->EmotionTags : FGameplayTagContainer();
 }
 
 TArray<FActiveEmotion> UEmotionComponent::GetActiveEmotions() const
 {
-	if (!EmotionState)
-	{
-		return TArray<FActiveEmotion>();
-	}
-	return EmotionState->GetActiveEmotions();
+	return EmotionState ? EmotionState->GetActiveEmotions() : TArray<FActiveEmotion>();
 }
 
 void UEmotionComponent::GetDominantEmotion(FGameplayTag& OutEmotionTag, float& OutIntensity) const
 {
-	if (!EmotionState)
+	if (EmotionState)
+	{
+		EmotionState->GetDominantEmotion(OutEmotionTag, OutIntensity);
+	}
+	else
 	{
 		OutEmotionTag = FGameplayTag::EmptyTag;
 		OutIntensity = 0.0f;
-		return;
 	}
-	
-	EmotionState->GetDominantEmotion(OutEmotionTag, OutIntensity);
 }
 
 FVector2D UEmotionComponent::GetVACoordinate() const
 {
-	if (!EmotionState)
-	{
-		return FVector2D::ZeroVector;
-	}
-	return EmotionState->VACoordinate;
+	return EmotionState ? EmotionState->VACoordinate : FVector2D::ZeroVector;
 }
 
 void UEmotionComponent::SetVACoordinate(const FVector2D& NewVACoordinate)
@@ -205,11 +187,7 @@ void UEmotionComponent::SetVACoordinate(const FVector2D& NewVACoordinate)
 
 float UEmotionComponent::GetInfluenceRadius() const
 {
-	if (!EmotionState)
-	{
-		return 0.0f;
-	}
-	return EmotionState->InfluenceRadius;
+	return EmotionState ? EmotionState->InfluenceRadius : 0.0f;
 }
 
 void UEmotionComponent::SetInfluenceRadius(float NewRadius)
@@ -223,11 +201,7 @@ void UEmotionComponent::SetInfluenceRadius(float NewRadius)
 
 TArray<UEmotionData*> UEmotionComponent::FindEmotionsInRadius(float Radius) const
 {
-	if (!EmotionState)
-	{
-		return TArray<UEmotionData*>();
-	}
-	return EmotionState->FindEmotionsInRadius(Radius);
+	return EmotionState ? EmotionState->FindEmotionsInRadius(Radius) : TArray<UEmotionData*>();
 }
 
 FString UEmotionComponent::GetOwnerName() const
@@ -370,18 +344,17 @@ void UEmotionComponent::InitializeEmotionState()
 	}
 	else if (EmotionState)
 	{
-		// Try to find a default emotion library from the game instance or other global source
+		// Try to find a default emotion library from the subsystem
 		if (UWorld* World = GetWorld())
 		{
 			if (UEmotionSubsystem* EmotionSubsystem = World->GetSubsystem<UEmotionSubsystem>())
 			{
-				// Assuming the subsystem has a method to get a default emotion library
-				// This would need to be implemented in the EmotionSubsystem class
-				// UEmotionLibrary* DefaultLibrary = EmotionSubsystem->GetDefaultEmotionLibrary();
-				// if (DefaultLibrary)
-				// {
-				//     EmotionState->Initialize(DefaultLibrary);
-				// }
+				// Use the EmotionSystemLibrary to get the default library
+				UEmotionLibrary* DefaultLibrary = UEmotionSystemLibrary::GetDefaultEmotionLibrary();
+				if (DefaultLibrary)
+				{
+				    EmotionState->Initialize(DefaultLibrary);
+				}
 			}
 		}
 	}

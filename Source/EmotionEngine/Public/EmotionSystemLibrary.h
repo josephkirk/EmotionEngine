@@ -15,6 +15,10 @@ class EMOTIONENGINE_API UEmotionSystemLibrary : public UBlueprintFunctionLibrary
 {
     GENERATED_BODY()
 
+private:
+    // Helper method to get library or default
+    static UEmotionLibrary* GetLibraryOrDefault(UEmotionLibrary* ProvidedLibrary);
+
 public:
     // Get the default emotion library asset
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
