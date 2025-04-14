@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "EmotionType.h"
 #include "Emotion.generated.h"
 
 struct FEmotion;
@@ -73,6 +74,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
     FGameplayTag Tag;
 
+    // Type of emotion
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
+    EEmotionType::Type Type;
+
     // Current intensity of this emotion (typically 0.0 to 1.0)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
     uint8 Intensity;
@@ -84,6 +89,7 @@ public:
     * Low Arousal, Negative Valence (Bottom-Left): Sad (V: -0.6, A: 0.2), Bored (V: -0.3, A: 0.1), Depressed (V: -0.7, A: 0.1)
     * High Arousal, Negative Valence (Top-Left): Afraid (V: -0.8, A: 0.9), Angry (V: -0.7, A: 0.8), Stressed (V: -0.5, A: 0.7), Tense (V: -0.4, A: 0.8)
     * TODO: Adapt this coordinate to the rest of the system
+    *       This can be good way to find adjacent Emotion by search nearest emotion in radius  
     */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
     FVector2D VACoordinate;
@@ -93,15 +99,6 @@ public:
     // Opposite emotion can't be linked
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
     FGameplayTag OppositeEmotionTag;
-
-    // // Adjacent emotions on Plutchik's wheel
-    // UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
-    // FGameplayTagContainer AdjacentEmotionTags;
-
-    // Map of result of this emotion combined with another emotion
-    // Key: A Core emotion tag, Value: The resulting combined emotion
-    //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
-    //TMap<FGameplayTag, FGameplayTag> CombinedEmotions;
 
     // Map of result of intensity elevate this emotion to another emotion
     // Key: value from 0 to 1, Value: The resulting Range emotion tag
