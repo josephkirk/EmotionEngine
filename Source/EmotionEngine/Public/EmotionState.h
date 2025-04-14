@@ -112,6 +112,8 @@ private:
     void UpdateEmotionTags();
     
     // Handle opposite emotions (adding to one reduces the other)
+    // Handle opposite emotions (adding to one reduces the other)
+    // Currently disabled but kept for future use
     void HandleOppositeEmotions(const FGameplayTag& InTag, float InIntensity);
     
     // Check for and process emotion combinations

@@ -9,6 +9,11 @@
 - An emotion can combine with another emotion to create a different emotion combine of the 2 emotion ( reference pluchik's wheel of emotion). t
 - An emotion have opposite emotion. Adding intensity to one will substract another. Emotions that is opposite can't be linked
 
+## Components:
+EmotionState: Manages the internal state of emotions
+EmotionComponent: Handles actor integration and external influences
+EmotionSystemLibrary: Provides utility functions for blueprints
+
 ## Task:
 - Need to rethink how to handle ajacent or link emotion relationship
 - Need to rethink how to handle combined emotion relationship
