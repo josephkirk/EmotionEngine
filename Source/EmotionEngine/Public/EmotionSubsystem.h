@@ -6,9 +6,12 @@
 #include "EmotionSubsystem.generated.h"
 
 class UEmotionComponent;
+class UEmotionLibrary;
+class UEmotionData;
 
 /**
  * Subsystem for tracking and querying EmotionComponents with emotion tags
+ * Provides global access to emotion system functionality
  */
 UCLASS()
 class EMOTIONENGINE_API UEmotionSubsystem : public UWorldSubsystem
@@ -58,14 +61,52 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
 	TArray<UEmotionComponent*> GetComponentsSortedByEmotionIntensity(const FGameplayTag& EmotionTag) const;
 
+	// Find all EmotionComponents within a VA coordinate radius
+	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+	TArray<UEmotionComponent*> FindComponentsInVARadius(const FVector2D& VACoordinate, float Radius) const;
+
+	// Find the closest EmotionComponent to a VA coordinate
+	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+	UEmotionComponent* FindClosestComponentToVACoordinate(const FVector2D& VACoordinate) const;
+
+	// Apply an emotional influence to all components in a radius
+	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+	void ApplyEmotionalInfluenceInRadius(AActor* Influencer, const FGameplayTag& EmotionTag, float Intensity, 
+		const FVector& Location, float Radius, bool bAdditive = true);
+
+	// Apply an emotional influence to all components with a specific tag
+	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+	void ApplyEmotionalInfluenceToTag(AActor* Influencer, const FGameplayTag& TargetTag, 
+		const FGameplayTag& EmotionTag, float Intensity, bool bAdditive = true);
+
+	// Get the default emotion library
+	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+	UEmotionLibrary* GetDefaultEmotionLibrary() const;
+
+	// Set the default emotion library
+	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+	void SetDefaultEmotionLibrary(UEmotionLibrary* NewLibrary);
+
 	// Debug function to log all registered components and their emotions
 	UFUNCTION(BlueprintCallable, Category = "EmotionSystem|Debug")
 	void DebugLogAllEmotions() const;
 
+	// Debug function to visualize all components' VA coordinates
+	UFUNCTION(BlueprintCallable, Category = "EmotionSystem|Debug")
+	void DebugVisualizeVACoordinates(float Duration = 5.0f) const;
+
 private:
 	// All registered EmotionComponents
+	UPROPERTY()
 	TArray<TWeakObjectPtr<UEmotionComponent>> RegisteredComponents;
+
+	// Default emotion library to use if none is specified
+	UPROPERTY()
+	TObjectPtr<UEmotionLibrary> DefaultEmotionLibrary;
 
 	// Helper function to filter components by tag
 	TArray<UEmotionComponent*> FilterComponentsByTag(TFunctionRef<bool(UEmotionComponent*)> Predicate) const;
+
+	// Helper function to get valid components
+	TArray<UEmotionComponent*> GetValidComponents() const;
 };
