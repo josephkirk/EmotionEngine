@@ -2,6 +2,8 @@
 
 A powerful Unreal Engine 5.5 plugin that brings emotional intelligence to your game characters, creating more engaging and immersive experiences.
 
+![Emotion Assets](docs/images/Assets.png)
+
 ## Vision & Goals
 
 The Emotion Engine aims to revolutionize character behavior in games by implementing a psychologically-grounded emotional system. Our goals are:
@@ -11,6 +13,7 @@ The Emotion Engine aims to revolutionize character behavior in games by implemen
 3. **Simplify Complex Psychology**: Make sophisticated emotional modeling accessible to game developers without requiring expertise in psychology.
 4. **Support Narrative Design**: Give writers and narrative designers powerful tools to craft emotionally resonant stories.
 5. **Enable Emergent Gameplay**: Allow for unexpected character behaviors driven by emotional states rather than scripted responses.
+
 
 ## Design Philosophy
 
@@ -44,6 +47,8 @@ Just as in real life, emotions can blend together to create complex feelings. Fo
 - Sadness + Disgust might create Remorse
 
 This allows for a wide spectrum of emotional responses from a relatively small set of core emotions.
+
+![Combined Emotions](docs/images/CombinedEmotions.png)
 
 ## Practical Applications
 
@@ -87,6 +92,9 @@ Each emotion is defined by several key properties:
 - **Influence Radius**: How far the emotion can affect other emotions
 - **VA Coordinate**: Where this emotion sits in the valence-arousal space
 
+![Emotion Definition](docs/images/EmotionDefinition.png)
+
+
 ### Emotional Stimuli
 
 Anything in the game world can trigger emotions:
@@ -118,6 +126,12 @@ Anything in the game world can trigger emotions:
 In your character blueprint:
 - Add the Emotion Component
 - Optionally assign a custom Emotion Library asset (or use the default)
+
+![Emotion Component](docs/images/EmotionComponents.png)
+
+![Emotion Library](docs/images/EmotionLibrary.png)
+
+![Emotion Tendencies](docs/images/EmotionalTendencies.png)
 
 #### 2. Trigger Emotions
 
