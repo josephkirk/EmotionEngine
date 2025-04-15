@@ -249,7 +249,7 @@ TArray<AActor*> UEmotionFunctionLibrary::FindActorsWithEmotionInRadius(
 	return Result;
 }
 
-UEmotionData* UEmotionFunctionLibrary::FindClosestEmotionToCoordinate(
+UEmotionDefinition* UEmotionFunctionLibrary::FindClosestEmotionToCoordinate(
 	const FVector2D& VACoordinate,
 	UEmotionLibrary* EmotionLibrary)
 {

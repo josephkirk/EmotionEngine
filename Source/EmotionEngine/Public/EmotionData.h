@@ -6,7 +6,7 @@
 #include "Emotion.h"
 #include "EmotionData.generated.h"
 
-class UEmotionData;
+class UEmotionDefinition;
 class UEmotionLibrary;
 
 /**
@@ -23,7 +23,7 @@ public:
 
     // Emotion Result from the combination, we only accept Combined Emotion Type here.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
-    UEmotionData* ResultEmotion;
+    UEmotionDefinition* ResultEmotion;
 };
 
 /** 
@@ -65,12 +65,12 @@ public:
  * Data asset containing information about a single emotion
  */
 UCLASS(BlueprintType)
-class EMOTIONENGINE_API UEmotionData : public UDataAsset
+class EMOTIONENGINE_API UEmotionDefinition : public UDataAsset
 {
     GENERATED_BODY()
 
 public:
-    UEmotionData();
+    UEmotionDefinition();
     
     // The emotion this data asset represents
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
@@ -120,11 +120,11 @@ class EMOTIONENGINE_API UEmotionLibrary : public UDataAsset
 public:
     // All emotions in this library
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
-    TArray<UEmotionData*> Emotions;
+    TArray<UEmotionDefinition*> Emotions;
     
     // Core emotions (the primary emotions in Plutchik's wheel), only accept Core Emotion Type
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
-    TArray<UEmotionData*> CoreEmotions;
+    TArray<UEmotionDefinition*> CoreEmotions;
 
     // Emotion combinations mappings
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
@@ -136,21 +136,21 @@ public:
 
     // Get an emotion data by its tag
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
-    UEmotionData* GetEmotionByTag(const FGameplayTag& EmotionTag) const;
+    UEmotionDefinition* GetEmotionByTag(const FGameplayTag& EmotionTag) const;
     
     // Get all emotions that are opposites of the given emotion
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
-    TArray<UEmotionData*> GetOppositeEmotions(const FGameplayTag& EmotionTag) const;
+    TArray<UEmotionDefinition*> GetOppositeEmotions(const FGameplayTag& EmotionTag) const;
     
     // Get all emotions that are adjacent to the given emotion (closest in VACoordinate)
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
-    TArray<UEmotionData*> GetAdjacentEmotions(const FGameplayTag& EmotionTag, float MaxDistance = 0.3f) const;
+    TArray<UEmotionDefinition*> GetAdjacentEmotions(const FGameplayTag& EmotionTag, float MaxDistance = 0.3f) const;
     
     // Get the result of combining two emotions
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
-    UEmotionData* GetCombinedEmotion(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2) const;
+    UEmotionDefinition* GetCombinedEmotion(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2) const;
     
     // Find emotions within a certain radius in the VA space
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
-    TArray<UEmotionData*> FindEmotionsInRadius(const FVector2D& VACoordinate, float Radius) const;
+    TArray<UEmotionDefinition*> FindEmotionsInRadius(const FVector2D& VACoordinate, float Radius) const;
 };

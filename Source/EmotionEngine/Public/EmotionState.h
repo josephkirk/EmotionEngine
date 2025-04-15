@@ -19,7 +19,7 @@ struct EMOTIONENGINE_API FActiveEmotion
 public:
     // The emotion data asset
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="EmotionSystem")
-    TObjectPtr<UEmotionData> EmotionData;
+    TObjectPtr<UEmotionDefinition> EmotionData;
     
     // Current intensity of this emotion (0.0 to 100.0)
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="EmotionSystem")
@@ -31,7 +31,7 @@ public:
     
     FActiveEmotion() : EmotionData(nullptr), Intensity(0.0f), LastUpdateTime(0.0f) {}
     
-    FActiveEmotion(UEmotionData* InEmotionData, float InIntensity, float InTime)
+    FActiveEmotion(UEmotionDefinition* InEmotionData, float InIntensity, float InTime)
         : EmotionData(InEmotionData), Intensity(InIntensity), LastUpdateTime(InTime) {}
 };
 
@@ -92,7 +92,7 @@ public:
     
     // Find emotions within a certain radius in the VA space
     UFUNCTION(BlueprintCallable, Category="EmotionSystem")
-    TArray<UEmotionData*> FindEmotionsInRadius(float Radius) const;
+    TArray<UEmotionDefinition*> FindEmotionsInRadius(float Radius) const;
 
 private:
     UPROPERTY()

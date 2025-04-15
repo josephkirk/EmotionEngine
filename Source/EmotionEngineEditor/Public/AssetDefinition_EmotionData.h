@@ -10,9 +10,9 @@ class UAssetDefinition_EmotionData : public UAssetDefinition_DataAsset
 	GENERATED_BODY()
 
 protected:
-	virtual FText GetAssetDisplayName() const override { return NSLOCTEXT("AssetDefinition", "EmotionData", "Emotion Data"); }
+	virtual FText GetAssetDisplayName() const override { return NSLOCTEXT("AssetDefinition", "EmotionDefinition", "Emotion Definition"); }
 	virtual FLinearColor GetAssetColor() const override { return FLinearColor(FColor(127, 255, 255)); }
-	virtual TSoftClassPtr<UObject> GetAssetClass() const override { return UEmotionData::StaticClass(); }
+	virtual TSoftClassPtr<UObject> GetAssetClass() const override { return UEmotionDefinition::StaticClass(); }
 
 };
 

@@ -10,14 +10,14 @@
  * Factory for creating Emotion Data Assets
  */
 UCLASS()
-class EMOTIONENGINEEDITOR_API UEmotionData_Factory : public UFactory
+class EMOTIONENGINEEDITOR_API UEmotionDefinition_Factory : public UFactory
 {
     GENERATED_UCLASS_BODY()
 
 public:
 
     UPROPERTY(EditAnywhere, Category = EmotionEngine)
-    TSubclassOf<UEmotionData> EmotionData;
+    TSubclassOf<UEmotionDefinition> EmotionData;
     
     virtual UObject* FactoryCreateNew(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn) override;
     virtual bool ShouldShowInNewMenu() const override;

@@ -1,8 +1,8 @@
 #include "EmotionData.h"
 #include "Kismet/KismetMathLibrary.h"
 
-// UEmotionData implementation
-UEmotionData::UEmotionData()
+// UEmotionDefinition implementation
+UEmotionDefinition::UEmotionDefinition()
 {
     // Initialize with default values
     Emotion.Intensity = 0.0f;
@@ -12,12 +12,12 @@ UEmotionData::UEmotionData()
     Color = FLinearColor::White;
 }
 
-FGameplayTagContainer UEmotionData::GetAllEmotionTags() const
+FGameplayTagContainer UEmotionDefinition::GetAllEmotionTags() const
 {
     return Emotion.GetAllEmotionTags();
 }
 
-FGameplayTagContainer UEmotionData::UpdateIntensity(float DeltaIntensity)
+FGameplayTagContainer UEmotionDefinition::UpdateIntensity(float DeltaIntensity)
 {
     // Store previous tags to compare later
     FGameplayTagContainer PreviousTags = GetAllEmotionTags();
@@ -41,7 +41,7 @@ FGameplayTagContainer UEmotionData::UpdateIntensity(float DeltaIntensity)
     return TriggeredTags;
 }
 
-void UEmotionData::ApplyDecay(float DeltaTime)
+void UEmotionDefinition::ApplyDecay(float DeltaTime)
 {
     // Apply decay based on the decay rate and time passed
     if (Emotion.Intensity > 0.0f && Emotion.DecayRate > 0.0f)
@@ -51,15 +51,15 @@ void UEmotionData::ApplyDecay(float DeltaTime)
     }
 }
 
-bool UEmotionData::IsOppositeEmotion(const FGameplayTag& EmotionTag) const
+bool UEmotionDefinition::IsOppositeEmotion(const FGameplayTag& EmotionTag) const
 {
     return Emotion.OppositeEmotionTag.IsValid() && Emotion.OppositeEmotionTag == EmotionTag;
 }
 
 // UEmotionLibrary implementation
-UEmotionData* UEmotionLibrary::GetEmotionByTag(const FGameplayTag& EmotionTag) const
+UEmotionDefinition* UEmotionLibrary::GetEmotionByTag(const FGameplayTag& EmotionTag) const
 {
-    for (UEmotionData* EmotionData : Emotions)
+    for (UEmotionDefinition* EmotionData : Emotions)
     {
         if (EmotionData && EmotionData->Emotion.Tag == EmotionTag)
         {
@@ -69,17 +69,17 @@ UEmotionData* UEmotionLibrary::GetEmotionByTag(const FGameplayTag& EmotionTag) c
     return nullptr;
 }
 
-TArray<UEmotionData*> UEmotionLibrary::GetOppositeEmotions(const FGameplayTag& EmotionTag) const
+TArray<UEmotionDefinition*> UEmotionLibrary::GetOppositeEmotions(const FGameplayTag& EmotionTag) const
 {
-    TArray<UEmotionData*> Result;
-    UEmotionData* SourceEmotion = GetEmotionByTag(EmotionTag);
+    TArray<UEmotionDefinition*> Result;
+    UEmotionDefinition* SourceEmotion = GetEmotionByTag(EmotionTag);
     
     if (SourceEmotion)
     {
         // Get the direct opposite
         if (SourceEmotion->Emotion.OppositeEmotionTag.IsValid())
         {
-            UEmotionData* OppositeEmotion = GetEmotionByTag(SourceEmotion->Emotion.OppositeEmotionTag);
+            UEmotionDefinition* OppositeEmotion = GetEmotionByTag(SourceEmotion->Emotion.OppositeEmotionTag);
             if (OppositeEmotion)
             {
                 Result.Add(OppositeEmotion);
@@ -90,15 +90,15 @@ TArray<UEmotionData*> UEmotionLibrary::GetOppositeEmotions(const FGameplayTag& E
     return Result;
 }
 
-TArray<UEmotionData*> UEmotionLibrary::GetAdjacentEmotions(const FGameplayTag& EmotionTag, float MaxDistance) const
+TArray<UEmotionDefinition*> UEmotionLibrary::GetAdjacentEmotions(const FGameplayTag& EmotionTag, float MaxDistance) const
 {
-    TArray<UEmotionData*> Result;
-    UEmotionData* SourceEmotion = GetEmotionByTag(EmotionTag);
+    TArray<UEmotionDefinition*> Result;
+    UEmotionDefinition* SourceEmotion = GetEmotionByTag(EmotionTag);
     
     if (SourceEmotion)
     {
         // Find emotions within the specified distance in VA space
-        for (UEmotionData* EmotionData : Emotions)
+        for (UEmotionDefinition* EmotionData : Emotions)
         {
             if (EmotionData && EmotionData != SourceEmotion)
             {
@@ -114,7 +114,7 @@ TArray<UEmotionData*> UEmotionLibrary::GetAdjacentEmotions(const FGameplayTag& E
         }
         
         // Sort by distance (closest first)
-        Result.Sort([SourceEmotion](const UEmotionData& A, const UEmotionData& B)
+        Result.Sort([SourceEmotion](const UEmotionDefinition& A, const UEmotionDefinition& B)
         {
             float DistanceA = FVector2D::Distance(SourceEmotion->Emotion.VACoordinate, A.Emotion.VACoordinate);
             float DistanceB = FVector2D::Distance(SourceEmotion->Emotion.VACoordinate, B.Emotion.VACoordinate);
@@ -125,7 +125,7 @@ TArray<UEmotionData*> UEmotionLibrary::GetAdjacentEmotions(const FGameplayTag& E
     return Result;
 }
 
-UEmotionData* UEmotionLibrary::GetCombinedEmotion(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2) const
+UEmotionDefinition* UEmotionLibrary::GetCombinedEmotion(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2) const
 {
     // Check all combination mappings
     for (const UCombinedEmotionMapping* Mapping : CombineEmotions)
@@ -152,12 +152,12 @@ UEmotionData* UEmotionLibrary::GetCombinedEmotion(const FGameplayTag& EmotionTag
     return nullptr;
 }
 
-TArray<UEmotionData*> UEmotionLibrary::FindEmotionsInRadius(const FVector2D& VACoordinate, float Radius) const
+TArray<UEmotionDefinition*> UEmotionLibrary::FindEmotionsInRadius(const FVector2D& VACoordinate, float Radius) const
 {
-    TArray<UEmotionData*> Result;
+    TArray<UEmotionDefinition*> Result;
     
     // Find all emotions within the specified radius in VA space
-    for (UEmotionData* EmotionData : Emotions)
+    for (UEmotionDefinition* EmotionData : Emotions)
     {
         if (EmotionData)
         {
@@ -173,7 +173,7 @@ TArray<UEmotionData*> UEmotionLibrary::FindEmotionsInRadius(const FVector2D& VAC
     }
     
     // Sort by distance (closest first)
-    Result.Sort([VACoordinate](const UEmotionData& A, const UEmotionData& B)
+    Result.Sort([VACoordinate](const UEmotionDefinition& A, const UEmotionDefinition& B)
     {
         float DistanceA = FVector2D::Distance(VACoordinate, A.Emotion.VACoordinate);
         float DistanceB = FVector2D::Distance(VACoordinate, B.Emotion.VACoordinate);

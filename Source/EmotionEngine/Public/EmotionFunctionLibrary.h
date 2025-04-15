@@ -123,7 +123,7 @@ public:
 	 * @return The closest emotion data, or nullptr if none found
 	 */
 	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
-	static UEmotionData* FindClosestEmotionToCoordinate(
+	static UEmotionDefinition* FindClosestEmotionToCoordinate(
 		const FVector2D& VACoordinate,
 		UEmotionLibrary* EmotionLibrary = nullptr);
 

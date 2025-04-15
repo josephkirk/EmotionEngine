@@ -2,25 +2,25 @@
 #include "EmotionEngineEditor.h"
 
 // Emotion Data Factory
-UEmotionData_Factory::UEmotionData_Factory(const class FObjectInitializer& OBJ) : Super(OBJ)
+UEmotionDefinition_Factory::UEmotionDefinition_Factory(const class FObjectInitializer& OBJ) : Super(OBJ)
 {
     bCreateNew = true;
     bEditAfterNew = true;
-    SupportedClass = UEmotionData::StaticClass();
+    SupportedClass = UEmotionDefinition::StaticClass();
 }
 
-UObject* UEmotionData_Factory::FactoryCreateNew(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn)
+UObject* UEmotionDefinition_Factory::FactoryCreateNew(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn)
 {
-    UEmotionData* NewEmotionData = NewObject<UEmotionData>(InParent, UEmotionData::StaticClass(), InName, Flags | RF_Transactional, Context);
+    UEmotionDefinition* NewEmotionData = NewObject<UEmotionDefinition>(InParent, UEmotionDefinition::StaticClass(), InName, Flags | RF_Transactional, Context);
     return NewEmotionData;
 }
 
-bool UEmotionData_Factory::ShouldShowInNewMenu() const
+bool UEmotionDefinition_Factory::ShouldShowInNewMenu() const
 {
     return true;
 }
 
-uint32 UEmotionData_Factory::GetMenuCategories() const
+uint32 UEmotionDefinition_Factory::GetMenuCategories() const
 {
     return EAssetTypeCategories::Gameplay;
 }

@@ -1,5 +1,5 @@
 #include "EmotionState.h"
-#include "EmotionData.h" // Include for UEmotionLibrary and UEmotionData
+#include "EmotionData.h" // Include for UEmotionLibrary and UEmotionDefinition
 #include "GameplayTagsManager.h" // Include for tag manipulation
 #include "Kismet/GameplayStatics.h" // For GetTimeSeconds
 
@@ -53,7 +53,7 @@ void UEmotionState::AddEmotion(const FGameplayTag& InTag, float InIntensity)
     }
 
     // Get the emotion data for this tag
-    UEmotionData* EmotionData = EmotionLibraryInstance->GetEmotionByTag(InTag);
+    UEmotionDefinition* EmotionData = EmotionLibraryInstance->GetEmotionByTag(InTag);
     if (!EmotionData)
     {
         UE_LOG(LogTemp, Warning, TEXT("UEmotionState::AddEmotion - Could not find emotion data for tag %s"), *InTag.ToString());
@@ -105,7 +105,7 @@ void UEmotionState::SetIntensity(const FGameplayTag& InTag, float InIntensity)
     }
 
     // Get the emotion data for this tag
-    UEmotionData* EmotionData = EmotionLibraryInstance->GetEmotionByTag(InTag);
+    UEmotionDefinition* EmotionData = EmotionLibraryInstance->GetEmotionByTag(InTag);
     if (!EmotionData)
     {
         UE_LOG(LogTemp, Warning, TEXT("UEmotionState::SetIntensity - Could not find emotion data for tag %s"), *InTag.ToString());
@@ -160,11 +160,11 @@ void UEmotionState::GetDominantEmotion(FGameplayTag& OutEmotionTag, float& OutIn
     }
 }
 
-TArray<UEmotionData*> UEmotionState::FindEmotionsInRadius(float Radius) const
+TArray<UEmotionDefinition*> UEmotionState::FindEmotionsInRadius(float Radius) const
 {
     if (!EmotionLibraryInstance)
     {
-        return TArray<UEmotionData*>();
+        return TArray<UEmotionDefinition*>();
     }
     
     return EmotionLibraryInstance->FindEmotionsInRadius(VACoordinate, Radius);
@@ -285,7 +285,7 @@ void UEmotionState::HandleOppositeEmotions(const FGameplayTag& InTag, float InIn
     }
     
     // Get the emotion data for this tag
-    UEmotionData* EmotionData = EmotionLibraryInstance->GetEmotionByTag(InTag);
+    UEmotionDefinition* EmotionData = EmotionLibraryInstance->GetEmotionByTag(InTag);
     if (!EmotionData || !EmotionData->Emotion.OppositeEmotionTag.IsValid())
     {
         return;

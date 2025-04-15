@@ -83,7 +83,7 @@ public:
 
 	// Find emotions within a certain radius in the VA space
 	UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
-	TArray<UEmotionData*> FindEmotionsInRadius(float Radius) const;
+	TArray<UEmotionDefinition*> FindEmotionsInRadius(float Radius) const;
 
 	// Event triggered when an emotion changes
 	UPROPERTY(BlueprintAssignable, Category = "EmotionSystem")

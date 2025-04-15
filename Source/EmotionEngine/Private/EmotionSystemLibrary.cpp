@@ -75,7 +75,7 @@ void UEmotionSystemLibrary::GetDominantEmotion(UEmotionState* EmotionState, FGam
     }
 }
 
-UEmotionData* UEmotionSystemLibrary::GetEmotionData(const FGameplayTag& EmotionTag, UEmotionLibrary* EmotionLibrary)
+UEmotionDefinition* UEmotionSystemLibrary::GetEmotionData(const FGameplayTag& EmotionTag, UEmotionLibrary* EmotionLibrary)
 {
     EmotionLibrary = GetLibraryOrDefault(EmotionLibrary);
     
@@ -93,13 +93,13 @@ bool UEmotionSystemLibrary::AreEmotionsOpposite(const FGameplayTag& EmotionTag1,
     
     if (EmotionLibrary && EmotionTag1.IsValid() && EmotionTag2.IsValid())
     {
-        UEmotionData* Emotion1 = EmotionLibrary->GetEmotionByTag(EmotionTag1);
+        UEmotionDefinition* Emotion1 = EmotionLibrary->GetEmotionByTag(EmotionTag1);
         if (Emotion1 && Emotion1->Emotion.OppositeEmotionTag == EmotionTag2)
         {
             return true;
         }
         
-        UEmotionData* Emotion2 = EmotionLibrary->GetEmotionByTag(EmotionTag2);
+        UEmotionDefinition* Emotion2 = EmotionLibrary->GetEmotionByTag(EmotionTag2);
         if (Emotion2 && Emotion2->Emotion.OppositeEmotionTag == EmotionTag1)
         {
             return true;
@@ -124,7 +124,7 @@ FGameplayTag UEmotionSystemLibrary::GetCombinedEmotion(const FGameplayTag& Emoti
     
     if (EmotionLibrary && EmotionTag1.IsValid() && EmotionTag2.IsValid())
     {
-        UEmotionData* CombinedEmotion = EmotionLibrary->GetCombinedEmotion(EmotionTag1, EmotionTag2);
+        UEmotionDefinition* CombinedEmotion = EmotionLibrary->GetCombinedEmotion(EmotionTag1, EmotionTag2);
         if (CombinedEmotion)
         {
             return CombinedEmotion->Emotion.Tag;
@@ -140,7 +140,7 @@ FVector2D UEmotionSystemLibrary::GetEmotionVACoordinate(const FGameplayTag& Emot
     
     if (EmotionLibrary && EmotionTag.IsValid())
     {
-        UEmotionData* EmotionData = EmotionLibrary->GetEmotionByTag(EmotionTag);
+        UEmotionDefinition* EmotionData = EmotionLibrary->GetEmotionByTag(EmotionTag);
         if (EmotionData)
         {
             return EmotionData->Emotion.VACoordinate;
@@ -150,7 +150,7 @@ FVector2D UEmotionSystemLibrary::GetEmotionVACoordinate(const FGameplayTag& Emot
     return FVector2D::ZeroVector;
 }
 
-TArray<UEmotionData*> UEmotionSystemLibrary::GetEmotionsInRadius(const FVector2D& VACoordinate, float Radius, UEmotionLibrary* EmotionLibrary)
+TArray<UEmotionDefinition*> UEmotionSystemLibrary::GetEmotionsInRadius(const FVector2D& VACoordinate, float Radius, UEmotionLibrary* EmotionLibrary)
 {
     EmotionLibrary = GetLibraryOrDefault(EmotionLibrary);
     
@@ -159,7 +159,7 @@ TArray<UEmotionData*> UEmotionSystemLibrary::GetEmotionsInRadius(const FVector2D
         return EmotionLibrary->FindEmotionsInRadius(VACoordinate, Radius);
     }
     
-    return TArray<UEmotionData*>();
+    return TArray<UEmotionDefinition*>();
 }
 
 float UEmotionSystemLibrary::GetEmotionDistance(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2, UEmotionLibrary* EmotionLibrary)
@@ -168,8 +168,8 @@ float UEmotionSystemLibrary::GetEmotionDistance(const FGameplayTag& EmotionTag1,
     
     if (EmotionLibrary && EmotionTag1.IsValid() && EmotionTag2.IsValid())
     {
-        UEmotionData* Emotion1 = EmotionLibrary->GetEmotionByTag(EmotionTag1);
-        UEmotionData* Emotion2 = EmotionLibrary->GetEmotionByTag(EmotionTag2);
+        UEmotionDefinition* Emotion1 = EmotionLibrary->GetEmotionByTag(EmotionTag1);
+        UEmotionDefinition* Emotion2 = EmotionLibrary->GetEmotionByTag(EmotionTag2);
         
         if (Emotion1 && Emotion2)
         {
@@ -220,17 +220,17 @@ void UEmotionSystemLibrary::SetStateVACoordinate(UEmotionState* EmotionState, co
     }
 }
 
-UEmotionData* UEmotionSystemLibrary::FindClosestEmotion(const FVector2D& VACoordinate, UEmotionLibrary* EmotionLibrary)
+UEmotionDefinition* UEmotionSystemLibrary::FindClosestEmotion(const FVector2D& VACoordinate, UEmotionLibrary* EmotionLibrary)
 {
     EmotionLibrary = GetLibraryOrDefault(EmotionLibrary);
     
     if (EmotionLibrary)
     {
-        UEmotionData* ClosestEmotion = nullptr;
+        UEmotionDefinition* ClosestEmotion = nullptr;
         float ClosestDistance = MAX_FLT;
         
         // Check all emotions in the library
-        for (UEmotionData* EmotionData : EmotionLibrary->Emotions)
+        for (UEmotionDefinition* EmotionData : EmotionLibrary->Emotions)
         {
             if (EmotionData)
             {

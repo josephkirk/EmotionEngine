@@ -199,9 +199,9 @@ void UEmotionComponent::SetInfluenceRadius(float NewRadius)
 	EmotionState->InfluenceRadius = FMath::Max(0.0f, NewRadius);
 }
 
-TArray<UEmotionData*> UEmotionComponent::FindEmotionsInRadius(float Radius) const
+TArray<UEmotionDefinition*> UEmotionComponent::FindEmotionsInRadius(float Radius) const
 {
-	return EmotionState ? EmotionState->FindEmotionsInRadius(Radius) : TArray<UEmotionData*>();
+	return EmotionState ? EmotionState->FindEmotionsInRadius(Radius) : TArray<UEmotionDefinition*>();
 }
 
 FString UEmotionComponent::GetOwnerName() const

@@ -37,7 +37,7 @@ public:
     
     // Get emotion data for a specific emotion tag
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
-    static UEmotionData* GetEmotionData(const FGameplayTag& EmotionTag, UEmotionLibrary* EmotionLibrary = nullptr);
+    static UEmotionDefinition* GetEmotionData(const FGameplayTag& EmotionTag, UEmotionLibrary* EmotionLibrary = nullptr);
     
     // Check if two emotions are opposite
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
@@ -57,7 +57,7 @@ public:
     
     // Get emotions within a radius of a VA coordinate
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
-    static TArray<UEmotionData*> GetEmotionsInRadius(const FVector2D& VACoordinate, float Radius, UEmotionLibrary* EmotionLibrary = nullptr);
+    static TArray<UEmotionDefinition*> GetEmotionsInRadius(const FVector2D& VACoordinate, float Radius, UEmotionLibrary* EmotionLibrary = nullptr);
     
     // Calculate the distance between two emotions in VA space
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
@@ -81,5 +81,5 @@ public:
     
     // Find the closest emotion to a VA coordinate
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
-    static UEmotionData* FindClosestEmotion(const FVector2D& VACoordinate, UEmotionLibrary* EmotionLibrary = nullptr);
+    static UEmotionDefinition* FindClosestEmotion(const FVector2D& VACoordinate, UEmotionLibrary* EmotionLibrary = nullptr);
 };

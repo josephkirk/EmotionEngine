@@ -7,7 +7,7 @@
 
 class UEmotionComponent;
 class UEmotionLibrary;
-class UEmotionData;
+class UEmotionDefinition;
 
 /**
  * Subsystem for tracking and querying EmotionComponents with emotion tags
