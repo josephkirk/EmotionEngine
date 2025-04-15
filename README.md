@@ -31,6 +31,8 @@ Emotions exist in a 2D space where:
 
 This allows for natural transitions between emotional states and nuanced emotional responses.
 
+![Valence-Arousal](docs/images/VA.png)
+
 ### 3. Dynamic Emotional Physics
 
 The system uses a "spring model" where:
