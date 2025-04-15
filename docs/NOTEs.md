@@ -6,8 +6,7 @@
 - An external stimulus ( dialogue , event, object ...) can trigger an emotion with intensity and add it to EmotionComponent.
 - An active emotion with intensity not zero pull the EmotionComponent's VaCoordinate toward it with pull strength that stronger the further away the target V-A using linear spring model.
 - Emotion can link to another emotion with link strength from 1-100, a link strength reaching a threshold range will trigger emotion variant related to source emotion.
-- An emotion can combine with another emotion to create a different emotion combine of the 2 emotion ( reference pluchik's wheel of emotion). t
-- An emotion have opposite emotion. Adding intensity to one will substract another. Emotions that is opposite can't be linked
+- An emotion can combine with another emotion to create a different emotion combine of the 2 emotion ( reference pluchik's wheel of emotion). 
 
 ## Components:
 EmotionState: Manages the internal state of emotions
