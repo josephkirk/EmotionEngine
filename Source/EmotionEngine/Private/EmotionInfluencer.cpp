@@ -12,6 +12,10 @@ AEmotionInfluencer::AEmotionInfluencer()
 
 	// Default values
 	EmotionalInfluenceStrength = 1.0f;
+	
+	// Initialize stimulus context
+	StimulusContext.SourceActor = this;
+	StimulusContext.ContextIntensityModifier = 1.0f;
 }
 
 bool AEmotionInfluencer::ApplyEmotionToTarget_Implementation(AActor* TargetActor, const FGameplayTag& EmotionTag, float Intensity, bool bAdditive)
@@ -34,23 +38,11 @@ bool AEmotionInfluencer::ApplyEmotionToTarget_Implementation(AActor* TargetActor
 		return false;
 	}
 
-	// Apply influence strength modifier
-	float ModifiedIntensity = Intensity * EmotionalInfluenceStrength;
+	// Apply influence strength modifier and context modifier
+	float ModifiedIntensity = Intensity * EmotionalInfluenceStrength * StimulusContext.ContextIntensityModifier;
 
-	// Apply the emotion
-	if (bAdditive)
-	{
-		// Get current intensity and add to it
-		float CurrentIntensity = EmotionComponent->GetEmotionIntensity(EmotionTag);
-		EmotionComponent->SetEmotionIntensity(EmotionTag, CurrentIntensity + ModifiedIntensity);
-	}
-	else
-	{
-		// Set directly if not additive
-		EmotionComponent->SetEmotionIntensity(EmotionTag, ModifiedIntensity);
-	}
-
-	return true;
+	// Use the ReceiveEmotionalInfluence method to properly handle the stimulus
+	return EmotionComponent->ReceiveEmotionalInfluence(StimulusContext.SourceActor ? StimulusContext.SourceActor : this, EmotionTag, ModifiedIntensity, bAdditive);
 }
 
 int32 AEmotionInfluencer::ApplyEmotionInRadius_Implementation(const FVector& Origin, float Radius, const FGameplayTag& EmotionTag, float Intensity, bool bAdditive, bool bRequiresLineOfSight)
@@ -138,6 +130,71 @@ float AEmotionInfluencer::GetEmotionalInfluenceStrength_Implementation() const
 FGameplayTagContainer AEmotionInfluencer::GetAvailableEmotions_Implementation() const
 {
 	return AvailableEmotions;
+}
+
+FGameplayTagContainer AEmotionInfluencer::GetStimulusContext_Implementation() const
+{
+	return StimulusContext.ContextTags;
+}
+
+AActor* AEmotionInfluencer::GetStimulusSource_Implementation() const
+{
+	return StimulusContext.SourceActor ? StimulusContext.SourceActor : const_cast<AEmotionInfluencer*>(this);
+}
+
+void AEmotionInfluencer::SetStimulusContext(const FEmotionStimulusContext& NewContext)
+{
+	StimulusContext = NewContext;
+	
+	// If no source actor is specified, use this influencer as the source
+	if (!StimulusContext.SourceActor)
+	{
+		StimulusContext.SourceActor = this;
+	}
+}
+
+bool AEmotionInfluencer::ApplyStimulusToTarget(AActor* TargetActor, const FGameplayTag& EmotionTag, float Intensity, const FEmotionStimulusContext& Context, bool bAdditive)
+{
+	if (!TargetActor || !EmotionTag.IsValid())
+	{
+		return false;
+	}
+	
+	// Store the original context
+	FEmotionStimulusContext OriginalContext = StimulusContext;
+	
+	// Set the new context temporarily
+	SetStimulusContext(Context);
+	
+	// Apply the emotion with the new context
+	bool Result = ApplyEmotionToTarget(TargetActor, EmotionTag, Intensity, bAdditive);
+	
+	// Restore the original context
+	SetStimulusContext(OriginalContext);
+	
+	return Result;
+}
+
+int32 AEmotionInfluencer::ApplyStimulusInRadius(const FVector& Origin, float Radius, const FGameplayTag& EmotionTag, float Intensity, const FEmotionStimulusContext& Context, bool bAdditive, bool bRequiresLineOfSight)
+{
+	if (!EmotionTag.IsValid() || Radius <= 0.0f)
+	{
+		return 0;
+	}
+	
+	// Store the original context
+	FEmotionStimulusContext OriginalContext = StimulusContext;
+	
+	// Set the new context temporarily
+	SetStimulusContext(Context);
+	
+	// Apply the emotion in radius with the new context
+	int32 Result = ApplyEmotionInRadius(Origin, Radius, EmotionTag, Intensity, bAdditive, bRequiresLineOfSight);
+	
+	// Restore the original context
+	SetStimulusContext(OriginalContext);
+	
+	return Result;
 }
 
 UEmotionComponent* AEmotionInfluencer::FindEmotionComponent(AActor* Actor)
