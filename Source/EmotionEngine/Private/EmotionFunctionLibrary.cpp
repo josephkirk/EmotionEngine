@@ -3,6 +3,7 @@
 #include "EmotionInteractionInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "EmotionSystemLibrary.h"
 
 UEmotionComponent* UEmotionFunctionLibrary::FindEmotionComponent(AActor* Actor)
 {
@@ -14,7 +15,7 @@ UEmotionComponent* UEmotionFunctionLibrary::FindEmotionComponent(AActor* Actor)
 	return Actor->FindComponentByClass<UEmotionComponent>();
 }
 
-int32 UEmotionFunctionLibrary::AffectsEmotionsWithFalloffs(
+int32 UEmotionFunctionLibrary::ApplyEmotionWithFalloff(
 	AActor* Influencer,
 	const FVector& Origin,
 	const TArray<AActor*>& Targets,
@@ -101,7 +102,7 @@ int32 UEmotionFunctionLibrary::AffectsEmotionsWithFalloffs(
 	return AffectedCount;
 }
 
-bool UEmotionFunctionLibrary::AffectEmotionOnTarget(
+bool UEmotionFunctionLibrary::ApplyEmotionToTarget(
 	AActor* Influencer,
 	AActor* TargetActor,
 	const FGameplayTag& EmotionTag,
@@ -129,6 +130,213 @@ bool UEmotionFunctionLibrary::AffectEmotionOnTarget(
 
 	// Apply the emotion with the influencer's strength
 	return EmotionComp->ReceiveEmotionalInfluence(Influencer, EmotionTag, Intensity * InfluenceStrength, bAdditive);
+}
+
+bool UEmotionFunctionLibrary::GetActorDominantEmotion(
+	AActor* Actor,
+	FGameplayTag& OutEmotionTag,
+	float& OutIntensity)
+{
+	OutEmotionTag = FGameplayTag();
+	OutIntensity = 0.0f;
+	
+	if (!Actor)
+	{
+		return false;
+	}
+	
+	UEmotionComponent* EmotionComp = FindEmotionComponent(Actor);
+	if (!EmotionComp)
+	{
+		return false;
+	}
+	
+	EmotionComp->GetDominantEmotion(OutEmotionTag, OutIntensity);
+	return OutEmotionTag.IsValid();
+}
+
+bool UEmotionFunctionLibrary::ActorHasEmotionTag(
+	AActor* Actor,
+	const FGameplayTag& EmotionTag)
+{
+	if (!Actor || !EmotionTag.IsValid())
+	{
+		return false;
+	}
+	
+	UEmotionComponent* EmotionComp = FindEmotionComponent(Actor);
+	if (!EmotionComp)
+	{
+		return false;
+	}
+	
+	return EmotionComp->HasEmotionTag(EmotionTag);
+}
+
+FVector2D UEmotionFunctionLibrary::GetActorVACoordinate(AActor* Actor)
+{
+	if (!Actor)
+	{
+		return FVector2D::ZeroVector;
+	}
+	
+	UEmotionComponent* EmotionComp = FindEmotionComponent(Actor);
+	if (!EmotionComp)
+	{
+		return FVector2D::ZeroVector;
+	}
+	
+	return EmotionComp->GetVACoordinate();
+}
+
+TArray<AActor*> UEmotionFunctionLibrary::FindActorsWithEmotionInRadius(
+	const UObject* WorldContextObject,
+	const FVector& Origin,
+	float Radius,
+	const FGameplayTag& EmotionTag,
+	float MinIntensity)
+{
+	TArray<AActor*> Result;
+	
+	if (!WorldContextObject || Radius <= 0.0f)
+	{
+		return Result;
+	}
+	
+	UWorld* World = WorldContextObject->GetWorld();
+	if (!World)
+	{
+		return Result;
+	}
+	
+	// Get all actors with emotion components in the level
+	TArray<AActor*> AllActors;
+	UGameplayStatics::GetAllActorsOfClass(World, AActor::StaticClass(), AllActors);
+	
+	for (AActor* Actor : AllActors)
+	{
+		if (!Actor)
+		{
+			continue;
+		}
+		
+		UEmotionComponent* EmotionComp = FindEmotionComponent(Actor);
+		if (!EmotionComp)
+		{
+			continue;
+		}
+		
+		// Check distance
+		const float Distance = FVector::Distance(Origin, Actor->GetActorLocation());
+		if (Distance > Radius)
+		{
+			continue;
+		}
+		
+		// If an emotion tag is specified, check if the actor has it with sufficient intensity
+		if (EmotionTag.IsValid())
+		{
+			const float Intensity = EmotionComp->GetEmotionIntensity(EmotionTag);
+			if (Intensity < MinIntensity)
+			{
+				continue;
+			}
+		}
+		
+		Result.Add(Actor);
+	}
+	
+	return Result;
+}
+
+UEmotionData* UEmotionFunctionLibrary::FindClosestEmotionToCoordinate(
+	const FVector2D& VACoordinate,
+	UEmotionLibrary* EmotionLibrary)
+{
+	// Use the EmotionSystemLibrary to find the closest emotion
+	return UEmotionSystemLibrary::FindClosestEmotion(VACoordinate, EmotionLibrary);
+}
+
+bool UEmotionFunctionLibrary::CanEmotionsCombine(
+	const FGameplayTag& EmotionTag1,
+	const FGameplayTag& EmotionTag2,
+	UEmotionLibrary* EmotionLibrary)
+{
+	if (!EmotionTag1.IsValid() || !EmotionTag2.IsValid())
+	{
+		return false;
+	}
+	
+	// Get the library or default
+	UEmotionLibrary* Library = UEmotionSystemLibrary::GetLibraryOrDefault(EmotionLibrary);
+	if (!Library)
+	{
+		return false;
+	}
+	
+	// Check if there's a combined emotion result
+	FGameplayTag CombinedTag = UEmotionSystemLibrary::GetCombinedEmotion(EmotionTag1, EmotionTag2, Library);
+	return CombinedTag.IsValid();
+}
+
+int32 UEmotionFunctionLibrary::ApplyEmotionalStimulusInRadius(
+	const UObject* WorldContextObject,
+	AActor* Influencer,
+	const FVector& Origin,
+	float Radius,
+	const FGameplayTag& EmotionTag,
+	float Intensity,
+	bool bRequiresLineOfSight)
+{
+	if (!WorldContextObject || !Influencer || !EmotionTag.IsValid() || Radius <= 0.0f)
+	{
+		return 0;
+	}
+	
+	UWorld* World = WorldContextObject->GetWorld();
+	if (!World)
+	{
+		return 0;
+	}
+	
+	// Get all actors with emotion components in the level
+	TArray<AActor*> AllActors;
+	UGameplayStatics::GetAllActorsOfClass(World, AActor::StaticClass(), AllActors);
+	
+	TArray<AActor*> TargetsInRadius;
+	
+	for (AActor* Actor : AllActors)
+	{
+		if (!Actor || Actor == Influencer)
+		{
+			continue;
+		}
+		
+		UEmotionComponent* EmotionComp = FindEmotionComponent(Actor);
+		if (!EmotionComp)
+		{
+			continue;
+		}
+		
+		// Check distance
+		const float Distance = FVector::Distance(Origin, Actor->GetActorLocation());
+		if (Distance <= Radius)
+		{
+			TargetsInRadius.Add(Actor);
+		}
+	}
+	
+	// Apply emotion to all targets in radius
+	return ApplyEmotionWithFalloff(
+		Influencer,
+		Origin,
+		TargetsInRadius,
+		EmotionTag,
+		Intensity,
+		0.0f, // Inner radius of 0 means full intensity at the center
+		Radius,
+		true, // Additive
+		bRequiresLineOfSight);
 }
 
 bool UEmotionFunctionLibrary::HasLineOfSight(const UWorld* World, const FVector& Start, const FVector& End)
