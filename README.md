@@ -12,15 +12,20 @@ The Emotion Engine plugin implements a flexible emotion system inspired by the p
 - Support for core emotions (e.g., Joy, Trust, Fear, Surprise, Sadness, Disgust, Anger, Anticipation) defined via Gameplay Tags.
 - **Data-Driven Design:** Define emotions, their opposites, intensity ranges, and linked variations using `UEmotionData` assets collected within a `UEmotionLibrary`.
 - **Intensity Variations & Linked Emotions:** Automatically derive secondary emotion tags (e.g., high/low intensity ranges, nuanced variations) based on core emotion intensity and the rules defined in `UEmotionData`.
-- **`UEmotionState`:** Manages the current emotional state of an entity, holding core emotion intensities and the derived gameplay tags.
-- **Core Components (Potentially require updates based on core changes):**
-    - `EmotionComponent`: For attaching emotional capabilities to actors. (Note: API might change based on `UEmotionState` integration).
-    - `EmotionSubsystem`: For tracking and querying emotional entities globally. (Note: API might change).
+- **Valence-Arousal Model:** Emotions are represented in a 2D coordinate system with valence (positive/negative) and arousal (high/low) dimensions.
+- **Core Components with Clear Responsibilities:**
+    - `UEmotionState`: Manages the internal state of emotions, including active emotions, intensity, decay rates, and VA coordinates.
+    - `UEmotionComponent`: Handles actor integration, external influences, and pulls the VA coordinate toward active emotions using a linear spring model.
+    - `UEmotionSystemLibrary`: Provides utility functions for blueprints and optimized helper methods.
     - `EmotionInteractionInterface`: For objects to affect the emotions of others.
     - `EmotionInfluencer`: Base class for creating emotion-affecting objects.
-- Event-based notification system for emotion changes (likely via `UEmotionState` or `EmotionComponent`).
-- Blueprint-friendly API (primarily through `UEmotionState` and potentially `EmotionComponent`).
-- Easy integration with AI behavior trees and other systems.
+- **Dynamic Emotion System:**
+    - Emotions have intensity (1-100), decay rate, influence radius, and VA coordinates.
+    - Active emotions pull the component's VA coordinate with strength proportional to distance.
+    - Emotions can link to other emotions with configurable link strength (1-100).
+    - Emotions can combine to create different emotions based on Plutchik's wheel.
+- Event-based notification system for emotion changes.
+- Blueprint-friendly API for easy integration with AI behavior trees and other systems.
 
 ## Installation
 
@@ -54,11 +59,6 @@ Robert Plutchik's psychoevolutionary theory of emotion proposes eight primary em
 The model also accounts for variations in intensity. This plugin leverages this concept by allowing the definition of different emotion tags triggered at various intensity levels for each core emotion, configured within `UEmotionData`.
 
 ![Plutchik_Dyads](https://upload.wikimedia.org/wikipedia/commons/a/ad/Plutchik_Dyads.svg)
-## Diagram
-
-![Emotion Class Diagram](docs/Emotion_Class_Diagram.png)
-![Emotion Relationship Diagram](docs/emotion_relationship_diagram.png)
-![Emotion Change Sequence Diagram](docs/EmotionChange_SequenceDiagram.png)
 
 # How it might work with other system in Hierarchy StateTree
 
@@ -105,14 +105,17 @@ The `UEmotionState` class is responsible for tracking the active emotions and th
     *   Check for active tags in `EmotionState->EmotionTags`.
     *   Get the intensity of any tag (core, range, or linked) using `EmotionState->GetIntensity(Tag)`. Note that derived tags usually inherit the absolute intensity of their parent core emotion.
 
-### Using `EmotionComponent` (Conceptual - API May Vary)
+### Using `EmotionComponent`
 
-The `EmotionComponent` likely serves as a wrapper around `UEmotionState`, attaching it to an Actor.
+The `UEmotionComponent` attaches emotional capabilities to an Actor, managing the VA coordinate and active emotions.
 
 1.  Add the `UEmotionComponent` to your Actor.
-2.  Configure the component, potentially assigning the `UEmotionLibrary` to use.
-3.  Access the underlying `UEmotionState` via the component (e.g., `EmotionComponent->GetEmotionState()`) to modify or query emotions as described above.
-4.  Listen for events broadcast by the component or the state object when emotions change.
+2.  Configure the component, assigning the `UEmotionLibrary` to use (falls back to default if not specified).
+3.  Access the underlying `UEmotionState` via the component (e.g., `EmotionComponent->GetEmotionState()`) to modify or query emotions.
+4.  Add emotions to the component using `AddEmotion()` which will influence the VA coordinate.
+5.  Emotions will automatically decay over time based on their decay rate.
+6.  The component's VA coordinate is dynamically pulled toward active emotions using a linear spring model.
+7.  Listen for events broadcast by the component when emotions change or thresholds are reached.
 
 ### Using `EmotionSubsystem` (Conceptual - API May Vary)
 
@@ -139,4 +142,9 @@ FGameplayTag HopefulTag = EmotionGameplayTags::Emotion_Variation_Joy_Peaceful_Ho
 
 ---
 
-**Note:** The specific APIs for `EmotionComponent`, `EmotionSubsystem`, `EmotionInteractionInterface`, and `EmotionInfluencer` may need further updates to fully align with the refactored `UEmotionState` and data-driven approach. The examples provided for these components are conceptual based on their likely purpose.
+**Note:** The system has been optimized with clear separation of responsibilities:
+- `UEmotionState`: Manages the internal state of emotions
+- `UEmotionComponent`: Handles actor integration and external influences
+- `UEmotionSystemLibrary`: Provides utility functions for blueprints
+
+The code has been optimized to reduce redundancy, improve null checks, and ensure proper fallback to the default emotion library. Methods like `AreEmotionsAdjacent` now use `GetEmotionDistance` to avoid code duplication, improving overall performance and maintainability.
