@@ -373,6 +373,7 @@ void UEmotionSubsystem::DebugVisualizeVACoordinates(float Duration) const
 			float DominantIntensity;
 			Component->GetDominantEmotion(DominantTag, DominantIntensity);
 			
+			// TODO: Rework this to use emotion data's color instead
 			FColor SphereColor = FColor::White;
 			if (DominantTag == FGameplayTag::RequestGameplayTag(TEXT("Emotion.Joy")))
 			{
