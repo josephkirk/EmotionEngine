@@ -3,6 +3,8 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "JsonObjectConverter.h"
+#include "Serialization/JsonSerializer.h"
+#include "HAL/FileManager.h"
 
 // Emotion Data Factory
 UEmotionDefinition_Factory::UEmotionDefinition_Factory(const class FObjectInitializer& OBJ) : Super(OBJ)
@@ -204,4 +206,158 @@ bool UEmotionLibrary_Factory::ShouldShowInNewMenu() const
 uint32 UEmotionLibrary_Factory::GetMenuCategories() const
 {
     return EAssetTypeCategories::Gameplay;
+}
+
+// Emotion Definition Exporter
+UEmotionDefinition_Exporter::UEmotionDefinition_Exporter(const class FObjectInitializer& OBJ) : Super(OBJ)
+{
+    SupportedClass = UEmotionDefinition::StaticClass();
+    bText = true;  // We're exporting as text (JSON)
+    FormatExtension.Add(TEXT("emo"));
+    FormatDescription.Add(TEXT("Emotion Definition JSON File"));
+}
+
+bool UEmotionDefinition_Exporter::ExportText(const FExportObjectInnerContext* Context, UObject* Object, const TCHAR* Type, FOutputDevice& Ar, FFeedbackContext* Warn, uint32 PortFlags)
+{
+    UEmotionDefinition* EmotionDefinition = Cast<UEmotionDefinition>(Object);
+    if (!EmotionDefinition)
+    {
+        return false;
+    }
+    
+    FString JSONString;
+    if (!ExportToJSON(EmotionDefinition, JSONString))
+    {
+        return false;
+    }
+    
+    Ar.Log(*JSONString);
+    return true;
+}
+
+bool UEmotionDefinition_Exporter::ExportBinary(UObject* Object, const TCHAR* Type, FArchive& Ar, FFeedbackContext* Warn, int32 FileIndex, uint32 PortFlags)
+{
+    UEmotionDefinition* EmotionDefinition = Cast<UEmotionDefinition>(Object);
+    if (!EmotionDefinition)
+    {
+        return false;
+    }
+    
+    FString JSONString;
+    if (!ExportToJSON(EmotionDefinition, JSONString))
+    {
+        return false;
+    }
+    
+    // Convert the string to UTF8 and write to the archive
+    FTCHARToUTF8 UTF8String(*JSONString);
+    Ar.Serialize((UTF8CHAR*)UTF8String.Get(), UTF8String.Length());
+    
+    return true;
+}
+
+bool UEmotionDefinition_Exporter::SupportsObject(UObject* Object) const
+{
+    return Object && Object->IsA(UEmotionDefinition::StaticClass());
+}
+
+bool UEmotionDefinition_Exporter::ExportToJSON(const UEmotionDefinition* EmotionDefinition, FString& OutJSONString)
+{
+    if (!EmotionDefinition)
+    {
+        return false;
+    }
+    
+    // Create a JSON object to hold the data
+    TSharedRef<FJsonObject> JsonObject = MakeShared<FJsonObject>();
+    
+    // Convert basic properties
+    if (!FJsonObjectConverter::UStructToJsonObject(EmotionDefinition->GetClass(), EmotionDefinition, JsonObject, 0, 0))
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to convert EmotionDefinition to JSON object"));
+        return false;
+    }
+    
+    // Handle special cases for GameplayTags that need to be manually processed
+    TSharedPtr<FJsonObject> EmotionObject = JsonObject->GetObjectField(TEXT("Emotion"));
+    if (EmotionObject.IsValid())
+    {
+        // Convert Tag to string
+        if (EmotionDefinition->Emotion.Tag.IsValid())
+        {
+            EmotionObject->SetStringField(TEXT("Tag"), EmotionDefinition->Emotion.Tag.ToString());
+        }
+        
+        // Convert OppositeEmotionTag to string
+        if (EmotionDefinition->Emotion.OppositeEmotionTag.IsValid())
+        {
+            EmotionObject->SetStringField(TEXT("OppositeEmotionTag"), EmotionDefinition->Emotion.OppositeEmotionTag.ToString());
+        }
+        
+        // Process RangeEmotionTags
+        TArray<TSharedPtr<FJsonValue>> RangeEmotionsArray;
+        for (const FEmotionTriggerRange& TriggerRange : EmotionDefinition->Emotion.RangeEmotionTags)
+        {
+            TSharedRef<FJsonObject> RangeObject = MakeShared<FJsonObject>();
+            
+            if (TriggerRange.EmotionTagTriggered.IsValid())
+            {
+                RangeObject->SetStringField(TEXT("EmotionTagTriggered"), TriggerRange.EmotionTagTriggered.ToString());
+            }
+            
+            RangeObject->SetNumberField(TEXT("Start"), TriggerRange.Start);
+            RangeObject->SetNumberField(TEXT("End"), TriggerRange.End);
+            
+            RangeEmotionsArray.Add(MakeShared<FJsonValueObject>(RangeObject));
+        }
+        EmotionObject->SetArrayField(TEXT("RangeEmotionTags"), RangeEmotionsArray);
+        
+        // Process LinkEmotions
+        TArray<TSharedPtr<FJsonValue>> LinksArray;
+        for (const FEmotionLink& Link : EmotionDefinition->Emotion.LinkEmotions)
+        {
+            TSharedRef<FJsonObject> LinkObject = MakeShared<FJsonObject>();
+            
+            if (Link.LinkEmotion.IsValid())
+            {
+                LinkObject->SetStringField(TEXT("LinkEmotion"), Link.LinkEmotion.ToString());
+            }
+            
+            LinkObject->SetNumberField(TEXT("Threshold"), Link.Threshold);
+            
+            // Process VariationEmotionTags
+            TArray<TSharedPtr<FJsonValue>> VariationsArray;
+            for (const FEmotionTriggerRange& TriggerRange : Link.VariationEmotionTags)
+            {
+                TSharedRef<FJsonObject> VariationObject = MakeShared<FJsonObject>();
+                
+                if (TriggerRange.EmotionTagTriggered.IsValid())
+                {
+                    VariationObject->SetStringField(TEXT("EmotionTagTriggered"), TriggerRange.EmotionTagTriggered.ToString());
+                }
+                
+                VariationObject->SetNumberField(TEXT("Start"), TriggerRange.Start);
+                VariationObject->SetNumberField(TEXT("End"), TriggerRange.End);
+                
+                VariationsArray.Add(MakeShared<FJsonValueObject>(VariationObject));
+            }
+            LinkObject->SetArrayField(TEXT("VariationEmotionTags"), VariationsArray);
+            
+            LinksArray.Add(MakeShared<FJsonValueObject>(LinkObject));
+        }
+        EmotionObject->SetArrayField(TEXT("LinkEmotions"), LinksArray);
+        
+        // Update the Emotion field in the main JSON object
+        JsonObject->SetObjectField(TEXT("Emotion"), EmotionObject);
+    }
+    
+    // Serialize the JSON object to a string with pretty formatting
+    TSharedRef<TJsonWriter<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>> JsonWriter = TJsonWriterFactory<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>::Create(&OutJSONString);
+    if (!FJsonSerializer::Serialize(JsonObject, JsonWriter))
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to serialize JSON object to string"));
+        return false;
+    }
+    
+    return true;
 }

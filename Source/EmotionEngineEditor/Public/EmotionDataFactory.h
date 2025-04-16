@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "Factories/Factory.h"
+#include "EditorReimportHandler.h"
+#include "Exporters/Exporter.h"
 #include "AssetTypeCategories.h"
 #include "EmotionData.h"
 #include "EmotionDataFactory.generated.h"
@@ -27,6 +29,23 @@ public:
 
 private:
     bool ImportFromJSON(const FString& JSONString, UEmotionDefinition* EmotionDefinition);
+};
+
+/**
+ * Exporter for Emotion Definition Assets to .emo (JSON) files
+ */
+UCLASS()
+class EMOTIONENGINEEDITOR_API UEmotionDefinition_Exporter : public UExporter
+{
+    GENERATED_UCLASS_BODY()
+
+public:
+    virtual bool ExportText(const FExportObjectInnerContext* Context, UObject* Object, const TCHAR* Type, FOutputDevice& Ar, FFeedbackContext* Warn, uint32 PortFlags = 0) override;
+    virtual bool ExportBinary(UObject* Object, const TCHAR* Type, FArchive& Ar, FFeedbackContext* Warn, int32 FileIndex = 0, uint32 PortFlags = 0) override;
+    virtual bool SupportsObject(UObject* Object) const override;
+
+private:
+    bool ExportToJSON(const UEmotionDefinition* EmotionDefinition, FString& OutJSONString);
 };
 
 /**
