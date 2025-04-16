@@ -1,0 +1,3 @@
+- Handle case where Emotion is a immediate reaction such as in conversation, maybe we call this mood ?
+- Handle outward projection of emotion as social masking.
+- Handle case where Emotion is a response to another emotion.
