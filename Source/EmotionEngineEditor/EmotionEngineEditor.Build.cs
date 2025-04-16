@@ -31,7 +31,7 @@ public class EmotionEngineEditor : ModuleRules
 				"UnrealEd",
                 "AssetTools",
 				"EngineAssetDefinitions",
-                "EmotionEngine"
+                "EmotionEngine",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -44,7 +44,9 @@ public class EmotionEngineEditor : ModuleRules
                 "CoreUObject",
 				"Engine",
 				"Slate",
-				"SlateCore"
+				"SlateCore",
+                "Json",
+                "JsonUtilities"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
