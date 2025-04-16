@@ -1,0 +1,62 @@
+{
+	"emotion":
+	{
+		"tag":
+		{
+			"tagName": "Emotion.Core.Joy"
+		},
+		"type": "Core",
+		"intensity": 0,
+		"vACoordinate":
+		{
+			"angle": 30,
+			"intensity": 1
+		},
+		"decayRate": 1,
+		"influenceRadius": 0.25,
+		"oppositeEmotionTag":
+		{
+			"tagName": "Emotion.Core.Sadness"
+		},
+		"rangeEmotionTags": [
+			{
+				"emotionTagTriggered":
+				{
+					"tagName": "Emotion.Range.High.Joy.Ecstasy"
+				},
+				"start": 80,
+				"end": 100
+			}
+		],
+		"linkEmotions": [
+			{
+				"linkEmotion":
+				{
+					"tagName": "Emotion.Core.Surprise"
+				},
+				"threshold": 0,
+				"variationEmotionTags": [
+					{
+						"emotionTagTriggered":
+						{
+							"tagName": "Emotion.Variation.Joy.Joyful"
+						},
+						"start": 87.5,
+						"end": 100
+					}
+				]
+			}
+		]
+	},
+	"displayName": "Joy",
+	"description": "A feeling of great pleasure and happiness",
+	"color":
+	{
+		"r": 1,
+		"g": 0.44578900933265686,
+		"b": 0.25449800491333008,
+		"a": 1
+	},
+	"icon": "None",
+	"nativeClass": "/Script/CoreUObject.Class'/Script/EmotionEngine.EmotionDefinition'"
+}

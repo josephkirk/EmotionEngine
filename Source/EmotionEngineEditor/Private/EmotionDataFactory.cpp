@@ -37,7 +37,7 @@ UObject* UEmotionDefinition_Factory::ImportObject(UClass* InClass, UObject* InOu
 
     if (CanCreateNew() && Filename.IsEmpty())
     {
-        //UE_LOG(LogFactory, Log, TEXT("EmotionFactoryCreateNew: %s with %s (%i %i %s)"), *InClass->GetName(), *GetClass()->GetName(), bCreateNew, bText, *Filename);
+        UE_LOG(LogTemp, Log, TEXT("EmotionFactoryCreateNew: %s with %s (%i %i %s)"), *InClass->GetName(), *GetClass()->GetName(), bCreateNew, bText, *Filename);
         ParseParms(Parms);
 
         Result = FactoryCreateNew(InClass, InOuter, InName, Flags, nullptr, GWarn);
@@ -46,7 +46,7 @@ UObject* UEmotionDefinition_Factory::ImportObject(UClass* InClass, UObject* InOu
     {
         if (FileSize != INDEX_NONE)
         {
-            //UE_LOG(LogFactory, Log, TEXT("EmotionFactoryCreateFile: %s with %s (%i %i %s)"), *InClass->GetName(), *GetClass()->GetName(), bCreateNew, bText, *Filename);
+            UE_LOG(LogTemp, Log, TEXT("EmotionFactoryCreateFile: %s with %s (%i %i %s)"), *InClass->GetName(), *GetClass()->GetName(), bCreateNew, bText, *Filename);
 
             Result = FactoryCreateFile(InClass, InOuter, InName, Flags, *Filename, Parms, GWarn, OutCanceled);
         }
@@ -124,88 +124,6 @@ bool UEmotionDefinition_Factory::ImportFromJSON(const FString& JSONString, UEmot
     {
         UE_LOG(LogTemp, Error, TEXT("Failed to convert JSON to EmotionDefinition: %s"), *FailReason.ToString());
         return false;
-    }
-    
-    // Handle special cases for GameplayTags that need to be requested
-    // Since JsonObjectConverter doesn't handle GameplayTags directly, we need to process them manually
-    
-    // Process the main emotion tag
-    if (JsonObject->HasField(TEXT("Emotion")))
-    {
-        const TSharedPtr<FJsonObject>* EmotionObject;
-        if (JsonObject->TryGetObjectField(TEXT("Emotion"), EmotionObject))
-        {
-            // Process Tag
-            if ((*EmotionObject)->HasField(TEXT("Tag")))
-            {
-                const FString TagString = (*EmotionObject)->GetStringField(TEXT("Tag"));
-                EmotionDefinition->Emotion.Tag = FGameplayTag::RequestGameplayTag(FName(*TagString));
-            }
-            
-            // Process OppositeEmotionTag
-            if ((*EmotionObject)->HasField(TEXT("OppositeEmotionTag")))
-            {
-                const FString OppositeTagString = (*EmotionObject)->GetStringField(TEXT("OppositeEmotionTag"));
-                EmotionDefinition->Emotion.OppositeEmotionTag = FGameplayTag::RequestGameplayTag(FName(*OppositeTagString));
-            }
-            
-            // Process RangeEmotionTags
-            const TArray<TSharedPtr<FJsonValue>>* RangeEmotionsArray;
-            if ((*EmotionObject)->TryGetArrayField(TEXT("RangeEmotionTags"), RangeEmotionsArray))
-            {
-                for (int32 i = 0; i < EmotionDefinition->Emotion.RangeEmotionTags.Num(); i++)
-                {
-                    if (i < RangeEmotionsArray->Num())
-                    {
-                        const TSharedPtr<FJsonObject>& RangeObject = (*RangeEmotionsArray)[i]->AsObject();
-                        if (RangeObject->HasField(TEXT("EmotionTagTriggered")))
-                        {
-                            const FString TagString = RangeObject->GetStringField(TEXT("EmotionTagTriggered"));
-                            EmotionDefinition->Emotion.RangeEmotionTags[i].EmotionTagTriggered = FGameplayTag::RequestGameplayTag(FName(*TagString));
-                        }
-                    }
-                }
-            }
-            
-            // Process LinkEmotions
-            const TArray<TSharedPtr<FJsonValue>>* LinksArray;
-            if ((*EmotionObject)->TryGetArrayField(TEXT("LinkEmotions"), LinksArray))
-            {
-                for (int32 i = 0; i < EmotionDefinition->Emotion.LinkEmotions.Num(); i++)
-                {
-                    if (i < LinksArray->Num())
-                    {
-                        const TSharedPtr<FJsonObject>& LinkObject = (*LinksArray)[i]->AsObject();
-                        
-                        // Process LinkEmotion tag
-                        if (LinkObject->HasField(TEXT("LinkEmotion")))
-                        {
-                            const FString TagString = LinkObject->GetStringField(TEXT("LinkEmotion"));
-                            EmotionDefinition->Emotion.LinkEmotions[i].LinkEmotion = FGameplayTag::RequestGameplayTag(FName(*TagString));
-                        }
-                        
-                        // Process VariationEmotionTags
-                        const TArray<TSharedPtr<FJsonValue>>* VariationsArray;
-                        if (LinkObject->TryGetArrayField(TEXT("VariationEmotionTags"), VariationsArray))
-                        {
-                            for (int32 j = 0; j < EmotionDefinition->Emotion.LinkEmotions[i].VariationEmotionTags.Num(); j++)
-                            {
-                                if (j < VariationsArray->Num())
-                                {
-                                    const TSharedPtr<FJsonObject>& VariationObject = (*VariationsArray)[j]->AsObject();
-                                    if (VariationObject->HasField(TEXT("EmotionTagTriggered")))
-                                    {
-                                        const FString TagString = VariationObject->GetStringField(TEXT("EmotionTagTriggered"));
-                                        EmotionDefinition->Emotion.LinkEmotions[i].VariationEmotionTags[j].EmotionTagTriggered = 
-                                            FGameplayTag::RequestGameplayTag(FName(*TagString));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
     
     return true;
@@ -313,79 +231,6 @@ bool UEmotionDefinition_Exporter::ExportToJSON(const UEmotionDefinition* Emotion
     {
         UE_LOG(LogTemp, Error, TEXT("Failed to convert EmotionDefinition to JSON object"));
         return false;
-    }
-    
-    // Handle special cases for GameplayTags that need to be manually processed
-    TSharedPtr<FJsonObject> EmotionObject = JsonObject->GetObjectField(TEXT("Emotion"));
-    if (EmotionObject.IsValid())
-    {
-        // Convert Tag to string
-        if (EmotionDefinition->Emotion.Tag.IsValid())
-        {
-            EmotionObject->SetStringField(TEXT("Tag"), EmotionDefinition->Emotion.Tag.ToString());
-        }
-        
-        // Convert OppositeEmotionTag to string
-        if (EmotionDefinition->Emotion.OppositeEmotionTag.IsValid())
-        {
-            EmotionObject->SetStringField(TEXT("OppositeEmotionTag"), EmotionDefinition->Emotion.OppositeEmotionTag.ToString());
-        }
-        
-        // Process RangeEmotionTags
-        TArray<TSharedPtr<FJsonValue>> RangeEmotionsArray;
-        for (const FEmotionTriggerRange& TriggerRange : EmotionDefinition->Emotion.RangeEmotionTags)
-        {
-            TSharedRef<FJsonObject> RangeObject = MakeShared<FJsonObject>();
-            
-            if (TriggerRange.EmotionTagTriggered.IsValid())
-            {
-                RangeObject->SetStringField(TEXT("EmotionTagTriggered"), TriggerRange.EmotionTagTriggered.ToString());
-            }
-            
-            RangeObject->SetNumberField(TEXT("Start"), TriggerRange.Start);
-            RangeObject->SetNumberField(TEXT("End"), TriggerRange.End);
-            
-            RangeEmotionsArray.Add(MakeShared<FJsonValueObject>(RangeObject));
-        }
-        EmotionObject->SetArrayField(TEXT("RangeEmotionTags"), RangeEmotionsArray);
-        
-        // Process LinkEmotions
-        TArray<TSharedPtr<FJsonValue>> LinksArray;
-        for (const FEmotionLink& Link : EmotionDefinition->Emotion.LinkEmotions)
-        {
-            TSharedRef<FJsonObject> LinkObject = MakeShared<FJsonObject>();
-            
-            if (Link.LinkEmotion.IsValid())
-            {
-                LinkObject->SetStringField(TEXT("LinkEmotion"), Link.LinkEmotion.ToString());
-            }
-            
-            LinkObject->SetNumberField(TEXT("Threshold"), Link.Threshold);
-            
-            // Process VariationEmotionTags
-            TArray<TSharedPtr<FJsonValue>> VariationsArray;
-            for (const FEmotionTriggerRange& TriggerRange : Link.VariationEmotionTags)
-            {
-                TSharedRef<FJsonObject> VariationObject = MakeShared<FJsonObject>();
-                
-                if (TriggerRange.EmotionTagTriggered.IsValid())
-                {
-                    VariationObject->SetStringField(TEXT("EmotionTagTriggered"), TriggerRange.EmotionTagTriggered.ToString());
-                }
-                
-                VariationObject->SetNumberField(TEXT("Start"), TriggerRange.Start);
-                VariationObject->SetNumberField(TEXT("End"), TriggerRange.End);
-                
-                VariationsArray.Add(MakeShared<FJsonValueObject>(VariationObject));
-            }
-            LinkObject->SetArrayField(TEXT("VariationEmotionTags"), VariationsArray);
-            
-            LinksArray.Add(MakeShared<FJsonValueObject>(LinkObject));
-        }
-        EmotionObject->SetArrayField(TEXT("LinkEmotions"), LinksArray);
-        
-        // Update the Emotion field in the main JSON object
-        JsonObject->SetObjectField(TEXT("Emotion"), EmotionObject);
     }
     
     // Serialize the JSON object to a string with pretty formatting

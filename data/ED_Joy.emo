@@ -42,6 +42,5 @@
 		"b": 0.25449800491333008,
 		"a": 1
 	},
-	"icon": "None",
-	"nativeClass": "/Script/CoreUObject.Class'/Script/EmotionEngine.EmotionDefinition'"
+	"icon": "None"
 }
