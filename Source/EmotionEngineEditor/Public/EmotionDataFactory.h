@@ -26,6 +26,7 @@ public:
     virtual bool FactoryCanImport(const FString& Filename) override;
     virtual bool ShouldShowInNewMenu() const override;
     virtual uint32 GetMenuCategories() const override;
+    virtual UObject* ImportObject(UClass* InClass, UObject* InOuter, FName InName, EObjectFlags Flags, const FString& Filename, const TCHAR* Parms, bool& OutCanceled) override;
 
 private:
     bool ImportFromJSON(const FString& JSONString, UEmotionDefinition* EmotionDefinition);
@@ -43,6 +44,7 @@ public:
     virtual bool ExportText(const FExportObjectInnerContext* Context, UObject* Object, const TCHAR* Type, FOutputDevice& Ar, FFeedbackContext* Warn, uint32 PortFlags = 0) override;
     virtual bool ExportBinary(UObject* Object, const TCHAR* Type, FArchive& Ar, FFeedbackContext* Warn, int32 FileIndex = 0, uint32 PortFlags = 0) override;
     virtual bool SupportsObject(UObject* Object) const override;
+
 
 private:
     bool ExportToJSON(const UEmotionDefinition* EmotionDefinition, FString& OutJSONString);

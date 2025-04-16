@@ -18,6 +18,43 @@ UEmotionDefinition_Factory::UEmotionDefinition_Factory(const class FObjectInitia
     Formats.Add(TEXT("emo;Emotion Definition JSON File"));
 }
 
+UObject* UEmotionDefinition_Factory::ImportObject(UClass* InClass, UObject* InOuter, FName InName, EObjectFlags Flags, const FString& Filename, const TCHAR* Parms, bool& OutCanceled)
+{
+    UObject* Result = nullptr;
+    AdditionalImportedObjects.Empty();
+    CurrentFilename = Filename;
+    
+    
+    // sanity check the file size of the impending import and prompt
+    // the user if they wish to continue if the file size is very large
+    const int64 FileSize = IFileManager::Get().FileSize(*CurrentFilename);
+    
+    const int32 Gigabyte = 1024 * 1024 * 1024;
+    if(FileSize < Gigabyte)
+    {
+        FileHash = FMD5Hash::HashFile(*CurrentFilename);
+    }
+
+    if (CanCreateNew() && Filename.IsEmpty())
+    {
+        //UE_LOG(LogFactory, Log, TEXT("EmotionFactoryCreateNew: %s with %s (%i %i %s)"), *InClass->GetName(), *GetClass()->GetName(), bCreateNew, bText, *Filename);
+        ParseParms(Parms);
+
+        Result = FactoryCreateNew(InClass, InOuter, InName, Flags, nullptr, GWarn);
+    }
+    else if (!Filename.IsEmpty())
+    {
+        if (FileSize != INDEX_NONE)
+        {
+            //UE_LOG(LogFactory, Log, TEXT("EmotionFactoryCreateFile: %s with %s (%i %i %s)"), *InClass->GetName(), *GetClass()->GetName(), bCreateNew, bText, *Filename);
+
+            Result = FactoryCreateFile(InClass, InOuter, InName, Flags, *Filename, Parms, GWarn, OutCanceled);
+        }
+    }
+    
+    return Result;
+}
+
 UObject* UEmotionDefinition_Factory::FactoryCreateNew(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn)
 {
     UEmotionDefinition* NewEmotionData = NewObject<UEmotionDefinition>(InParent, UEmotionDefinition::StaticClass(), InName, Flags | RF_Transactional, Context);
