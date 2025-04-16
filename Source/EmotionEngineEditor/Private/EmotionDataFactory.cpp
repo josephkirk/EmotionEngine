@@ -7,6 +7,7 @@ UEmotionDefinition_Factory::UEmotionDefinition_Factory(const class FObjectInitia
     bCreateNew = true;
     bEditAfterNew = true;
     SupportedClass = UEmotionDefinition::StaticClass();
+    //Supported
 }
 
 UObject* UEmotionDefinition_Factory::FactoryCreateNew(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn)

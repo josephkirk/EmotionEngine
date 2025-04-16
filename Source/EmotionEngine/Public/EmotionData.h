@@ -100,6 +100,10 @@ public:
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
     FGameplayTagContainer UpdateIntensity(float DeltaIntensity);
     
+    // Get Emotion Coordinate
+    UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+    FVector2D GetEmotionCoordinate() const;
+    
     // Apply decay to emotion intensity based on time passed
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
     void ApplyDecay(float DeltaTime);

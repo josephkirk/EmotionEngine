@@ -23,6 +23,10 @@ public:
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
     static UEmotionLibrary* GetDefaultEmotionLibrary();
     
+    // FVACoordinate to FVector2D
+    UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
+    static FVector2D VACoordinateToVector2D(const FVACoordinate& VACoordinate);
+
     // Create a new emotion state
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
     static UEmotionState* CreateEmotionState(UEmotionLibrary* EmotionLibrary = nullptr);

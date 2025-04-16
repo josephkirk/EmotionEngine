@@ -193,7 +193,7 @@ void UEmotionState::UpdateVACoordinate(float DeltaTime)
     {
         if (Pair.Value.EmotionData)
         {
-            const FVector2D& EmotionVA = Pair.Value.EmotionData->Emotion.VACoordinate;
+            const FVector2D& EmotionVA = Pair.Value.EmotionData->GetEmotionCoordinate();
             const float Intensity = Pair.Value.Intensity;
             
             // Add weighted contribution

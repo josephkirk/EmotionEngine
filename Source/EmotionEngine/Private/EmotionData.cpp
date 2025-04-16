@@ -90,6 +90,11 @@ TArray<UEmotionDefinition*> UEmotionLibrary::GetOppositeEmotions(const FGameplay
     return Result;
 }
 
+FVector2D UEmotionDefinition::GetEmotionCoordinate() const
+{
+	return Emotion.VACoordinate.GetCoordinate();
+}
+
 TArray<UEmotionDefinition*> UEmotionLibrary::GetAdjacentEmotions(const FGameplayTag& EmotionTag, float MaxDistance) const
 {
     TArray<UEmotionDefinition*> Result;
@@ -103,7 +108,7 @@ TArray<UEmotionDefinition*> UEmotionLibrary::GetAdjacentEmotions(const FGameplay
             if (EmotionData && EmotionData != SourceEmotion)
             {
                 // Calculate distance in VA space
-                float Distance = FVector2D::Distance(SourceEmotion->Emotion.VACoordinate, EmotionData->Emotion.VACoordinate);
+                float Distance = FVector2D::Distance(SourceEmotion->GetEmotionCoordinate(), EmotionData->GetEmotionCoordinate());
                 
                 // Add to result if within the specified distance
                 if (Distance <= MaxDistance)
@@ -116,8 +121,8 @@ TArray<UEmotionDefinition*> UEmotionLibrary::GetAdjacentEmotions(const FGameplay
         // Sort by distance (closest first)
         Result.Sort([SourceEmotion](const UEmotionDefinition& A, const UEmotionDefinition& B)
         {
-            float DistanceA = FVector2D::Distance(SourceEmotion->Emotion.VACoordinate, A.Emotion.VACoordinate);
-            float DistanceB = FVector2D::Distance(SourceEmotion->Emotion.VACoordinate, B.Emotion.VACoordinate);
+            float DistanceA = FVector2D::Distance(SourceEmotion->GetEmotionCoordinate(), A.GetEmotionCoordinate());
+            float DistanceB = FVector2D::Distance(SourceEmotion->GetEmotionCoordinate(), B.GetEmotionCoordinate());
             return DistanceA < DistanceB;
         });
     }
@@ -162,7 +167,7 @@ TArray<UEmotionDefinition*> UEmotionLibrary::FindEmotionsInRadius(const FVector2
         if (EmotionData)
         {
             // Calculate distance in VA space
-            float Distance = FVector2D::Distance(VACoordinate, EmotionData->Emotion.VACoordinate);
+            float Distance = FVector2D::Distance(VACoordinate, EmotionData->GetEmotionCoordinate());
             
             // Add to result if within the specified radius
             if (Distance <= Radius)
@@ -175,8 +180,8 @@ TArray<UEmotionDefinition*> UEmotionLibrary::FindEmotionsInRadius(const FVector2
     // Sort by distance (closest first)
     Result.Sort([VACoordinate](const UEmotionDefinition& A, const UEmotionDefinition& B)
     {
-        float DistanceA = FVector2D::Distance(VACoordinate, A.Emotion.VACoordinate);
-        float DistanceB = FVector2D::Distance(VACoordinate, B.Emotion.VACoordinate);
+        float DistanceA = FVector2D::Distance(VACoordinate, A.GetEmotionCoordinate());
+        float DistanceB = FVector2D::Distance(VACoordinate, B.GetEmotionCoordinate());
         return DistanceA < DistanceB;
     });
     

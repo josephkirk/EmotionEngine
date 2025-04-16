@@ -8,6 +8,23 @@
 struct FEmotion;
 
 USTRUCT(BlueprintType)
+struct EMOTIONENGINE_API FVACoordinate
+{
+    GENERATED_BODY()
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
+    float Angle;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
+    float Intensity;
+
+    FORCEINLINE FVector2D GetCoordinate() const
+    {
+		return FVector2D(FMath::Cos(FMath::DegreesToRadians(Angle)), FMath::Sin(FMath::DegreesToRadians(Angle))) * Intensity;
+	}
+};
+
+USTRUCT(BlueprintType)
 struct EMOTIONENGINE_API FEmotionTriggerRange
 {
     GENERATED_USTRUCT_BODY()
@@ -98,7 +115,7 @@ public:
     *       This can be good way to find adjacent Emotion by search nearest emotion in radius  
     */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    FVector2D VACoordinate;
+    FVACoordinate VACoordinate;
 
 	/** The rate at which the intensity of this emotion decays over time (units per second). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (ClampMin = "0.0"))
