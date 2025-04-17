@@ -21,25 +21,25 @@ namespace EmotionGameplayTags
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Anger);
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Anticipation);
 
-	// Emotion intensities (higher)
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Ecstasy);      // Intense Joy
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Admiration);   // Intense Trust
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Terror);       // Intense Fear
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Amazement);    // Intense Surprise
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Grief);        // Intense Sadness
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Loathing);     // Intense Disgust
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Rage);         // Intense Anger
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Vigilance);    // Intense Anticipation
+	// Core Emotion intensities (higher)
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Ecstasy);      // Intense Joy
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Admiration);   // Intense Trust
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Terror);       // Intense Fear
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Amazement);    // Intense Surprise
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Grief);        // Intense Sadness
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Loathing);     // Intense Disgust
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Rage);         // Intense Anger
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Vigilance);    // Intense Anticipation
 
-	// Emotion intensities (lower)
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Serenity);     // Mild Joy
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Acceptance);   // Mild Trust
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Apprehension); // Mild Fear
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Distraction);  // Mild Surprise
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Pensiveness);  // Mild Sadness
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Boredom);      // Mild Disgust
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Annoyance);    // Mild Anger
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Core_Interest);     // Mild Anticipation
+	// Core Emotion intensities (lower)
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Serenity);     // Mild Joy
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Acceptance);   // Mild Trust
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Apprehension); // Mild Fear
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Distraction);  // Mild Surprise
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Pensiveness);  // Mild Sadness
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Boredom);      // Mild Disgust
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Annoyance);    // Mild Anger
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Interest);     // Mild Anticipation
 
 	// Combined emotions (primary pairs)
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Love);         // Joy + Trust
@@ -65,16 +65,104 @@ namespace EmotionGameplayTags
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Cynicism);      // Digust + Anticipation
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Aggressiveness); // Anger + Anticipation
 	
+	// Combined emotions range
+	// Love
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Rapture);     // Love High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Affection);     // Love Low
+
+	// Guilt
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Remorse);     // Guilt High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Compunction);     // Guilt Low
+
+	// Delight
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Glee);     // Delight High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Contentment);     // Delight Low
+
+	// Optimism
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Exuberance);     // Optimism High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Hopefulness);     // Optimism Low
+
+	// Morbidness
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Ghastliness);     // Morbidness High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Somberness);     // Morbidness Low
+
+	// Submission
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Servility);     // Submission High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Acquiescence);     // Submission Low
+
+	// Sentimentality
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Mawkishness);     // Sentimentality High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Wishfulness);     // Sentimentality Low
+
+	// Hope
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Faith);     // Hope High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Optimistic);     // Hope Low
+
+	// Dominance
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Powerlust);     // Dominance High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Authority);     // Dominance Low
+
+	// Awe
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Reverence);     // Awe High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Curiosity);     // Awe Low
+
+	// Anxiety
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Worry);     // Anxiety High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Nervousness);     // Anxiety Low
+
+	// Despair
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Dread);     // Despair High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Gloom);     // Despair Low
+
+	// Shame
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_SelfLoathing);     // Shame High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Embarassment);     // Shame Low
+
+	// Disapproval
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Comdemnation);     // Disapproval High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Doubt);     // Disapproval Low
+
+	// Unbelief
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Incredulity);     // Unbelief High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Dismissal);     // Unbelief Low
+
+	// Outrage
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Indignation);     // Outrage High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Irritation);     // Outrage Low
+
+	// Remorse
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Repentance);     // Remorse High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Regret);     // Remorse Low
+
+	// Envy
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Spite);     // Envy High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Jealousy);     // Envy Low
+
+	// Perssimism
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Resignation);     // Perssimism High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Discouragement);     // Perssimism Low
+
+	// Contempt
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Scorn);     // Contempt High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Disdain);     // Contempt Low
+
+	// Cynicism
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Misanthropy);     // Cynicism High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Skepticism);     // Cynicism Low
+
+	// Aggressiveness
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Ruthlessness);     // Aggressiveness High
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Range_Contention);     // Aggressiveness Low
 
 	// Joy variations (Secondary)
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Joyful);       // Joy variation
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Interested);   // Joy variation
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Proud);        // Joy variation
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Accepted);     // Joy variation
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Powerful);     // Joy variation
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Peaceful);     // Joy variation
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Intimate);     // Joy variation
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Optimistic);   // Joy variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Joyful);       // Joy variation, Lean toward Surprise
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Interested);   // Joy variation, Lean toward Surprise
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Proud);        // Joy variation, Lean toward Surprise
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Accepted);     // Joy variation, Lean toward Surprise
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Powerful);     // Joy variation, Lean toward Sadness
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Peaceful);     // Joy variation, Lean toward Sadness
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Intimate);     // Joy variation, Lean toward Sadness
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Optimistic);   // Joy variation, Lean toward Sadness
 
 	// Joy variations (Tertiary)
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Amused);       // Joy.Interested variation

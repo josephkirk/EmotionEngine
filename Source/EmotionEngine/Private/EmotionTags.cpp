@@ -17,24 +17,24 @@ namespace EmotionGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Anticipation, "Emotion.Core.Anticipation");
 
 	// High intensity emotions
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Ecstasy, "Emotion.Range.High.Joy.Ecstasy");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Admiration, "Emotion.Range.High.Trust.Admiration");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Terror, "Emotion.Range.High.Fear.Terror");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Amazement, "Emotion.Range.High.Surprise.Amazement");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Grief, "Emotion.Range.High.Sadness.Grief");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Loathing, "Emotion.Range.High.Disgust.Loathing");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Rage, "Emotion.Range.High.Anger.Rage");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Vigilance, "Emotion.Range.High.Anticipation.Vigilance");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Ecstasy, "Emotion.Range.High.Joy.Ecstasy");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Admiration, "Emotion.Range.High.Trust.Admiration");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Terror, "Emotion.Range.High.Fear.Terror");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Amazement, "Emotion.Range.High.Surprise.Amazement");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Grief, "Emotion.Range.High.Sadness.Grief");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Loathing, "Emotion.Range.High.Disgust.Loathing");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Rage, "Emotion.Range.High.Anger.Rage");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Vigilance, "Emotion.Range.High.Anticipation.Vigilance");
 
 	// Low intensity emotions
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Serenity, "Emotion.Range.Low.Joy.Serenity");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Acceptance, "Emotion.Range.Low.Trust.Acceptance");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Apprehension, "Emotion.Range.Low.Fear.Apprehension");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Distraction, "Emotion.Range.Low.Surprise.Distraction");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Pensiveness, "Emotion.Range.Low.Sadness.Pensiveness");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Boredom, "Emotion.Range.Low.Disgust.Boredom");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Annoyance, "Emotion.Range.Low.Anger.Annoyance");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Core_Interest, "Emotion.Range.Low.Anticipation.Interest");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Serenity, "Emotion.Range.Low.Joy.Serenity");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Acceptance, "Emotion.Range.Low.Trust.Acceptance");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Apprehension, "Emotion.Range.Low.Fear.Apprehension");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Distraction, "Emotion.Range.Low.Surprise.Distraction");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Pensiveness, "Emotion.Range.Low.Sadness.Pensiveness");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Boredom, "Emotion.Range.Low.Disgust.Boredom");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Annoyance, "Emotion.Range.Low.Anger.Annoyance");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Interest, "Emotion.Range.Low.Anticipation.Interest");
 
 	// Combined emotions
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Love, "Emotion.Combined.Love");
@@ -60,6 +60,94 @@ namespace EmotionGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Cynicism, "Emotion.Combined.Cynicism");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Aggressiveness, "Emotion.Combined.Aggressiveness");
 
+	// Combined emotions range
+	// Love
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Rapture, "Emotion.Range.High.Love.Rapture");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Affection, "Emotion.Range.Low.Love.Affection");
+
+	// Guilt
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Remorse, "Emotion.Range.High.Guilt.Remorse");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Compunction, "Emotion.Range.Low.Guilt.Compunction");
+
+	// Delight
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Glee, "Emotion.Range.High.Delight.Glee");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Contentment, "Emotion.Range.Low.Delight.Contentment");
+
+	// Optimism
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Exuberance, "Emotion.Range.High.Optimism.Exuberance");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Hopefulness, "Emotion.Range.Low.Optimism.Hopefulness");
+
+	// Morbidness
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Ghastliness, "Emotion.Range.High.Morbidness.Ghastliness");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Somberness, "Emotion.Range.Low.Morbidness.Somberness");
+
+	// Submission
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Servility, "Emotion.Range.High.Submission.Servility");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Acquiescence, "Emotion.Range.Low.Submission.Acquiescence");
+
+	//Sentimentality
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Mawkishness, "Emotion.Range.High.Sentimentality.Mawkishness");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Wishfulness, "Emotion.Range.Low.Sentimentality.Wishfulness");
+
+	// Hope
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Faith, "Emotion.Range.High.Hope.Faith");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Optimistic, "Emotion.Range.Low.Hope.Optimistic");
+
+	// Dominance
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Powerlust, "Emotion.Range.High.Dominance.Powerlust");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Authority, "Emotion.Range.Low.Dominance.Authority");
+
+	// Awe
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Reverence, "Emotion.Range.High.Awe.Reverence");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Curiosity, "Emotion.Range.Low.Awe.Curiosity");
+
+	// Anxiety
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Worry, "Emotion.Range.High.Anxiety.Worry");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Nervousness, "Emotion.Range.Low.Anxiety.Nervousness");
+
+	// Despair
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Dread, "Emotion.Range.High.Despair.Dread");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Gloom, "Emotion.Range.Low.Despair.Gloom");
+
+	// Shame
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_SelfLoathing, "Emotion.Range.High.Sham.SelfLoathing");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Embarassment, "Emotion.Range.Low.Sham.Embarassment");
+
+	// Disapproval
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Comdemnation, "Emotion.Range.High.Disapproval.Comdemnation");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Doubt, "Emotion.Range.Low.Disapproval.Doubt");
+
+	// Unbelief
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Incredulity, "Emotion.Range.High.Unbelief.Incredulity");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Dismissal, "Emotion.Range.Low.Unbelief.Dismissal");
+
+	// Outrage
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Indignation, "Emotion.Range.High.Outrage.Indignation");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Irritation, "Emotion.Range.Low.Outrage.Irritation");
+
+	// Remorse
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Repentance, "Emotion.Range.High.Remorse.Repentance");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Regret, "Emotion.Range.Low.Remorse.Regret");
+
+	// Envy
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Spite, "Emotion.Range.High.Envy.Spite");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Jealousy, "Emotion.Range.Low.Envy.Jealousy");
+
+	// Pessimism
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Resignation, "Emotion.Range.High.Pessimism.Resignation");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Discouragement, "Emotion.Range.Low.Pessimism.Discouragement");
+
+	// Contempt
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Scorn, "Emotion.Range.High.Contempt.Scorn");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Disdain, "Emotion.Range.Low.Contempt.Disdain");
+
+	// Cynicism
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Misanthropy, "Emotion.Range.High.Cynicism.Misanthropy");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Skepticism, "Emotion.Range.Low.Cynicism.Skepticism");
+
+	// Aggressiveness
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Ruthlessness, "Emotion.Range.High.Aggressiveness.Ruthlessness");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Range_Contention, "Emotion.Range.Low.Aggressiveness.Contention");
 
 	// Joy variations (Secondary) When Main Emotion's Intensity is 35-75 
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Joyful, "Emotion.Variation.Joy.Joyful"); // Lean toward Surprise
@@ -72,22 +160,22 @@ namespace EmotionGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Optimistic, "Emotion.Variation.Joy.Optimistic"); // Lean toward Sadness
 
 	// Joy variations (Tertiary) When Main Emotion's Intensity is 0-35
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Liberated, "Emotion.Variation.Joy.Joyful.Liberated");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Ecstatic, "Emotion.Variation.Joy.Joyful.Ecstatic");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Amused, "Emotion.Variation.Joy.Interested.Amused");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Inquisitive, "Emotion.Variation.Joy.Interested.Inquisitive");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Important, "Emotion.Variation.Joy.Proud.Important");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Confidence, "Emotion.Variation.Joy.Proud.Confidence");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Courageous, "Emotion.Variation.Joy.Powerful.Courageous");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Provocative, "Emotion.Variation.Joy.Powerful.Provocative");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Respected, "Emotion.Variation.Joy.Accepted.Respected");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Fulfilled, "Emotion.Variation.Joy.Accepted.Fulfilled");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Hopeful, "Emotion.Variation.Joy.Peaceful.Hopeful");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Playful, "Emotion.Variation.Joy.Intimate.Playful");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Sensitive, "Emotion.Variation.Joy.Intimate.Sensitive");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Loving, "Emotion.Variation.Joy.Peaceful.Loving");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Inspired, "Emotion.Variation.Joy.Optimistic.Inspired");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Open, "Emotion.Variation.Joy.Optimistic.Open");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Liberated, "Emotion.Variation.Joy.Joyful.Liberated"); // High
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Ecstatic, "Emotion.Variation.Joy.Joyful.Ecstatic"); // Low
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Amused, "Emotion.Variation.Joy.Interested.Amused"); // High
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Inquisitive, "Emotion.Variation.Joy.Interested.Inquisitive"); // Low
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Important, "Emotion.Variation.Joy.Proud.Important"); // High
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Confidence, "Emotion.Variation.Joy.Proud.Confidence"); // Low
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Courageous, "Emotion.Variation.Joy.Powerful.Courageous"); // High
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Provocative, "Emotion.Variation.Joy.Powerful.Provocative"); // Low
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Respected, "Emotion.Variation.Joy.Accepted.Respected"); // High
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Fulfilled, "Emotion.Variation.Joy.Accepted.Fulfilled"); // Low
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Hopeful, "Emotion.Variation.Joy.Peaceful.Hopeful"); // High
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Playful, "Emotion.Variation.Joy.Intimate.Playful"); // Low
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Sensitive, "Emotion.Variation.Joy.Intimate.Sensitive"); // High
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Loving, "Emotion.Variation.Joy.Peaceful.Loving"); // Low
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Inspired, "Emotion.Variation.Joy.Optimistic.Inspired"); // High
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Open, "Emotion.Variation.Joy.Optimistic.Open"); // Low
 
 	// Surprise variations (Secondary) When Main Emotion's Intensity is 35-75
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Startled, "Emotion.Variation.Surprise.Startled");
