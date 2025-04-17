@@ -51,6 +51,7 @@ Just as in real life, emotions can blend together to create complex feelings. Fo
 This allows for a wide spectrum of emotional responses from a relatively small set of core emotions.
 
 ![Combined Emotions](docs/images/CombinedEmotions.png)
+![Combined VA](docs/images/VA_Combination.png)
 
 ## Practical Applications
 
