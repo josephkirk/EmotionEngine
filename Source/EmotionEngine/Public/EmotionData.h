@@ -4,6 +4,9 @@
 #include "Engine/DataAsset.h"
 #include "GameplayTagContainer.h"
 #include "Emotion.h"
+#include "Interfaces/Interface_AssetUserData.h"
+#include "UObject/Object.h"
+#include "EditorFramework/AssetImportData.h"
 #include "EmotionData.generated.h"
 
 class UEmotionDefinition;
@@ -71,11 +74,22 @@ class EMOTIONENGINE_API UEmotionDefinition : public UDataAsset
 
 public:
     UEmotionDefinition();
-    
+        
     // The emotion this data asset represents
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
     FEmotion Emotion;
     
+#if WITH_EDITORONLY_DATA
+    /** Importing data and options used for this emotion */
+    UPROPERTY(Category = ImportSettings, VisibleAnywhere, Instanced)
+    TObjectPtr<class UAssetImportData> AssetImportData;
+#endif
+#if WITH_EDITOR
+    // ~ Override UObject Interface
+    virtual void PostInitProperties() override;
+    // ~ End Override UObject Interface
+#endif
+
     // Display name for this emotion
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
     FText DisplayName;

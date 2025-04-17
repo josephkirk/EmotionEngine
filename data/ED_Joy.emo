@@ -15,7 +15,7 @@
 		"RangeEmotionTags": [
 			{
 				"EmotionTagTriggered": "Emotion.Range.High.Joy.Ecstasy",
-				"Start": 80,
+				"Start": 85,
 				"End": 100
 			}
 		],

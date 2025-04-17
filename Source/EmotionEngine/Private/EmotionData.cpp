@@ -5,11 +5,23 @@
 UEmotionDefinition::UEmotionDefinition()
 {
     // Initialize with default values
+    //AssetImportData = CreateDefaultSubobject<UAssetImportData>(TEXT("AssetImportData"));
     Emotion.Intensity = 0.0f;
     Emotion.DecayRate = 1.0f;
     Emotion.InfluenceRadius = 0.1f;
     Emotion.Type = EEmotionType::Core;
     Color = FLinearColor::White;
+}
+
+void UEmotionDefinition::PostInitProperties()
+{
+#if WITH_EDITORONLY_DATA
+    if (!HasAnyFlags(RF_ClassDefaultObject) && !(GetOuter() && GetOuter()->HasAnyFlags(RF_ClassDefaultObject | RF_ArchetypeObject)))
+    {
+        AssetImportData = NewObject<UAssetImportData>(this, TEXT("AssetImportData"));
+    }
+#endif
+    Super::PostInitProperties();
 }
 
 FGameplayTagContainer UEmotionDefinition::GetAllEmotionTags() const

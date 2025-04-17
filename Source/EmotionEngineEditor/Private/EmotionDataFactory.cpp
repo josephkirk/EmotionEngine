@@ -3,6 +3,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "JsonObjectConverter.h"
+#include "EditorFramework/AssetImportData.h"
 #include "Serialization/JsonSerializer.h"
 #include "HAL/FileManager.h"
 
@@ -88,7 +89,7 @@ UObject* UEmotionDefinition_Factory::FactoryCreateFile(UClass* InClass, UObject*
         bOutOperationCanceled = true;
         return nullptr;
     }
-    
+    NewEmotionData->AssetImportData->Update(Filename);
     bOutOperationCanceled = false;
     return NewEmotionData;
 }
@@ -162,6 +163,80 @@ uint32 UEmotionLibrary_Factory::GetMenuCategories() const
 {
     return EAssetTypeCategories::Gameplay;
 }
+
+bool UEmotionDefinition_Factory::CanReimport(UObject* Obj, TArray<FString>& OutFilenames)
+{
+    UEmotionDefinition* Emotion = Cast<UEmotionDefinition>(Obj);
+    if (Emotion && Emotion->AssetImportData)
+    {
+        Emotion->AssetImportData->ExtractFilenames(OutFilenames);
+        return true;
+    }
+    return false;
+}
+
+EReimportResult::Type UEmotionDefinition_Factory::Reimport(UObject* Obj)
+{
+    UEmotionDefinition* Emotion = Cast<UEmotionDefinition>(Obj);
+    if (!Emotion)
+    {
+        return EReimportResult::Failed;
+    }
+
+    // Make sure file is valid and exists
+    const FString Filename = Emotion->AssetImportData->GetFirstFilename();
+    if (!Filename.Len() || IFileManager::Get().FileSize(*Filename) == INDEX_NONE)
+    {
+        return EReimportResult::Failed;
+    }
+
+    // Run the import again
+    EReimportResult::Type Result = EReimportResult::Failed;
+    bool OutCanceled = false;
+
+    if (ImportObject(Emotion->GetClass(), Emotion->GetOuter(), *Emotion->GetName(), RF_Public | RF_Standalone, Filename, nullptr, OutCanceled) != nullptr)
+    {
+        UE_LOG(LogTemp, Log, TEXT("Emotion Imported successfully"));
+
+        Emotion->AssetImportData->Update(Filename);
+
+        // Try to find the outer package so we can dirty it up
+        if (Emotion->GetOuter())
+        {
+            Emotion->GetOuter()->MarkPackageDirty();
+        }
+        else
+        {
+            Emotion->MarkPackageDirty();
+        }
+        Result = EReimportResult::Succeeded;
+    }
+    else
+    {
+        if (OutCanceled)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("-- import canceled"));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("-- import failed"));
+        }
+
+        Result = EReimportResult::Failed;
+    }
+
+    return Result;
+}
+
+void UEmotionDefinition_Factory::SetReimportPaths(UObject* Obj, const TArray<FString>& NewReimportPaths)
+{
+    UEmotionDefinition* Emotion = Cast<UEmotionDefinition>(Obj);
+    if (Emotion && Emotion->AssetImportData && !NewReimportPaths.IsEmpty())
+    {
+        Emotion->AssetImportData->Update(NewReimportPaths[0]);
+    }
+}
+
 
 // Emotion Definition Exporter
 UEmotionDefinition_Exporter::UEmotionDefinition_Exporter(const class FObjectInitializer& OBJ) : Super(OBJ)

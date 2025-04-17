@@ -13,10 +13,10 @@ struct EMOTIONENGINE_API FVACoordinate
     GENERATED_BODY()
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    float Angle;
+    float Angle = 0.0f;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    float Intensity;
+    float Intensity = 1.0f;
 
     FORCEINLINE FVector2D GetCoordinate() const
     {
@@ -34,11 +34,11 @@ public:
     
     // The start of the intensity range (0.0 - 100.0) for triggering the emotion.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    float Start;
+    float Start = 0.0f;
     
     // The end of the intensity range (0.0 - 100.0) for triggering the emotion.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    float End;
+    float End = 100.0f;
 
     FORCEINLINE bool IsInRange(float Value) const
     {
@@ -53,7 +53,6 @@ public:
     }
 };
 
-//TODO: Maybe this should be more generic
 USTRUCT(BlueprintType)
 struct EMOTIONENGINE_API FEmotionLink
 {
@@ -66,7 +65,7 @@ public:
 
     // The intensity threshold (0.0 - 100.0) the source emotion needs to reach to potentially trigger variation emotions from this link.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    float Threshold;
+    float Threshold = 0.0f;
 
     // Array of Variatian Emotion that triggered by this emotion link. The Range check inside FEmotionTriggerRange uses the Link's Threshold value.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
@@ -87,7 +86,6 @@ public:
     }
 };
 
-//TODO: Need to rework Component Implementation
 USTRUCT(BlueprintType)
 struct EMOTIONENGINE_API FEmotion
 {
@@ -103,16 +101,14 @@ public:
 
     // Current intensity of this emotion (0.0 to 100.0)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (ClampMin = "0.0"))
-    float Intensity;
+    float Intensity = 0.0f;
 
-    /* Valence Arousal Coordinate 
+    /* Valence Arousal Coordinate Express in Degrees angle and Intensity, convert to Vector 2D via util function
     * Vector 2D represent Valence as X Axis and Arousal as Y Axis
     * High Arousal, Positive Valence (Top-Right): Ecstasy (V: +0.9, A: 0.9), Excitement (V: +0.7, A: 0.8), Happy (V: +0.8, A: 0.7)
     * Low Arousal, Positive Valence (Bottom-Right): Content (V: +0.6, A: 0.3), Calm (V: +0.3, A: 0.1), Relaxed (V: +0.4, A: 0.2)
     * Low Arousal, Negative Valence (Bottom-Left): Sad (V: -0.6, A: 0.2), Bored (V: -0.3, A: 0.1), Depressed (V: -0.7, A: 0.1)
     * High Arousal, Negative Valence (Top-Left): Afraid (V: -0.8, A: 0.9), Angry (V: -0.7, A: 0.8), Stressed (V: -0.5, A: 0.7), Tense (V: -0.4, A: 0.8)
-    * TODO: Adapt this coordinate to the rest of the system
-    *       This can be good way to find adjacent Emotion by search nearest emotion in radius  
     */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
     FVACoordinate VACoordinate;

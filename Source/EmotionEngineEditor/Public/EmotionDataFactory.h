@@ -12,7 +12,7 @@
  * Factory for creating Emotion Data Assets
  */
 UCLASS()
-class EMOTIONENGINEEDITOR_API UEmotionDefinition_Factory : public UFactory
+class EMOTIONENGINEEDITOR_API UEmotionDefinition_Factory : public UFactory, public FReimportHandler
 {
     GENERATED_UCLASS_BODY()
 
@@ -21,12 +21,20 @@ public:
     UPROPERTY(EditAnywhere, Category = EmotionEngine)
     TSubclassOf<UEmotionDefinition> EmotionData;
     
+    //~ Begin UFactory Interface
     virtual UObject* FactoryCreateNew(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn) override;
     virtual UObject* FactoryCreateFile(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, const FString& Filename, const TCHAR* Parms, FFeedbackContext* Warn, bool& bOutOperationCanceled) override;
     virtual bool FactoryCanImport(const FString& Filename) override;
     virtual bool ShouldShowInNewMenu() const override;
     virtual uint32 GetMenuCategories() const override;
     virtual UObject* ImportObject(UClass* InClass, UObject* InOuter, FName InName, EObjectFlags Flags, const FString& Filename, const TCHAR* Parms, bool& OutCanceled) override;
+    //~ End UFactory Interface
+
+    //~ Begin FReimportHandler Interface
+    virtual bool CanReimport(UObject* Obj, TArray<FString>& OutFilenames) override;
+    virtual EReimportResult::Type Reimport(UObject* Obj) override;
+    virtual void SetReimportPaths(UObject* Obj, const TArray<FString>& NewReimportPaths) override;
+    //~ End FReimportHandler Interface
 
 private:
     bool ImportFromJSON(const FString& JSONString, UEmotionDefinition* EmotionDefinition);
