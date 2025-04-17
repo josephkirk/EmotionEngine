@@ -33,6 +33,12 @@ This allows for natural transitions between emotional states and nuanced emotion
 
 ![Valence-Arousal](docs/images/VA.png)
 
+This 2D space can also be expressed in a polar coordinate system emphasizing emotion intensity along with categorical type
+- Emotions are arranged radially like slices of a pie.
+- Each emotion increases in influence (Radius) propotional to the intensity the farther it moves outward from the center.
+
+![IntensityRadius](docs/images/VA_Intensity.png)
+
 ### 3. Dynamic Emotional Physics
 
 The system uses a "spring model" where:
@@ -51,6 +57,7 @@ Just as in real life, emotions can blend together to create complex feelings. Fo
 This allows for a wide spectrum of emotional responses from a relatively small set of core emotions.
 
 ![Combined Emotions](docs/images/CombinedEmotions.png)
+
 ![Combined VA](docs/images/VA_Combination.png)
 
 ## Practical Applications
