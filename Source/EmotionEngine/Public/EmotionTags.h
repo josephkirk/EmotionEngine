@@ -43,13 +43,28 @@ namespace EmotionGameplayTags
 
 	// Combined emotions (primary pairs)
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Love);         // Joy + Trust
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Guilt);         // Joy + Fear
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Delight);         // Joy + Suprise
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Optimism);     // Joy + Anticipation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Morbidness);     // Joy + Disgust
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Submission);   // Trust + Fear
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Sentimentality);   // Trust + Sadness
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Hope);   // Trust + Anticipation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Dominance);   // Trust + Anger
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Awe);          // Fear + Surprise
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Anxiety);          // Fear + Anticipation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Despair);          // Fear + Sadness
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Shame);          // Fear + Disgust
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Disapproval);  // Surprise + Sadness
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Unbelief);  // Surprise + Disgust
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Outrage);  // Surprise + Anger
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Remorse);      // Sadness + Disgust
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Envy);      // Sadness + Anger
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Pessimism);      // Sadness + Anticipation
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Contempt);     // Disgust + Anger
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Cynicism);      // Digust + Anticipation
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Aggressiveness); // Anger + Anticipation
-	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Combined_Optimism);     // Anticipation + Joy
+	
 
 	// Joy variations (Secondary)
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Joyful);       // Joy variation

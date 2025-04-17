@@ -38,13 +38,28 @@ namespace EmotionGameplayTags
 
 	// Combined emotions
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Love, "Emotion.Combined.Love");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Submission, "Emotion.Combined.Submission");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Awe, "Emotion.Combined.Awe");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Disapproval, "Emotion.Combined.Disapproval");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Remorse, "Emotion.Combined.Remorse");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Contempt, "Emotion.Combined.Contempt");
-	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Aggressiveness, "Emotion.Combined.Aggressiveness");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Guilt, "Emotion.Combined.Guilt");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Delight, "Emotion.Combined.Delight");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Optimism, "Emotion.Combined.Optimism");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Morbidness, "Emotion.Combined.Morbidness");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Submission, "Emotion.Combined.Submission");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Sentimentality, "Emotion.Combined.Sentimentality");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Hope, "Emotion.Combined.Hope");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Dominance, "Emotion.Combined.Dominance");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Awe, "Emotion.Combined.Awe");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Anxiety, "Emotion.Combined.Anxiety");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Despair, "Emotion.Combined.Despair");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Shame, "Emotion.Combined.Shame");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Disapproval, "Emotion.Combined.Disapproval");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Unbelief, "Emotion.Combined.Unbelief");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Outrage, "Emotion.Combined.Outrage");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Remorse, "Emotion.Combined.Remorse");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Envy, "Emotion.Combined.Envy");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Pessimism, "Emotion.Combined.Pessimism");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Contempt, "Emotion.Combined.Contempt");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Cynicism, "Emotion.Combined.Cynicism");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Combined_Aggressiveness, "Emotion.Combined.Aggressiveness");
+
 
 	// Joy variations (Secondary) When Main Emotion's Intensity is 35-75 
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Joyful, "Emotion.Variation.Joy.Joyful"); // Lean toward Surprise
