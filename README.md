@@ -154,6 +154,20 @@ There are multiple ways to trigger emotions:
 - **Event Responses**:
   Set up your game events to trigger appropriate emotional responses
 
+- **Import/Export Emotions**:
+  The plugin supports importing and exporting emotion definitions as .emo JSON files. Reference data/ED_Joy.emo for example.
+  ```
+  // In the editor:
+  // - Right-click in the content browser and select Import
+  // - Select your .emo file to create a new Emotion Definition asset
+  // - Right-click on an existing Emotion Definition and select Export
+  
+  // The .emo format is a JSON structure containing:
+  // - Emotion metadata (tag, type, intensity, VACoordinate, etc.)
+  // - Display properties (name, description, color, icon)
+  // - Range emotion triggers and linked emotion variations
+  ```
+
 #### 3. React to Emotional States
 
 Listen for emotion events in your character logic:
