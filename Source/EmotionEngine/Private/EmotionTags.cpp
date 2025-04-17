@@ -193,6 +193,39 @@ namespace EmotionGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Eager, "Emotion.Variation.Surprise.Excited.Eager");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Energetic, "Emotion.Variation.Surprise.Excited.Energetic");
 	
+	// Trust Variation (Secondary)
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Secure, "Emotion.Variation.Trust.Secure");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Assured, "Emotion.Variation.Trust.Assured");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Confident, "Emotion.Variation.Trust.Confident");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Safe, "Emotion.Variation.Trust.Safe");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Supported, "Emotion.Variation.Trust.Supported");
+
+	// Trust variations (Tertiary)
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Appreciated, "Emotion.Variation.Trust.Appreciated");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Valued, "Emotion.Variation.Trust.Valued");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Reliable, "Emotion.Variation.Trust.Reliable");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Faithful, "Emotion.Variation.Trust.Faithful");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Dependable, "Emotion.Variation.Trust.Dependable");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Admired, "Emotion.Variation.Trust.Admired");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Included, "Emotion.Variation.Trust.Included");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Protected, "Emotion.Variation.Trust.Protected");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Comforted, "Emotion.Variation.Trust.Comforted");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Belonging, "Emotion.Variation.Trust.Belonging");
+
+	// Anticipation variations (Secondary)
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Expectant, "Emotion.Variation.Anticipation.Expectant");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Prepared, "Emotion.Variation.Anticipation.Prepared");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Alert, "Emotion.Variation.Anticipation.Alert");
+
+	// Anticipation variations (Tertiary)
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Restless, "Emotion.Variation.Anticipation.Restless");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Impatient, "Emotion.Variation.Anticipation.Impatient");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Thrilled, "Emotion.Variation.Anticipation.Thrilled");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Fascinated, "Emotion.Variation.Anticipation.Fascinated");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Attentive, "Emotion.Variation.Anticipation.Attentive");
+	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Vigilant, "Emotion.Variation.Anticipation.Vigilant");
+
+
 	// Fear variations (Secondary)
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Scared, "Emotion.Variation.Fear.Scared");
 	UE_DEFINE_GAMEPLAY_TAG(Emotion_Variation_Anxious, "Emotion.Variation.Fear.Anxious");

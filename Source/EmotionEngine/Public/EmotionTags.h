@@ -197,6 +197,38 @@ namespace EmotionGameplayTags
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Eager);      // Surprise.Amazed variation
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Energetic);      // Surprise.Amazed variation
 
+	// Trust Variation (Secondary)
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Secure);       // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Assured);      // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Confident);    // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Safe);         // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Supported);    // Trust variation
+
+	// Trust variations (Tertiary)
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Appreciated);  // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Valued);    // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Reliable);    // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Faithful);    // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Dependable);    // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Admired);    // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Included);    // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Protected);    // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Comforted);    // Trust variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Belonging);    // Trust variation
+
+	// Anticipation variations (Secondary)
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Expectant);    // Anticipation variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Prepared);     // Anticipation variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Alert);     // Anticipation variation
+
+	// Anticipation variations (Tertiary)
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Restless);     // Anticipation variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Impatient);     // Anticipation variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Thrilled);     // Anticipation variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Fascinated);     // Anticipation variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Attentive);     // Anticipation variation
+	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Vigilant);     // Anticipation variation
+
 	// Fear variations (Secondary)
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Scared);       // Fear variation
 	EMOTIONENGINE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Emotion_Variation_Anxious);      // Fear variation
