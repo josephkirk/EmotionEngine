@@ -162,9 +162,9 @@ TArray<UEmotionDefinition*> UEmotionSystemLibrary::GetEmotionsInRadius(const FVe
     return TArray<UEmotionDefinition*>();
 }
 
-FVector2D UEmotionSystemLibrary::VACoordinateToVector2D(const FVACoordinate& VACoordinate)
+FVector2D UEmotionSystemLibrary::PolarCoordinateToCartesian(const FPolarCoordinate& VACoordinate)
 {
-    return VACoordinate.GetCoordinate();
+    return VACoordinate.GetCartesianCoordinate();
 }
 
 float UEmotionSystemLibrary::GetEmotionDistance(const FGameplayTag& EmotionTag1, const FGameplayTag& EmotionTag2, UEmotionLibrary* EmotionLibrary)

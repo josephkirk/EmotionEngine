@@ -104,7 +104,7 @@ TArray<UEmotionDefinition*> UEmotionLibrary::GetOppositeEmotions(const FGameplay
 
 FVector2D UEmotionDefinition::GetEmotionCoordinate() const
 {
-	return Emotion.VACoordinate.GetCoordinate();
+	return Emotion.VACoordinate.GetCartesianCoordinate();
 }
 
 TArray<UEmotionDefinition*> UEmotionLibrary::GetAdjacentEmotions(const FGameplayTag& EmotionTag, float MaxDistance) const

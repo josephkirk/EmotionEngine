@@ -3,26 +3,10 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "EmotionType.h"
+#include "PolarCoordinate.h"
 #include "Emotion.generated.h"
 
 struct FEmotion;
-
-USTRUCT(BlueprintType)
-struct EMOTIONENGINE_API FVACoordinate
-{
-    GENERATED_BODY()
-public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    float Angle = 0.0f;
-    
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    float Intensity = 1.0f;
-
-    FORCEINLINE FVector2D GetCoordinate() const
-    {
-		return FVector2D(FMath::Cos(FMath::DegreesToRadians(Angle)), FMath::Sin(FMath::DegreesToRadians(Angle))) * Intensity;
-	}
-};
 
 USTRUCT(BlueprintType)
 struct EMOTIONENGINE_API FEmotionTriggerRange
@@ -111,7 +95,7 @@ public:
     * High Arousal, Negative Valence (Top-Left): Afraid (V: -0.8, A: 0.9), Angry (V: -0.7, A: 0.8), Stressed (V: -0.5, A: 0.7), Tense (V: -0.4, A: 0.8)
     */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    FVACoordinate VACoordinate;
+    FPolarCoordinate VACoordinate;
 
 	/** The rate at which the intensity of this emotion decays over time (units per second). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (ClampMin = "0.0"))
