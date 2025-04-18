@@ -52,6 +52,13 @@ public:
      FORCEINLINE bool ContainCartersianCoordinate(const FVector2D& Coordinate) const;
      
      /**
+      * Checks if the given polar coordinate is within this polar coordinate range
+      * @param Coordinate - The polar coordinate to check
+      * @return True if the coordinate is within this range, false otherwise
+      */
+     FORCEINLINE bool ContainCoordinate(const FPolarCoordinate& Coordinate) const;
+     
+     /**
       * Calculates how strongly a given coordinate is within this range (0.0 to 1.0)
       * 0.0 means outside the range, 1.0 means at the center of the range
       * @param Coordinate - The coordinate as a 2D vector to check

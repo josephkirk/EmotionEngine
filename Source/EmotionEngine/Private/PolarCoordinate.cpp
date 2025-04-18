@@ -34,6 +34,42 @@ bool FPolarCoordinateRange::ContainCartersianCoordinate(const FVector2D& Coordin
     }
 }
 
+bool FPolarCoordinateRange::ContainCoordinate(const FPolarCoordinate& Coordinate) const
+{
+    // Check if the intensity (radius) is within the min and max radius bounds
+    if (Coordinate.Intensity < MinRadius || Coordinate.Intensity > MaxRadius)
+    {
+        return false;
+    }
+    
+    // Get the angle and ensure it's in the 0-360 range
+    float Angle = Coordinate.Angle;
+    
+    // Normalize angle to 0-360 range
+    while (Angle < 0.0f)
+    {
+        Angle += 360.0f;
+    }
+    
+    while (Angle >= 360.0f)
+    {
+        Angle -= 360.0f;
+    }
+    
+    // Check if the angle is within the start and end angle bounds
+    // Handle the case where the angle range wraps around (e.g., 330 to 30 degrees)
+    if (StartAngle <= EndAngle)
+    {
+        // Normal case: StartAngle to EndAngle
+        return (Angle >= StartAngle && Angle <= EndAngle);
+    }
+    else
+    {
+        // Wrapped case: StartAngle to 360 OR 0 to EndAngle
+        return (Angle >= StartAngle || Angle <= EndAngle);
+    }
+}
+
 float FPolarCoordinateRange::GetStrengthForCartesianCoordinate(const FVector2D& Coordinate) const
 {
     // If the coordinate is not within this range, return 0
