@@ -2,6 +2,8 @@
 
 A powerful Unreal Engine 5.5 plugin that brings emotional intelligence to your game characters, creating more engaging and immersive experiences.
 
+**Latest Update:** Optimized code structure and improved component responsibilities. See [CHANGELOG.md](../CHANGELOG.md) for details.
+
 ![Emotion Assets](docs/images/Assets.png)
 
 ## Vision & Goals
@@ -92,6 +94,7 @@ The heart of the system is the Emotion Component, which can be attached to any a
 - Holds an array of active emotions affecting the character
 - Automatically manages emotion decay and influence over time
 - Provides events for gameplay responses to emotional changes
+- Handles actor integration and external emotional influences
 
 ### Emotions
 
@@ -101,6 +104,26 @@ Each emotion is defined by several key properties:
 - **Decay Rate**: How quickly the emotion fades over time
 - **Influence Radius**: How far the emotion can affect other emotions
 - **VA Coordinate**: Where this emotion sits in the valence-arousal space
+
+### Emotion State
+
+The Emotion State manages the internal emotional state:
+
+- Tracks active emotions and their intensities
+- Handles emotion decay over time
+- Updates the VA coordinate based on active emotions
+- Processes emotion combinations and interactions
+- Manages the spring-based physics for emotional transitions
+
+### Emotion System Library
+
+Provides utility functions for blueprints and C++:
+
+- Emotion retrieval and manipulation
+- VA coordinate calculations
+- Emotion distance and adjacency checks
+- Combined emotion generation
+- Default emotion library management
 
 ![Emotion Definition](docs/images/EmotionDefinition.png)
 
@@ -118,6 +141,14 @@ Anything in the game world can trigger emotions:
 ![Plutchik_Dyads](https://upload.wikimedia.org/wikipedia/commons/a/ad/Plutchik_Dyads.svg)
 
 ## Integration with Other Systems
+
+The Emotion Engine is designed to integrate seamlessly with other Unreal Engine systems:
+
+- **Gameplay Tags**: Emotions are identified using Gameplay Tags
+- **Animation**: Emotional states can drive animation blend spaces
+- **AI Behavior Trees**: Decision making based on emotional states
+- **Dialogue Systems**: Emotional responses in conversations
+- **Environmental Systems**: Emotion zones can influence characters in specific areas
 
 ![Core System Intergration](docs/CoreSystem_Intergration.png)
 
