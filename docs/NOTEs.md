@@ -9,7 +9,7 @@
 - An emotion can link with another emotion's intensity with a mapping of how threhold of both intensities can trigger and new emotion tags. 
 - An active emotion with intensity not zero pull the EmotionComponent's Current mood ( present as a  set of 2 coordinates) toward it with pull strength that stronger the further away the target V-A using linear spring model. One coordinate is in core emotion space and the other is in combined emotion space.
 
-- A core emotion space is a polar coordinate system with partitioned angle range and radius segments that define the space of emotions called emotion zones.
+- A core emotion space is a polar coordinate system with partitioned segments limit by angle and radius range that define the space of emotions called emotion zones.
 ![](images/VA_Intensity.png)
 
 - A combined emotion space is a cartesian coordinate system with voronoi cells with each cell representing a unique combination of emotions.
