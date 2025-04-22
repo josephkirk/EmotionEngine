@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PolarCoordinate.generated.h"
 
 USTRUCT(BlueprintType)
 struct EMOTIONENGINE_API FPolarCoordinate
