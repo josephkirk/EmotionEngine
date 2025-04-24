@@ -26,7 +26,7 @@ public:
 
     // Emotion Result from the combination, we only accept Combined Emotion Type here.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (Categories = "Emotion"))
-    UEmotionDefinition* ResultEmotion;
+    TObjectPtr<UEmotionDefinition> ResultEmotion;
 };
 
 /** 
@@ -104,7 +104,7 @@ public:
     
     // Optional icon for this emotion
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
-    UTexture2D* Icon;
+    TObjectPtr<UTexture2D> Icon;
     
     // Get all emotion tags associated with this emotion (main tag + triggered range and variation tags)
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")
@@ -138,19 +138,19 @@ class EMOTIONENGINE_API UEmotionLibrary : public UDataAsset
 public:
     // All emotions in this library
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
-    TArray<UEmotionDefinition*> Emotions;
+    TArray<TObjectPtr<class UEmotionDefinition>> Emotions;
     
     // Core emotions (the primary emotions in Plutchik's wheel), only accept Core Emotion Type
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
-    TArray<UEmotionDefinition*> CoreEmotions;
+    TArray<TObjectPtr<class UEmotionDefinition>> CoreEmotions;
 
     // Emotion combinations mappings
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
-    TArray<UCombinedEmotionMapping*> CombineEmotions;
+    TArray<TObjectPtr<class UCombinedEmotionMapping>> CombineEmotions;
     
     // Emotional Tendencies (or coefficient) affect input intensity of emotions in this library
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EmotionSystem")
-    UEmotionalTendency* EmotionalTendency;
+    TObjectPtr<class UEmotionalTendency> EmotionalTendency;
 
     // Get an emotion data by its tag
     UFUNCTION(BlueprintCallable, Category = "EmotionSystem")

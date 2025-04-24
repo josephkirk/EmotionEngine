@@ -37,6 +37,7 @@ public:
     }
 };
 
+// Emotion Link is Horizontal direction of the V-A space
 USTRUCT(BlueprintType)
 struct EMOTIONENGINE_API FEmotionLink
 {

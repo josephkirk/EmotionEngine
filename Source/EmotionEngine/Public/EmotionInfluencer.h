@@ -18,7 +18,7 @@ public:
     
     // The source of the stimulus (who/what is causing it)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem")
-    AActor* SourceActor;
+    TObjectPtr<class AActor> SourceActor;
     
     // Optional intensity modifier based on context
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EmotionSystem", meta = (ClampMin = "0.0", UIMin = "0.0"))
