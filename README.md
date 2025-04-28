@@ -6,6 +6,8 @@ A powerful Unreal Engine 5.5 plugin that brings emotional intelligence to your g
 
 ![Emotion Assets](docs/images/Assets.png)
 
+IMPORTANT NOTE: This plugin is still in active development. The API is subject to frequent changes and may not be stable. Use at your own risk in production environments.
+
 ## Vision & Goals
 
 The Emotion Engine aims to revolutionize character behavior in games by implementing a psychologically-grounded emotional system. Our goals are:
